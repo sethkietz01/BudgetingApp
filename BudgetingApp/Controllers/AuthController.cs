@@ -1,12 +1,14 @@
-﻿using Google.Cloud.Firestore;
+﻿using BudgetingApp.Models;
+using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using BudgetingApp.Models;
 
 public class AuthController : Controller
 {
     private readonly FirestoreDb _firestoreDb;
     private readonly string _usersCollection = "Users";
+    private readonly string _assetsCollection = "Assets"; // Add the assets collection name
 
     public AuthController(FirestoreDb firestoreDb)
     {
@@ -94,8 +96,24 @@ public class AuthController : Controller
                 try
                 {
                     await _firestoreDb.Collection(_usersCollection).AddAsync(newUser);
-                    // Account creation successful, you might want to redirect to a registration success page
-                    return RedirectToAction("Login"); // Redirect back to login page
+
+                    // Create a new assets document for the user with default values
+                    string newUsername = model.Username; // Use the username from the created account
+                    Dictionary<string, object> newAssetDocument = new Dictionary<string, object>
+                    {
+                        { "username", newUsername },
+                        { "balance", 0.0 },
+                        { "income", 0.0 },
+                        { "rent", 0.0 },
+                        { "carPayment", 0.0 },
+                        { "groceries", 0.0 },
+                        { "gas", 0.0 },
+                        { "subscriptions", 0.0 }
+                    };
+                    await _firestoreDb.Collection(_assetsCollection).AddAsync(newAssetDocument);
+
+                    // Account creation successful, redirect to login page
+                    return RedirectToAction("Login");
                 }
                 catch (Exception ex)
                 {
