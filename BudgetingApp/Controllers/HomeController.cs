@@ -334,6 +334,7 @@ namespace BudgetingApp.Controllers
                     }
 
                     Console.WriteLine("The number of updates to make is" + updates.Count);
+                    Console.WriteLine("gas is " + model.Gas + "\nand subscriptions is " + model.Subscriptions);
 
                     if (updates.Count > 0)
                     {
