@@ -1,5 +1,47 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model BudgetingApp.Models.AssetModel
 @{
+    ViewData["Title"] = "Edit Assets";
 }
+
+<div class="text-center">
+    <h1 class="display-4">Edit Assets</h1>
+</div>
+
+<form asp-controller="Home" asp-action="EditAssets" method="post">
+    <div class="edit-assets-form">
+
+        <label for="Balance">Balance</label>
+        <input id="balance-input" class="asset-input" type="text" asp-for="Balance" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Balance" class="text-danger"></span>
+
+        <label for="Income">Income</label>
+        <input id="income-input" class="asset-input" type="text" asp-for="Income" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Income" class="text-danger"></span>
+
+        <label for="Rent">Rent</label>
+        <input id="rent-input" class="asset-input" type="text" asp-for="Rent" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Rent" class="text-danger"></span>
+
+        <label for="CarPayment">Car Payment</label>
+        <input id="car-payment-input" class="asset-input" type="text" asp-for="CarPayment" placeholder="Leave blank for no change"  />
+        <span asp-validation-for="CarPayment" class="text-danger"></span>
+
+        <label for="Groceries">Groceries</label>
+        <input id="groceries-input" class="asset-input" type="text" asp-for="Groceries" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Groceries" class="text-danger"></span>
+
+        <label for="Gas">Gas</label>
+        <input id="gas-input" class="asset-input" type="text" asp-for="Gas" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Gas" class="text-danger"></span>
+
+        <label for="Subscriptions">Subcriptions</label>
+        <input id="subscriptions-input" class="asset-input" type="text" asp-for="Subscriptions" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Subscriptions" class="text-danger"></span>
+
+        <input type="hidden" asp-for="Username" value="@Context.Session.GetString("Username")" />
+
+        <div class="edit-assets-button-group">
+            <button type="submit" id="submit-assets-button" class="edit-assets-button">Submit</button>
+        </div>
+    </div>
+</form>

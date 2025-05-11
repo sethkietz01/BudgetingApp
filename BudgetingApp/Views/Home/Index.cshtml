@@ -5,7 +5,7 @@
 
 
 <div class="text-center">
-    <h1 class="display-4">@ViewBag.Username Assets</h1>
+    <h1 class="display-4">View Assets</h1>
 </div>
 
 <div class="assets-table-div">
@@ -15,33 +15,90 @@
             {
                 <tr>
                     <th>Balance</th>
-                    <td>@asset.Balance</td>
+                    <td>$@asset.Balance</td>
                 </tr>
                 <tr>
                     <th>Income</th>
-                    <td>@asset.Income</td>
+                    <td>+ $@asset.Income</td>
                 </tr>
                 <tr>
                     <th>Rent</th>
-                    <td>@asset.Rent</td>
+                    <td>- $@asset.Rent</td>
                 </tr>
                 <tr>
                     <th>Car Payment</th>
-                    <td>@asset.CarPayment</td>
+                    <td>- $@asset.CarPayment</td>
                 </tr>
                 <tr>
                     <th>Groceries</th>
-                    <td>@asset.Groceries</td>
+                    <td>- $@asset.Groceries</td>
                 </tr>
                 <tr>
                     <th>Gas</th>
-                    <td>@asset.Subscriptions</td>
+                    <td>- $@asset.Subscriptions</td>
                 </tr>
                 <tr>
                     <th>Subscriptions</th>
-                    <td>@asset.Gas</td>
+                    <td>- $@asset.Gas</td>
+                </tr>
+                <tr>
+                    <th>Total Expenses</th>
+                    <td id="total-expenses">$</td>
+                </tr>
+                <tr>
+                    <th>Net</th>
+                    <td id="net">$</td>
                 </tr>
             }
         </thead>
     </table>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const assetTables = document.querySelectorAll('.assets-table-div table');
+
+        assetTables.forEach(table => {
+            let totalExpenses = 0;
+            let totalIncome = 0;
+
+            const rows = table.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const header = row.querySelector('th')?.textContent.trim();
+                const valueCell = row.querySelector('td');
+                if (valueCell) {
+                    const valueText = valueCell.textContent.trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); // Extract number
+
+                    if (header === 'Balance') 
+                        balance = numericValue;
+                    else if (header === 'Income') 
+                        totalIncome += numericValue;
+                    else if (header === 'Rent' || header === 'Car Payment' || header === 'Groceries' || header === 'Gas' || header === 'Subscriptions') 
+                        totalExpenses += numericValue;
+                    else if (header === 'Total Expenses') 
+                    {
+                        const totalExpensesCell = row.querySelector('#total-expenses');
+                        if (totalExpensesCell) 
+                            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
+                    } 
+                    else if (header === 'Net') {
+                        const netCell = row.querySelector('#net');
+                        if (netCell) 
+                        {
+                            var netAmount = totalIncome - totalExpenses;
+                            if (netAmount < 0) 
+                            { 
+                                netAmount = -1 * netAmount;
+                                netCell.textContent = "- $" + netAmount.toFixed(2);
+                            }
+                            else
+                                netCell.textContent = "$" + netAmount.toFixed(2);
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>

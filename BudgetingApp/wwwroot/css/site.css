@@ -42,3 +42,8 @@ body {
 .login-button {
     background-color: darkgray;
 }
+
+.edit-assets-form {
+    display: flex;
+    flex-direction: column;
+}
