@@ -47,7 +47,10 @@ public class AuthController : Controller
                 DocumentSnapshot userDocument = snapshot.Documents.First();
                 if (userDocument.TryGetValue<string>("password", out var storedPassword))
                     if (BCrypt.Net.BCrypt.Verify(model.Password, storedPassword))
+                    {
+                        HttpContext.Session.SetString("Username", model.Username);
                         return RedirectToAction("Index", "Home");
+                    }
                     else
                         ViewBag.ErrorMessage = "Invalid password.";
                 else

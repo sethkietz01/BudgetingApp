@@ -5,8 +5,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Configure Session Services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Initialize Firestore using FirestoreDbBuilder to pick up credentials
-string projectId = "budgetingdatabase"; 
+string projectId = "budgetingdatabase";
 FirestoreDbBuilder dbBuilder = new FirestoreDbBuilder
 {
     ProjectId = projectId
@@ -14,10 +23,10 @@ FirestoreDbBuilder dbBuilder = new FirestoreDbBuilder
 FirestoreDb db = dbBuilder.Build();
 builder.Services.AddSingleton(db); // Register FirestoreDb as a singleton
 
-// Register your UserService (if you have one)
+
 builder.Services.AddScoped<UserService>();
 
-// Add authentication services (if using cookies)
+
 builder.Services.AddAuthentication("Cookies")
     .AddCookie();
 
@@ -34,6 +43,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Enable Session Middleware
+app.UseSession();
 
 app.UseAuthentication(); // Enable authentication middleware
 app.UseAuthorization();  // Enable authorization middleware
