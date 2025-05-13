@@ -370,5 +370,57 @@ namespace BudgetingApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToBalance(int amountToAdd)
+        {
+
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            if (snapshot.Documents.Count == 0)
+                return NotFound($"No asset document found for user: {currentUser}");
+
+            DocumentSnapshot assetDocument = snapshot.Documents.First();
+            DocumentReference assetReference = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
+
+            await assetReference.UpdateAsync("balance", FieldValue.Increment(amountToAdd));
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubtractFromBalance(int amountToSubtract)
+        {
+            // Make the amount negative
+            amountToSubtract = amountToSubtract * (-1);
+
+            Console.WriteLine(amountToSubtract);
+
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            if (snapshot.Documents.Count == 0)
+                return NotFound($"No asset document found for user: {currentUser}");
+
+            DocumentSnapshot assetDocument = snapshot.Documents.First();
+            DocumentReference assetReference = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
+
+            await assetReference.UpdateAsync("balance", FieldValue.Increment(amountToSubtract));
+
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -55,6 +55,16 @@
     </table>
 </div>
 
+<div class="form-buttons">
+    <label for="amount-to-add">Add to Balance</label>
+    <input id="amount-to-add" type="text" placeholder="Type amount here" />
+    <button id="add-to-balance-button" onclick="sendAmountToAdd()">Submit</button>
+
+    <label for="amount-to-subtract">Subtract from Balance</label>
+    <input id="amount-to-subtract" type="text" placeholder="Type amount here" />
+    <button id="subtract-from-balance-button" onclick="sendAmountToSubtract()">Submit</button>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const assetTables = document.querySelectorAll('.assets-table-div table');
@@ -102,4 +112,66 @@
             });
         });
     });
+
+    function sendAmountToAdd() {
+        const amountToAddInput = document.getElementById('amount-to-add');
+        const amountValue = amountToAddInput.value;
+
+        if (!amountValue.trim()) {
+            alert('Please enter an amount to add.');
+            return;
+        }
+
+        fetch('@Url.Action("AddToBalance", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `amountToAdd=${amountValue}`
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                    console.log('Balance updated successfully!');
+                } else {
+                    console.error('Failed to update balance.');
+                    alert('Failed to update balance.');
+                }
+            })
+            .catch(error => {
+                console.error('There was an error:', error);
+                alert('An error occurred while updating the balance.');
+            });
+    }
+
+    function sendAmountToSubtract() {
+        const amountToSubtractInput = document.getElementById('amount-to-subtract');
+        const amountValue = amountToSubtractInput.value;
+
+        if (!amountValue.trim()) {
+            alert('Please enter an amount to subtract.');
+            return;
+        }
+
+        fetch('@Url.Action("SubtractFromBalance", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `amountToSubtract=${amountValue}`
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                    console.log('Balance updated successfully!');
+                } else {
+                    console.error('Failed to update balance.');
+                    alert('Failed to update balance.');
+                }
+            })
+            .catch(error => {
+                console.error('There was an error:', error);
+                alert('An error occurred while updating the balance.');
+            });
+    }
 </script>
