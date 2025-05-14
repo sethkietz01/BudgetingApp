@@ -18,6 +18,7 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+        ViewBag.IsLoginPage = true;
         return View();
     }
 

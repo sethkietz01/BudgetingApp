@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Login";
-    Layout = null;
 }
 
 <div class="login">
@@ -12,22 +11,22 @@
     {
         <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
     }
+    <div class="login-form-group">
+        <form asp-controller="Auth" asp-action="Login" method="post" id="login-form">
+            <label for="Username" id="username-label">Username</label>
+            <input id="username-input" class="login-input" type="text" asp-for="Username" />
+            <span asp-validation-for="Username" class="text-danger"></span>
 
-    <form asp-controller="Auth" asp-action="Login" method="post">
-        <label for="Username">Username</label>
-        <input id="username-input" class="login-input" type="text" asp-for="Username" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+            <label for="Password" id="password-label">Password</label>
+            <input id="password-input" class="login-input" type="password" asp-for="Password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
 
-        <label for="Password">Password</label>
-        <input id="password-input" class="login-input" type="password" asp-for="Password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-
-        <div class="login-button-group">
-            <button type="submit" id="login-button" class="login-button">Login</button>
-            <button id="create-account-button" class="login-button"><a asp-controller="Auth" asp-action="CreateAccount" class="login-button">Create Account</a></button>
-        </div>
-    </form>
-    
+            <div class="login-button-group">
+                <button type="submit" id="login-button" class="login-button button">Login</button>
+                <button id="create-account-button" class="login-button button"><a asp-controller="Auth" asp-action="CreateAccount" class="login-button">Create Account</a></button>
+            </div>
+        </form>
+    </div>
 
     
 </div>
