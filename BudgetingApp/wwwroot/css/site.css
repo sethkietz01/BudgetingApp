@@ -81,3 +81,11 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.assets-table-div table td {
+    padding-left: 20px;
+}
+
+.form-buttons {
+    padding-top: 20px;
+}

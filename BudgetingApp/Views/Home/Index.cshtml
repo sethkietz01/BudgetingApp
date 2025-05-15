@@ -107,9 +107,13 @@
                             { 
                                 netAmount = -1 * netAmount;
                                 netCell.textContent = "- $" + netAmount.toFixed(2);
+                                netCell.style.color = "red";
                             }
                             else
+                            {
                                 netCell.textContent = "$" + netAmount.toFixed(2);
+                                netCell.style.color = "green";
+                            }
                         }
                     }
                 }
