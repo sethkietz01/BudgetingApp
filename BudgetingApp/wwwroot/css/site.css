@@ -51,7 +51,13 @@ body {
     width: auto;
 }
 
-.login-button {
+.create-account-button-group {
+    padding-top: 10px;
+    height: auto;
+    width: auto;
+}
+
+.button {
     background-color: lightgray;
     color: black;
     text-decoration: none;
@@ -62,7 +68,16 @@ body {
     padding-top: 20px;
 }
 
+#create-password-label {
+    padding-top: 20px;
+}
+
 #login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#create-account-form {
     display: flex;
     flex-direction: column;
 }

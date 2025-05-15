@@ -25,6 +25,7 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult CreateAccount()
     {
+        ViewBag.IsCreateAccountPage = true;
         return View();
     }
 

@@ -111,6 +111,16 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'subscriptions' in document {currentSnapshot.Id}");
                     }
 
+                    if (currentSnapshot.TryGetValue<double>("other", out var otherDouble))
+                        asset.Other = otherDouble;
+                    else if (currentSnapshot.TryGetValue<long>("other", out var otherLong))
+                        asset.Other = (double)otherLong;
+                    else
+                    {
+                        asset.Other = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'other' in document {currentSnapshot.Id}");
+                    }
+
                     if (currentSnapshot.TryGetValue<string>("username", out var username))
                         asset.Username = username;
                     else
@@ -215,6 +225,16 @@ namespace BudgetingApp.Controllers
             {
                 asset.Subscriptions = 0.0;
                 _logger.LogWarning($"Unexpected data type for 'subscriptions' in document {currentSnapshot.Id}");
+            }
+
+            if (currentSnapshot.TryGetValue<double>("other", out var otherDouble))
+                asset.Other = otherDouble;
+            else if (currentSnapshot.TryGetValue<long>("other", out var otherLong))
+                asset.Other = (double)otherLong;
+            else
+            {
+                asset.Other = 0.0;
+                _logger.LogWarning($"Unexpected data type for 'other' in document {currentSnapshot.Id}");
             }
 
             if (currentSnapshot.TryGetValue<string>("username", out var username))
@@ -333,8 +353,16 @@ namespace BudgetingApp.Controllers
                         }
                     }
 
-                    Console.WriteLine("The number of updates to make is" + updates.Count);
-                    Console.WriteLine("gas is " + model.Gas + "\nand subscriptions is " + model.Subscriptions);
+                    if (!string.IsNullOrEmpty(Request.Form["Other"]))
+                    {
+                        if (double.TryParse(Request.Form["Other"], out double other))
+                            updates["other"] = other;
+                        else
+                        {
+                            ModelState.AddModelError("Other", "The Other category must be a valid number");
+                            return View(model);
+                        }
+                    }
 
                     if (updates.Count > 0)
                     {

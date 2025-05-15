@@ -38,6 +38,10 @@
         <input id="subscriptions-input" class="asset-input" type="text" asp-for="Subscriptions" placeholder="Leave blank for no change" />
         <span asp-validation-for="Subscriptions" class="text-danger"></span>
 
+        <label for="Other">Other</label>
+        <input id="other-input" class="asset-input" type="text" asp-for="Other" placeholder="Leave blank for no change" />
+        <span asp-validation-for="Other" class="text-danger"></span>
+
         <input type="hidden" asp-for="Username" value="@Context.Session.GetString("Username")" />
 
         <div class="edit-assets-button-group">

@@ -5,7 +5,7 @@
 }
 
 <div class="login">
-    <h1>Login</h1>
+    <h2>Login</h2>
 
     @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
     {
@@ -23,7 +23,7 @@
 
             <div class="login-button-group">
                 <button type="submit" id="login-button" class="login-button button">Login</button>
-                <button id="create-account-button" class="login-button button"><a asp-controller="Auth" asp-action="CreateAccount" class="login-button">Create Account</a></button>
+                <button id="create-account-button" class="login-button button"><a asp-controller="Auth" asp-action="CreateAccount" class="login-button button">Create Account</a></button>
             </div>
         </form>
     </div>

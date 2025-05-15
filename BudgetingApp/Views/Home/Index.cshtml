@@ -43,6 +43,10 @@
 
                 </tr>
                 <tr>
+                    <th>Other</th>
+                    <td>- $@asset.Other</td>
+                </tr>
+                <tr>
                     <th>Total Expenses</th>
                     <td id="total-expenses">$</td>
                 </tr>
@@ -86,7 +90,7 @@
                         balance = numericValue;
                     else if (header === 'Income') 
                         totalIncome += numericValue;
-                    else if (header === 'Rent' || header === 'Car Payment' || header === 'Groceries' || header === 'Gas' || header === 'Subscriptions') 
+                    else if (header === 'Rent' || header === 'Car Payment' || header === 'Groceries' || header === 'Gas' || header === 'Subscriptions' || header === 'Other') 
                         totalExpenses += numericValue;
                     else if (header === 'Total Expenses') 
                     {

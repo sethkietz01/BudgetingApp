@@ -25,6 +25,9 @@ namespace BudgetingApp.Models
         [FirestoreProperty("subscriptions")]
         public double Subscriptions { get; set; }
 
+        [FirestoreProperty("other")]
+        public double Other {  get; set; }
+
         [FirestoreProperty("username")]
         public string Username { get; set; }
     }

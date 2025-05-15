@@ -2,17 +2,22 @@
 
 @{
     ViewData["Title"] = "Create Account";
-    Layout = null;
 }
 
 <div class="login"> 
     <h2>Create New Account</h2>
-    <form asp-controller="Auth" asp-action="CreateAccount" method="post">
-        <label for="NewUsername">Username</label>
-        <input id="new-username-input" class="login-input" type="text" name="Username" /> <label for="NewPassword">Password</label>
-        <input id="new-password-input" class="login-input" type="password" name="Password" />
-        <div class="login-button-group">
-            <button type="submit" id="create-account-button" class="login-button">Create Account</button>
-        </div>
-    </form>
+
+    <div class="create-account-group">
+        <form asp-controller="Auth" asp-action="CreateAccount" method="post" id="create-account-form">
+            <label for="NewUsername">Username</label>
+            <input id="new-username-input" class="login-input" type="text" name="Username" />
+
+            <label id="create-password-label"for="NewPassword">Password</label>
+            <input id="create-password-input" class="login-input" type="password" name="Password" />
+
+            <div class="create-account-button-group">
+                <button type="submit" id="create-account-button" class="login-button button">Create Account</button>
+            </div>
+        </form>
+    </div>
 </div>
