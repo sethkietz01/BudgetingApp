@@ -22,6 +22,12 @@ namespace BudgetingApp.Models
         [FirestoreProperty("rent")]
         public double Rent { get; set; }
 
+        [FirestoreProperty("utilities")]
+        public double Utilities { get; set; }
+
+        [FirestoreProperty("insurances")]
+        public double Insurances { get; set; }
+
         [FirestoreProperty("subscriptions")]
         public double Subscriptions { get; set; }
 

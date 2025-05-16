@@ -1,5 +1,6 @@
 using BudgetingApp.Models;
 using Google.Apis.Logging;
+using Google.Apis.Util;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -72,6 +73,16 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'rent' in document {currentSnapshot.Id}");
                     }
 
+                    if (currentSnapshot.TryGetValue<double>("utilities", out var utilitiesDouble))
+                        asset.Utilities = utilitiesDouble;
+                    else if (currentSnapshot.TryGetValue<long>("utilities", out var utilitiesLong))
+                        asset.Utilities = (double)utilitiesLong;
+                    else
+                    {
+                        asset.Utilities = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'utilities' in document {currentSnapshot.Id}");
+                    }
+
                     if (currentSnapshot.TryGetValue<double>("carPayment", out var carPaymentDouble))
                         asset.CarPayment = carPaymentDouble;
                     else if (currentSnapshot.TryGetValue<long>("carPayment", out var carPaymentLong))
@@ -80,6 +91,16 @@ namespace BudgetingApp.Controllers
                     {
                         asset.CarPayment = 0.0;
                         _logger.LogWarning($"Unexpected data type for 'carPayment' in document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<double>("insurances", out var insurancesDouble))
+                        asset.Insurances = insurancesDouble;
+                    else if (currentSnapshot.TryGetValue<long>("insurances", out var insurancesLong))
+                        asset.Insurances = (double)insurancesLong;
+                    else
+                    {
+                        asset.Insurances = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'insurances' in document {currentSnapshot.Id}");
                     }
 
                     if (currentSnapshot.TryGetValue<double>("groceries", out var groceriesDouble))
@@ -188,6 +209,16 @@ namespace BudgetingApp.Controllers
                 _logger.LogWarning($"Unexpected data type for 'rent' in document {currentSnapshot.Id}");
             }
 
+            if (currentSnapshot.TryGetValue<double>("utilities", out var utilitiesDouble))
+                asset.Utilities = utilitiesDouble;
+            else if (currentSnapshot.TryGetValue<long>("utilities", out var utilitiesLong))
+                asset.Utilities = (double)utilitiesLong;
+            else
+            {
+                asset.Utilities = 0.0;
+                _logger.LogWarning($"Unexpected data type for 'utilities' in document {currentSnapshot.Id}");
+            }
+
             if (currentSnapshot.TryGetValue<double>("carPayment", out var carPaymentDouble))
                 asset.CarPayment = carPaymentDouble;
             else if (currentSnapshot.TryGetValue<long>("carPayment", out var carPaymentLong))
@@ -196,6 +227,16 @@ namespace BudgetingApp.Controllers
             {
                 asset.CarPayment = 0.0;
                 _logger.LogWarning($"Unexpected data type for 'carPayment' in document {currentSnapshot.Id}");
+            }
+
+            if (currentSnapshot.TryGetValue<double>("insurances", out var insurancesDouble))
+                asset.Insurances = insurancesDouble;
+            else if (currentSnapshot.TryGetValue<long>("insurances", out var insurancesLong))
+                asset.Insurances = (double)insurancesLong;
+            else
+            {
+                asset.Insurances = 0.0;
+                _logger.LogWarning($"Unexpected data type for 'insurances' in document {currentSnapshot.Id}");
             }
 
             if (currentSnapshot.TryGetValue<double>("groceries", out var groceriesDouble))
@@ -310,6 +351,17 @@ namespace BudgetingApp.Controllers
                         }
                     }
 
+                    if (!string.IsNullOrEmpty(Request.Form["Utilities"]))
+                    {
+                        if (double.TryParse(Request.Form["Utilities"], out double utilities))
+                            updates["utilities"] = utilities;
+                        else
+                        {
+                            ModelState.AddModelError("Utilities", "The Utilities must be a valid number.");
+                            return View(model);
+                        }
+                    }
+
                     if (!string.IsNullOrEmpty(Request.Form["CarPayment"]))
                     {
                         if (double.TryParse(Request.Form["CarPayment"], out double carPayment))
@@ -317,6 +369,17 @@ namespace BudgetingApp.Controllers
                         else
                         {
                             ModelState.AddModelError("CarPayment", "The Car Payment must be a valid number.");
+                            return View(model);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(Request.Form["Insurances"]))
+                    {
+                        if (double.TryParse(Request.Form["Insurances"], out double insurances))
+                            updates["insurances"] = insurances;
+                        else
+                        {
+                            ModelState.AddModelError("Insurances", "The Insurances must be a valid number.");
                             return View(model);
                         }
                     }
@@ -504,6 +567,16 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'rent' in document {currentSnapshot.Id}");
                     }
 
+                    if (currentSnapshot.TryGetValue<double>("utilities", out var utilitiesDouble))
+                        asset.Utilities = utilitiesDouble;
+                    else if (currentSnapshot.TryGetValue<long>("utilities", out var utilitiesLong))
+                        asset.Utilities = (double)utilitiesLong;
+                    else
+                    {
+                        asset.Utilities = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'utilities' in document {currentSnapshot.Id}");
+                    }
+
                     if (currentSnapshot.TryGetValue<double>("carPayment", out var carPaymentDouble))
                         asset.CarPayment = carPaymentDouble;
                     else if (currentSnapshot.TryGetValue<long>("carPayment", out var carPaymentLong))
@@ -512,6 +585,16 @@ namespace BudgetingApp.Controllers
                     {
                         asset.CarPayment = 0.0;
                         _logger.LogWarning($"Unexpected data type for 'carPayment' in document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<double>("insurances", out var insurancesDouble))
+                        asset.Insurances = insurancesDouble;
+                    else if (currentSnapshot.TryGetValue<long>("insurances", out var insurancesLong))
+                        asset.Insurances = (double)insurancesLong;
+                    else
+                    {
+                        asset.Insurances = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'insurances' in document {currentSnapshot.Id}");
                     }
 
                     if (currentSnapshot.TryGetValue<double>("groceries", out var groceriesDouble))
