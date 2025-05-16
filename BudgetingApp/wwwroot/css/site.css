@@ -15,7 +15,9 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #303030;
+    color: white;
 }
 
 .login {
@@ -118,3 +120,17 @@ body {
 #subtract-from-balance-button {
     width: 75px;
 }
+
+.navbar {
+    background-color: #202020;
+    color: white;
+}
+
+.navbar-brand {
+    color: white;
+}
+
+.nav-link {
+    color: white;
+}
+
