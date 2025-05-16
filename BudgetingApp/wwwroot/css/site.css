@@ -43,6 +43,20 @@ body {
     flex-direction: column;
 }
 
+.edit-assets-form label, .edit-assets-form input {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.edit-assets-form label {
+    margin-top: 15px;
+}
+
+.edit-assets-form input {
+    width: 80px;
+    text-align: center;
+}
+
 .login-input {
     width: 200px;
 }
@@ -171,5 +185,14 @@ body {
     font-size: 18px;
     text-align: center;
     padding-top: 50px;
+}
+
+.edit-assets-button-group {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#submit-assets-button {
+    margin-top: 10px;
 }
 

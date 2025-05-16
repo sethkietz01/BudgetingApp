@@ -1,4 +1,5 @@
 using BudgetingApp.Models;
+using Google.Apis.Logging;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -568,6 +569,18 @@ namespace BudgetingApp.Controllers
             int count = assets.Count;
 
             return View(assets);
+        }
+
+        public IActionResult Settings()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("Username");
+            return RedirectToAction("Login", "Auth");
         }
     }
 }

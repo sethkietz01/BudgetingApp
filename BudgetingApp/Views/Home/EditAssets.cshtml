@@ -11,41 +11,41 @@
     <div class="edit-assets-form">
 
         <label for="Balance">Balance</label>
-        <input id="balance-input" class="asset-input" type="text" asp-for="Balance" placeholder="Leave blank for no change" />
+        <input id="balance-input" class="asset-input" type="text" asp-for="Balance" />
         <span asp-validation-for="Balance" class="text-danger"></span>
 
         <label for="Income">Income</label>
-        <input id="income-input" class="asset-input" type="text" asp-for="Income" placeholder="Leave blank for no change" />
+        <input id="income-input" class="asset-input" type="text" asp-for="Income" />
         <span asp-validation-for="Income" class="text-danger"></span>
 
         <label for="Rent">Rent</label>
-        <input id="rent-input" class="asset-input" type="text" asp-for="Rent" placeholder="Leave blank for no change" />
+        <input id="rent-input" class="asset-input" type="text" asp-for="Rent" />
         <span asp-validation-for="Rent" class="text-danger"></span>
 
         <label for="CarPayment">Car Payment</label>
-        <input id="car-payment-input" class="asset-input" type="text" asp-for="CarPayment" placeholder="Leave blank for no change"  />
+        <input id="car-payment-input" class="asset-input" type="text" asp-for="CarPayment"  />
         <span asp-validation-for="CarPayment" class="text-danger"></span>
 
         <label for="Groceries">Groceries</label>
-        <input id="groceries-input" class="asset-input" type="text" asp-for="Groceries" placeholder="Leave blank for no change" />
+        <input id="groceries-input" class="asset-input" type="text" asp-for="Groceries" />
         <span asp-validation-for="Groceries" class="text-danger"></span>
 
         <label for="Gas">Gas</label>
-        <input id="gas-input" class="asset-input" type="text" asp-for="Gas" placeholder="Leave blank for no change" />
+        <input id="gas-input" class="asset-input" type="text" asp-for="Gas" />
         <span asp-validation-for="Gas" class="text-danger"></span>
 
         <label for="Subscriptions">Subscriptions</label>
-        <input id="subscriptions-input" class="asset-input" type="text" asp-for="Subscriptions" placeholder="Leave blank for no change" />
+        <input id="subscriptions-input" class="asset-input" type="text" asp-for="Subscriptions" />
         <span asp-validation-for="Subscriptions" class="text-danger"></span>
 
         <label for="Other">Other</label>
-        <input id="other-input" class="asset-input" type="text" asp-for="Other" placeholder="Leave blank for no change" />
+        <input id="other-input" class="asset-input" type="text" asp-for="Other" />
         <span asp-validation-for="Other" class="text-danger"></span>
 
         <input type="hidden" asp-for="Username" value="@Context.Session.GetString("Username")" />
 
         <div class="edit-assets-button-group">
-            <button type="submit" id="submit-assets-button" class="edit-assets-button">Submit</button>
+            <button type="submit" id="submit-assets-button" class="edit-assets-button button">Submit</button>
         </div>
     </div>
 </form>
