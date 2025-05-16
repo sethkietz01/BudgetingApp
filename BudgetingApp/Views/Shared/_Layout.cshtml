@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BudgetingApp</title>
+    <title>@ViewData["Title"] - Budgeting App</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BudgetingApp.styles.css" asp-append-version="true" />
@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BudgetingApp</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Budgeting App</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -27,7 +27,15 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="EditAssets">Edit Assets</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="WhatIf">What If</a>
+                            </li>
                         </ul>
+                        <div class="d-flex align-items-center">
+                            <a asp-area="" asp-controller="Home" asp-action="Settings">
+                                <img id="settings-icon" src="~/Resources/Images/settings-new.png" alt="Settings" height="30" />
+                            </a>
+                        </div>
                     </div>
                 }
             </div>

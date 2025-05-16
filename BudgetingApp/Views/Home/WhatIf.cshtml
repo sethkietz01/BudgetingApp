@@ -1,0 +1,124 @@
+﻿@model List<BudgetingApp.Models.AssetModel>
+@{
+    ViewData["Title"] = "What If";
+}
+
+<div class="text-center">
+    <h1 class="display-4">What If</h1>
+</div>
+
+<div class="assets-table-div">
+
+    <table id="what-if-assets-table">
+        <thead>
+            @foreach (var asset in Model)
+            {
+                <tr>
+                    <th>Balance</th>
+                    <td>$<div contenteditable="true">@asset.Balance</div></td>
+                </tr>
+                <tr>
+                    <th>Income</th>
+                    <td>+ $<div contenteditable="true">@asset.Income</div></td>
+                </tr>
+                <tr>
+                    <th>Rent</th>
+                    <td>- $<div contenteditable="true">@asset.Rent</div></td>
+                </tr>
+                <tr>
+                    <th>Car Payment</th>
+                    <td>- $<div contenteditable="true">@asset.CarPayment</div></td>
+                </tr>
+                <tr>
+                    <th>Groceries</th>
+                    <td>- $<div contenteditable="true">@asset.Groceries</div></td>
+                </tr>
+                <tr>
+                    <th>Gas</th>
+                    <td>- $<div contenteditable="true">@asset.Gas</div></td>
+                </tr>
+                <tr>
+                    <th>Subscriptions</th>
+                    <td>- $<div contenteditable="true">@asset.Subscriptions</div></td>
+
+                </tr>
+                <tr>
+                    <th>Other</th>
+                    <td>- $<div contenteditable="true">@asset.Other</div></td>
+                </tr>
+                <tr>
+                    <th>Total Expenses</th>
+                    <td id="total-expenses">$</td>
+                </tr>
+                <tr>
+                    <th>Net</th>
+                    <td id="net">$</td>
+                </tr>
+            }
+        </thead>
+    </table>
+</div>
+
+<p id="what-if-explanation">Click on the amounts to change them and calculate a hypothetical cost without saving your assets</p>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const whatIfAssetsTable = document.getElementById('what-if-assets-table');
+        const editableValues = whatIfAssetsTable.querySelectorAll('td > div[contenteditable="true"]');
+        const totalExpensesCell = document.getElementById('total-expenses');
+        const netCell = document.getElementById('net');
+
+        function recalculateTotals() {
+            let totalExpenses = 0;
+            let totalIncome = 0;
+            let balance = 0;
+
+            const rows = whatIfAssetsTable.querySelectorAll('tr');
+            rows.forEach(row => {
+                const header = row.querySelector('th')?.textContent.trim();
+                const valueCell = row.querySelector('td');
+
+                if (valueCell) {
+                    const editableDiv = valueCell.querySelector('div[contenteditable="true"]');
+                    let valueText = editableDiv ? editableDiv.textContent.trim() : valueCell.textContent.trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.-]/g, '')) || 0; 
+
+                    if (header === 'Balance') {
+                        balance = numericValue;
+                    } else if (header === 'Income') {
+                        totalIncome += numericValue;
+                    } else if (header === 'Rent' || header === 'Car Payment' || header === 'Groceries' || header === 'Gas' || header === 'Subscriptions' || header === 'Other') {
+                        totalExpenses += numericValue;
+                    }
+                }
+            });
+
+            if (totalExpensesCell) {
+                totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
+            }
+
+            if (netCell) {
+                var netAmount = totalIncome - totalExpenses;
+                if (netAmount < 0)
+                {
+                    netAmount = -1 * netAmount;
+                    netCell.textContent = "- $" + netAmount.toFixed(2);
+                    netCell.style.color = "red";
+                }
+                else
+                {
+                    netCell.textContent = "$" + netAmount.toFixed(2);
+                    netCell.style.color = "green";
+                }
+            }
+        }
+
+        editableValues.forEach(editableDiv => {
+            editableDiv.addEventListener('input', recalculateTotals);
+        });
+
+        // Initial calculation on page load
+        recalculateTotals();
+    });
+</script>
+</script>

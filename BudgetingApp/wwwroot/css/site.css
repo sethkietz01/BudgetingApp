@@ -149,3 +149,27 @@ body {
     color: white;
 }
 
+#what-if-assets-table {
+    font-size: 22px;
+    width: 400px;
+    margin: auto;
+}
+
+#what-if-assets-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#what-if-assets-table tr:last-child {
+    border-bottom: none;
+}
+
+#what-if-assets-table td {
+    display: flex;
+}
+
+#what-if-explanation {
+    font-size: 18px;
+    text-align: center;
+    padding-top: 50px;
+}
+
