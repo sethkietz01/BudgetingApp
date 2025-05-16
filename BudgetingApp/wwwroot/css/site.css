@@ -89,3 +89,32 @@ body {
 .form-buttons {
     padding-top: 20px;
 }
+
+
+#assets-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#assets-table tr:last-child {
+    border-bottom: none; 
+}
+
+.add-to-balance-group {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
+#add-to-balance-button {
+    width: 75px;
+}
+
+.subtract-from-balance-group {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
+#subtract-from-balance-button {
+    width: 75px;
+}

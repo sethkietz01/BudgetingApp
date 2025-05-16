@@ -9,7 +9,7 @@
 </div>
 
 <div class="assets-table-div">
-    <table>
+    <table id="assets-table">
         <thead>
             @foreach (var asset in Model)
             {
@@ -60,13 +60,17 @@
 </div>
 
 <div class="form-buttons">
-    <label for="amount-to-add">Add to Balance</label>
-    <input id="amount-to-add" type="text" placeholder="Type amount here" />
-    <button id="add-to-balance-button" onclick="sendAmountToAdd()">Submit</button>
+    <div class="add-to-balance-group">
+        <label for="amount-to-add">Add to Balance</label>
+        <input id="amount-to-add" type="text" placeholder="Type amount here" />
+        <button id="add-to-balance-button" class="button" onclick="sendAmountToAdd()">Submit</button>
+    </div>
 
-    <label for="amount-to-subtract">Subtract from Balance</label>
-    <input id="amount-to-subtract" type="text" placeholder="Type amount here" />
-    <button id="subtract-from-balance-button" onclick="sendAmountToSubtract()">Submit</button>
+    <div class="subtract-from-balance-group"">
+        <label for="amount-to-subtract">Subtract from Balance</label>
+        <input id="amount-to-subtract" type="text" placeholder="Type amount here" />
+        <button id="subtract-from-balance-button" class="button" onclick="sendAmountToSubtract()">Submit</button>  
+    </div>
 </div>
 
 <script>
