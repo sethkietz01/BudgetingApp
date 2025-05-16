@@ -57,6 +57,11 @@
             }
         </thead>
     </table>
+
+
+    <div class="assets-chart-group">
+        <canvas id="assetsChart"></canvas>
+    </div>
 </div>
 
 <div class="form-buttons">
@@ -73,7 +78,88 @@
     </div>
 </div>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const assetTables = document.querySelectorAll('.assets-table-div table');
+
+        assetTables.forEach(table => {
+            let totalExpenses = 0;
+            let totalIncome = 0;
+
+            const expenseLabels = [];
+            const expenseData = [];
+
+            const rows = table.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const header = row.querySelector('th')?.textContent.trim();
+                const valueCell = row.querySelector('td');
+                if (valueCell) {
+                    const valueText = valueCell.textContent.trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, ''));
+
+                    if (header === 'Balance')
+                        balance = numericValue;
+                    else if (header === 'Income')
+                        totalIncome += numericValue;
+                    else if (header === 'Rent' || header === 'Car Payment' || header === 'Groceries' || header === 'Gas' || header === 'Subscriptions' || header === 'Other') {
+                        totalExpenses += numericValue;
+                        expenseLabels.push(header);
+                        expenseData.push(numericValue);
+                    }
+                    else if (header === 'Total Expenses')
+                    {
+                        const totalExpensesCell = row.querySelector('#total-expenses');
+                        if (totalExpensesCell)
+                            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
+                    }
+                    else if (header === 'Net') {
+                        const netCell = row.querySelector('#net');
+                        if (netCell)
+                        {
+                            var netAmount = totalIncome - totalExpenses;
+                            if (netAmount < 0)
+                            {
+                                netAmount = -1 * netAmount;
+                                netCell.textContent = "- $" + netAmount.toFixed(2);
+                                netCell.style.color = "red";
+                            }
+                            else
+                            {
+                                netCell.textContent = "$" + netAmount.toFixed(2);
+                                netCell.style.color = "green";
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (expenseLabels.length > 0) {
+                new Chart("assetsChart", {
+                    type: "doughnut",
+                    data: {
+                        labels: expenseLabels,
+                        datasets: [{
+                            backgroundColor: [
+                                "red", "purple", "blue", "green", "yellow", "orange"
+                            ], 
+                            data: expenseData
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: "Cost Breakdown"
+                        }
+                    }
+                });
+            }
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         const assetTables = document.querySelectorAll('.assets-table-div table');
 

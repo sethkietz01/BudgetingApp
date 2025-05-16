@@ -84,6 +84,10 @@ body {
     flex-direction: column;
 }
 
+.assets-table-div {
+    display: flex;
+}
+
 .assets-table-div table td {
     padding-left: 20px;
 }
@@ -92,6 +96,10 @@ body {
     padding-top: 20px;
 }
 
+#assets-table {
+    font-size:18px;
+    width: 325px;
+}
 
 #assets-table tr {
     border-bottom: 1px solid #ccc;
@@ -99,6 +107,10 @@ body {
 
 #assets-table tr:last-child {
     border-bottom: none; 
+}
+
+.assets-chart-group {
+    width: 50%;
 }
 
 .add-to-balance-group {
@@ -109,16 +121,19 @@ body {
 
 #add-to-balance-button {
     width: 75px;
+    margin-top: 5px;
 }
 
 .subtract-from-balance-group {
     display: flex;
     flex-direction: column;
     width: 200px;
+    padding-top: 20px;
 }
 
 #subtract-from-balance-button {
     width: 75px;
+    margin-top: 5px;
 }
 
 .navbar {
