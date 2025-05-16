@@ -148,14 +148,20 @@
                         datasets: [{
                             backgroundColor: [
                                 "red", "purple", "blue", "green", "yellow", "orange"
-                            ], 
+                            ],
                             data: expenseData
                         }]
                     },
                     options: {
                         title: {
                             display: true,
-                            text: "Cost Breakdown"
+                            text: "Cost Breakdown",
+                            fontColor: 'white'
+                        },
+                        legend: { 
+                            labels: {
+                                fontColor: 'white'
+                            }
                         }
                     }
                 });
