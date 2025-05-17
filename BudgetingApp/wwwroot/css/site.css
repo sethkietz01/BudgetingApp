@@ -235,3 +235,8 @@ body {
 .table-centered td, .table-centered th {
     font-size: 22px;
 }
+
+#nav-bar-list {
+    gap: 10px;
+    font-size: 16px;
+}
