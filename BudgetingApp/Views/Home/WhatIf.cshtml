@@ -22,6 +22,10 @@
                     <td>+ $<div contenteditable="true">@asset.Income</div></td>
                 </tr>
                 <tr>
+                    <th>Savings</th>
+                    <td>- $<div contenteditable="true">@asset.Savings</div></td>
+                </tr>
+                <tr>
                     <th>Rent</th>
                     <td>- $<div contenteditable="true">@asset.Rent</div></td>
                 </tr>
@@ -94,7 +98,7 @@
                         balance = numericValue;
                     } else if (header === 'Income') {
                         totalIncome += numericValue;
-                    } else if (header === 'Rent' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
+                    } else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
                         header === 'Subscriptions' || header === 'Other') {
                         totalExpenses += numericValue;
                     }

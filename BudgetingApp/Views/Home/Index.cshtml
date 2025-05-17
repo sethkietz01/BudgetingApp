@@ -25,6 +25,10 @@
                     <td>+ $@asset.Income</td>
                 </tr>
                 <tr>
+                    <th>Savings</th>
+                    <td>- $@asset.Savings</td>
+                </tr>
+                <tr>
                     <th>Rent</th>
                     <td>- $@asset.Rent</td>
                 </tr>
@@ -115,7 +119,7 @@
                         balance = numericValue;
                     else if (header === 'Income')
                         totalIncome += numericValue;
-                    else if (header === 'Rent' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
+                    else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
                         header === 'Subscriptions' || header === 'Other') {
                         totalExpenses += numericValue;
                         expenseLabels.push(header);
@@ -155,10 +159,10 @@
                         labels: expenseLabels,
                         datasets: [{
                             backgroundColor: [
-                                "red", "orange", "yellow", "green", "cyan", "blue", "indigo", "violet"
+                                "red", "orange", "yellow", "green", "cyan", "blue", "indigo", "violet", "magenta"
                             ],
                             borderColor: [ 
-                                "black", "black", "black", "black", "black", "black", "black", "black"
+                                "black", "black", "black", "black", "black", "black", "black", "black", "black"
                             ],
                             data: expenseData
                         }]
@@ -201,7 +205,7 @@
                         balance = numericValue;
                     else if (header === 'Income') 
                         totalIncome += numericValue;
-                    else if (header === 'Rent' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
+                    else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
                         header === 'Subscriptions' || header === 'Other') 
                         totalExpenses += numericValue;
                     else if (header === 'Total Expenses') 

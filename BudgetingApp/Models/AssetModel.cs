@@ -7,6 +7,9 @@ namespace BudgetingApp.Models
         [FirestoreProperty("balance")]
         public double Balance { get; set; }
 
+        [FirestoreProperty("savings")]
+        public double Savings { get; set; }
+
         [FirestoreProperty("carPayment")]
         public double CarPayment { get; set; }
 

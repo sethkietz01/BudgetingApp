@@ -3,6 +3,7 @@ using Google.Apis.Logging;
 using Google.Apis.Util;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using System.Diagnostics;
 
 namespace BudgetingApp.Controllers
@@ -62,6 +63,16 @@ namespace BudgetingApp.Controllers
                     {
                         asset.Income = 0.0;
                         _logger.LogWarning($"Unexpected data type for 'income' in document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<double>("savings", out var savingsDouble))
+                        asset.Savings = savingsDouble;
+                    else if (currentSnapshot.TryGetValue<long>("savings", out var savingsLong))
+                        asset.Savings = (double)savingsLong;
+                    else
+                    {
+                        asset.Savings = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'savings' in document {currentSnapshot.Id}");
                     }
 
                     if (currentSnapshot.TryGetValue<double>("rent", out var rentDouble))
@@ -198,6 +209,16 @@ namespace BudgetingApp.Controllers
             {
                 asset.Income = 0.0;
                 _logger.LogWarning($"Unexpected data type for 'income' in document {currentSnapshot.Id}");
+            }
+
+            if (currentSnapshot.TryGetValue<double>("savings", out var savingsDouble))
+                asset.Savings = savingsDouble;
+            else if (currentSnapshot.TryGetValue<long>("savings", out var savingsLong))
+                asset.Savings = (double)savingsLong;
+            else
+            {
+                asset.Savings = 0.0;
+                _logger.LogWarning($"Unexpected data type for 'savings' in document {currentSnapshot.Id}");
             }
 
             if (currentSnapshot.TryGetValue<double>("rent", out var rentDouble))
@@ -337,6 +358,17 @@ namespace BudgetingApp.Controllers
                         else
                         {
                             ModelState.AddModelError("Income", "The Income must be a valid number.");
+                            return View(model);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(Request.Form["Savings"]))
+                    {
+                        if (double.TryParse(Request.Form["Savings"], out double savings))
+                            updates["savings"] = savings;
+                        else
+                        {
+                            ModelState.AddModelError("Savings", "The Savings must be a valid number.");
                             return View(model);
                         }
                     }
@@ -556,6 +588,16 @@ namespace BudgetingApp.Controllers
                     {
                         asset.Income = 0.0;
                         _logger.LogWarning($"Unexpected data type for 'income' in document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<double>("savings", out var savingsDouble))
+                        asset.Savings = savingsDouble;
+                    else if (currentSnapshot.TryGetValue<long>("savings", out var savingsLong))
+                        asset.Savings = (double)savingsLong;
+                    else
+                    {
+                        asset.Savings = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'savings' in document {currentSnapshot.Id}");
                     }
 
                     if (currentSnapshot.TryGetValue<double>("rent", out var rentDouble))
