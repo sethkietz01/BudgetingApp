@@ -771,7 +771,7 @@ namespace BudgetingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Transactions()
         {
-            // Determine who is currently logged in 
+            // Determine who is currently logged in
             string currentUser = HttpContext.Session.GetString("Username");
 
             // Redirect to the login page if the user is not signed in
@@ -787,7 +787,10 @@ namespace BudgetingApp.Controllers
             {
                 if (currentSnapshot.Exists)
                 {
-                    TransactionModel transaction = new TransactionModel();
+                    TransactionModel transaction = new TransactionModel
+                    {
+                        DocumentId = currentSnapshot.Id,
+                    };
 
                     if (currentSnapshot.TryGetValue<double>("amount", out var amountDouble))
                         transaction.Amount = amountDouble;
@@ -823,7 +826,6 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'category' in transaction document {currentSnapshot.Id}");
                     }
 
-
                     if (currentSnapshot.TryGetValue<string>("username", out var username))
                         transaction.Username = username;
                     else
@@ -842,6 +844,30 @@ namespace BudgetingApp.Controllers
             return View(transactions);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteTransaction(string transactionId)
+        {
+            if (string.IsNullOrEmpty(transactionId))
+            {
+                _logger.LogError("Transaction ID is null or empty.");
+                return RedirectToAction("Transactions");
+            }
+
+            try
+            {
+                DocumentReference transactionRef = _firestoreDb.Collection("Transactions").Document(transactionId);
+                await transactionRef.DeleteAsync();
+                TempData["SuccessMessage"] = "Transaction deleted successfully."; 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error deleting transaction {transactionId}: {ex.Message}");
+                TempData["ErrorMessage"] = "Error deleting transaction. Please try again."; 
+            }
+
+            return RedirectToAction("Transactions");
+        }
+
         /// <summary>
         /// Adds a Transaction to the database and displays the Transaction View
         /// </summary>
@@ -850,14 +876,32 @@ namespace BudgetingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTransaction(TransactionModel model)
         {
-            // Determine who is currently logged in 
+            // Determine who is currently logged in
             string currentUser = HttpContext.Session.GetString("Username");
 
             if (currentUser == null || currentUser == "")
                 return RedirectToAction("Login", "Auth");
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
+                Console.WriteLine("Model is NOT valid. Here are the errors:");
+                foreach (var modelStateKey in ModelState.Keys)
+                {
+                    var modelStateVal = ModelState[modelStateKey];
+                    if (modelStateVal.Errors.Count > 0)
+                    {
+                        Console.WriteLine($"Key: {modelStateKey}, Errors:");
+                        foreach (var error in modelStateVal.Errors)
+                        {
+                            Console.WriteLine($"- {error.ErrorMessage}");
+                        }
+                    }
+                }
+                return View(model); 
+            }
+            else
+            {
+                Console.WriteLine("Model is valid");
                 model.Username = currentUser;
 
                 CollectionReference transactionsRef = _firestoreDb.Collection(_transactionsCollection);
@@ -867,7 +911,7 @@ namespace BudgetingApp.Controllers
                 model.Date = model.Date.Date + dt.TimeOfDay;
 
                 Dictionary<string, object> newTransactionDocument = new Dictionary<string, object>
-                 {
+                {
                     { "amount", model.Amount },
                     { "date", DateTime.SpecifyKind(model.Date, DateTimeKind.Utc) },
                     { "merchant", model.Merchant},
@@ -877,10 +921,9 @@ namespace BudgetingApp.Controllers
 
                 await transactionsRef.AddAsync(newTransactionDocument);
 
-
                 QuerySnapshot assetSnapshot = await _firestoreDb.Collection(_assetsCollection)
-                    .WhereEqualTo("username", currentUser) 
-                    .Limit(1) 
+                    .WhereEqualTo("username", currentUser)
+                    .Limit(1)
                     .GetSnapshotAsync();
 
                 var assetDocument = assetSnapshot.Documents.FirstOrDefault();
@@ -888,9 +931,7 @@ namespace BudgetingApp.Controllers
                 if (assetDocument != null)
                 {
                     assetDocument.TryGetValue<double>("balance", out var currentBalance);
-
-                    double newBalance = currentBalance - model.Amount; 
-
+                    double newBalance = currentBalance - model.Amount;
                     DocumentReference assetRef = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
                     Dictionary<string, object> updateBalance = new Dictionary<string, object>
                     {
@@ -901,8 +942,6 @@ namespace BudgetingApp.Controllers
 
                 return RedirectToAction("Transactions");
             }
-
-            return View(model);
         }
 
         [HttpGet]

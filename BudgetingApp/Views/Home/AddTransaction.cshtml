@@ -7,7 +7,9 @@
 <h2>Add New Transaction</h2>
 <form asp-controller="Home" asp-action="AddTransaction" method="post" id="new-transaction-form">
     <div class="form-group transaction-form-group">
-        <input type="text" asp-for="Username" value="test" hidden />
+        <input type="text" asp-for="Username" value="temp" hidden />
+        <input type="text" asp-for="DocumentId" value="temp" hidden />
+
         <div class="form-group transaction-input">
             <label asp-for="Date" class="control-label">Date</label>
             <input type="date" asp-for="Date" class="form-control" id="transaction-date" />
