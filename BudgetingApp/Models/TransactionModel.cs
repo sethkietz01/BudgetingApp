@@ -13,6 +13,9 @@ namespace BudgetingApp.Models
         [FirestoreProperty("merchant")]
         public string Merchant {  get; set; }
 
+        [FirestoreProperty("Category")]
+        public string Category { get; set; }
+
         [FirestoreProperty("username")]
         public string Username { get; set; }
     }

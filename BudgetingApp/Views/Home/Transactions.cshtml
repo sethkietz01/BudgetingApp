@@ -12,6 +12,7 @@
             <tr>
                 <th>Date</th>
                 <th>Merchant</th>
+                <th>Category</th>
                 <th>Amount</th>
             </tr>
         </thead>
@@ -21,6 +22,7 @@
                 <tr>
                     <td>@transaction.Date.ToString("d")</td>
                     <td>@transaction.Merchant</td>
+                    <td>@transaction.Category</td>
                     <td>$@transaction.Amount</td>
                 </tr>
             }

@@ -815,6 +815,15 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'merchant' in transaction document {currentSnapshot.Id}");
                     }
 
+                    if (currentSnapshot.TryGetValue<string>("category", out var category))
+                        transaction.Category = category;
+                    else
+                    {
+                        transaction.Category = string.Empty;
+                        _logger.LogWarning($"Unexpected data type for 'category' in transaction document {currentSnapshot.Id}");
+                    }
+
+
                     if (currentSnapshot.TryGetValue<string>("username", out var username))
                         transaction.Username = username;
                     else
@@ -862,6 +871,7 @@ namespace BudgetingApp.Controllers
                     { "amount", model.Amount },
                     { "date", DateTime.SpecifyKind(model.Date, DateTimeKind.Utc) },
                     { "merchant", model.Merchant},
+                    { "category", model.Category },
                     { "username", currentUser }
                 };
 
