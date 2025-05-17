@@ -226,3 +226,12 @@ body {
 #link-button {
     color: black;
 }
+
+.table-centered {
+    margin: auto;
+    width: 400px;
+}
+
+.table-centered td, .table-centered th {
+    font-size: 22px;
+}
