@@ -30,6 +30,14 @@ Here you may set your balance, income, and expenses. Once you have set the value
 What If is designed to be a hypothetical situation calculator. You may edit your balance, income, and expenses in the table and your total expenses and net will automatically update with each keystroke. 
 None of the input data here will be saved to the database, so there is no need to revert any changes.
 
+## Transactions
+![Transactions](Demo%20Screenshots/Transactions.png)
+Transactions are a way to visualize and keep track of non-recurring charges. Here you will see a list of all manually-entered transactions consisting of the transaction date, the merchant name, and the amount cost.
+
+## Add Transaction
+![Add Transactoin](Demo%20Screenshots/Add%20Transaction.png)
+You may add a new transaction by entering the date, merchant name, and amount cost. The amount will automatically be deducted from your balance.
+
 ## Settings
 ![Settings](Demo%20Screenshots/Settings.png)
 Currently, the only setting is to logout of your account. Once you press the logout button, your session will be deleted and you will be redirected to the login page.
