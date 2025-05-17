@@ -12,6 +12,7 @@ namespace BudgetingApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly FirestoreDb _firestoreDb;
         private readonly string _assetsCollection = "Assets";
+        private readonly string _transactionsCollection = "Transactions";
 
 
 
@@ -664,6 +665,131 @@ namespace BudgetingApp.Controllers
         {
             HttpContext.Session.Remove("Username");
             return RedirectToAction("Login", "Auth");
+        }
+
+        public IActionResult AddTransaction()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Transactions()
+        {
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            QuerySnapshot snapshot = await _firestoreDb.Collection("Transactions")
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            List<TransactionModel> transactions = new List<TransactionModel>();
+            foreach (DocumentSnapshot currentSnapshot in snapshot.Documents)
+            {
+                if (currentSnapshot.Exists)
+                {
+                    TransactionModel transaction = new TransactionModel();
+
+                    if (currentSnapshot.TryGetValue<double>("amount", out var amountDouble))
+                        transaction.Amount = amountDouble;
+                    else if (currentSnapshot.TryGetValue<long>("amount", out var amountLong))
+                        transaction.Amount = (double)amountLong;
+                    else
+                    {
+                        transaction.Amount = 0.0;
+                        _logger.LogWarning($"Unexpected data type for 'amount' in transaction document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<DateTime>("date", out var date))
+                        transaction.Date = date;
+                    else
+                    {
+                        transaction.Date = DateTime.Now;
+                        _logger.LogWarning($"Unexpected data type for 'date' in transaction document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<string>("merchant", out var merchant))
+                        transaction.Merchant = merchant;
+                    else
+                    {
+                        transaction.Merchant = string.Empty;
+                        _logger.LogWarning($"Unexpected data type for 'merchant' in transaction document {currentSnapshot.Id}");
+                    }
+
+                    if (currentSnapshot.TryGetValue<string>("username", out var username))
+                        transaction.Username = username;
+                    else
+                    {
+                        transaction.Username = string.Empty;
+                        _logger.LogWarning($"Unexpected data type for 'username' in transaction document {currentSnapshot.Id}");
+                    }
+
+                    transactions.Add(transaction);
+                }
+            }
+
+            // Sort the transactions list by the Date property in descending order
+            transactions = transactions.OrderByDescending(t => t.Date).ToList();
+
+            return View(transactions);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddTransaction(TransactionModel model)
+        {
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            if (currentUser == null || currentUser == "")
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (ModelState.IsValid)
+            {
+                model.Username = currentUser;
+
+                CollectionReference transactionsRef = _firestoreDb.Collection(_transactionsCollection);
+
+                // Keep the user-given date but set the time to now
+                DateTime dt = DateTime.Now;
+                model.Date = model.Date.Date + dt.TimeOfDay;
+
+                Dictionary<string, object> newTransactionDocument = new Dictionary<string, object>
+                 {
+                    { "amount", model.Amount },
+                    { "date", DateTime.SpecifyKind(model.Date, DateTimeKind.Utc) },
+                    { "merchant", model.Merchant},
+                    { "username", currentUser }
+                };
+
+                await transactionsRef.AddAsync(newTransactionDocument);
+
+
+                QuerySnapshot assetSnapshot = await _firestoreDb.Collection(_assetsCollection)
+                    .WhereEqualTo("username", currentUser) 
+                    .Limit(1) 
+                    .GetSnapshotAsync();
+
+                var assetDocument = assetSnapshot.Documents.FirstOrDefault();
+
+                if (assetDocument != null)
+                {
+                    assetDocument.TryGetValue<double>("balance", out var currentBalance);
+
+                    double newBalance = currentBalance - model.Amount; 
+
+                    DocumentReference assetRef = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
+                    Dictionary<string, object> updateBalance = new Dictionary<string, object>
+                    {
+                        { "balance", newBalance }
+                    };
+                    await assetRef.UpdateAsync(updateBalance);
+                }
+
+                return RedirectToAction("Transactions");
+            }
+            return View(model);
         }
     }
 }

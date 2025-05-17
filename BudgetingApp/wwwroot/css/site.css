@@ -196,3 +196,33 @@ body {
     margin-top: 10px;
 }
 
+.transactions-table {
+    color: white;
+}
+
+#submit-new-transaction-button {
+    margin-top: 5px;
+}
+
+#new-transaction-form {
+    gap: 20px
+}
+
+.transaction-form-group {
+    display: flex;
+    width: auto;
+    gap: 30px;
+}
+
+.transaction-button-group {
+    display: flex;
+}
+
+.transaction-input {
+    display: flex;
+    flex-direction: column;
+}
+
+#link-button {
+    color: black;
+}
