@@ -198,6 +198,7 @@ body {
 
 .transactions-table {
     color: white;
+    margin-bottom: 75px;
 }
 
 #submit-new-transaction-button {
@@ -239,4 +240,22 @@ body {
 #nav-bar-list {
     gap: 10px;
     font-size: 16px;
+}
+
+.two-table-group {
+    gap: 50px;
+}
+
+#actual-expenses-summary {
+    font-size: 18px;
+    width: 450px;
+
+}
+
+#actual-expenses-summary tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#actual-expenses-summary tr:last-child {
+    border-bottom: none;
 }

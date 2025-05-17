@@ -1,4 +1,5 @@
 using BudgetingApp.Models;
+using BudgetingApp.Services;
 using Google.Apis.Logging;
 using Google.Apis.Util;
 using Google.Cloud.Firestore;
@@ -14,11 +15,13 @@ namespace BudgetingApp.Controllers
         private readonly FirestoreDb _firestoreDb;
         private readonly string _assetsCollection = "Assets";
         private readonly string _transactionsCollection = "Transactions";
+        private readonly BudgetingApp.Services.IAssetService _assetService;
 
-        public HomeController(ILogger<HomeController> logger, FirestoreDb firestoreDb)
+        public HomeController(ILogger<HomeController> logger, FirestoreDb firestoreDb, IAssetService assetService)
         {
             _logger = logger;
             _firestoreDb = firestoreDb;
+            _assetService = assetService;
         }
 
         /// <summary>
@@ -778,7 +781,7 @@ namespace BudgetingApp.Controllers
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
-            QuerySnapshot snapshot = await _firestoreDb.Collection("Transactions")
+            QuerySnapshot snapshot = await _firestoreDb.Collection(_transactionsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
 
@@ -790,6 +793,11 @@ namespace BudgetingApp.Controllers
                     TransactionModel transaction = new TransactionModel
                     {
                         DocumentId = currentSnapshot.Id,
+                        Amount = 0.0,
+                        Date = DateTime.Now,
+                        Merchant = string.Empty,
+                        Category = string.Empty,
+                        Username = string.Empty
                     };
 
                     if (currentSnapshot.TryGetValue<double>("amount", out var amountDouble))
@@ -841,7 +849,18 @@ namespace BudgetingApp.Controllers
             // Sort the transactions list by the Date property in descending order
             transactions = transactions.OrderByDescending(t => t.Date).ToList();
 
-            return View(transactions);
+            // Retrieve the asset information for the current user
+            AssetModel asset = await _assetService.GetAssetByUsernameAsync(currentUser);
+
+            // Create the ViewModel and populate it
+            var viewModel = new TransactionsAndAssetsViewModel
+            {
+                Transactions = transactions,
+                Asset = asset
+            };
+
+
+            return View(viewModel);
         }
 
         [HttpPost]

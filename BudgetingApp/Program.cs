@@ -1,6 +1,7 @@
 using Google.Cloud.Firestore;
 using Google.Apis.Auth.OAuth2;
-using System.Text.Json; // Required for deserializing JSON from environment variable
+using System.Text.Json; 
+using BudgetingApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,11 +59,13 @@ try
 }
 catch (Exception ex)
 {
-    // Log the error message - crucial for debugging in Azure
     Console.WriteLine($"Error initializing Firestore: {ex.Message}");
 }
 
 builder.Services.AddScoped<UserService>();
+
+// Register your FirestoreAssetService here
+builder.Services.AddScoped<IAssetService, FirestoreAssetService>();
 
 builder.Services.AddAuthentication("Cookies")
     .AddCookie();

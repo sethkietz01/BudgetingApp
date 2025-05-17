@@ -1,13 +1,13 @@
-﻿@model IEnumerable<BudgetingApp.Models.TransactionModel>
+﻿@model BudgetingApp.Models.TransactionsAndAssetsViewModel
 @{
-    ViewData["Title"] = "Transactions";
+    ViewData["Title"] = "Transactions and Assets";
 }
 
 <h1>Transactions</h1>
 
-@if (Model != null && Model.Any())
+@if (Model != null && Model.Transactions.Any())
 {
-    <table class="table transactions-table">
+    <table class="table transactions-table" id="transactions-table">
         <thead>
             <tr>
                 <th>Date</th>
@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var transaction in Model)
+            @foreach (var transaction in Model.Transactions)
             {
                 <tr>
                     <td>@transaction.Date.ToString("d")</td>
@@ -34,11 +34,247 @@
             }
         </tbody>
     </table>
-
 }
 else
 {
     <p>No transactions found.</p>
 }
 
-    <button class="button"><a id="link-button" class="nav-link" asp-area="" asp-controller="Home" asp-action="AddTransaction">Add a Transaction</a></button>
+<div class="assets-table-div two-table-group">
+    <div class="budgeted-expenses-group">
+        <h2>Budgeted Expenses</h2>
+        <table id="assets-table">
+            <thead>
+                <tr>
+                    <th>Balance</th>
+                    <td>$@Model.Asset.Balance</td>
+                </tr>
+                <tr>
+                    <th>Income</th>
+                    <td>+ $@Model.Asset.Income</td>
+                </tr>
+                <tr>
+                    <th>Savings</th>
+                    <td>- $@Model.Asset.Savings</td>
+                </tr>
+                <tr>
+                    <th>Rent</th>
+                    <td>- $@Model.Asset.Rent</td>
+                </tr>
+                <tr>
+                    <th>Utilities</th>
+                    <td>- $@Model.Asset.Utilities</td>
+                </tr>
+                <tr>
+                    <th>Car Payment</th>
+                    <td>- $@Model.Asset.CarPayment</td>
+                </tr>
+                <tr>
+                    <th>Insurances</th>
+                    <td>- $@Model.Asset.Insurances</td>
+                </tr>
+                <tr>
+                    <th>Groceries</th>
+                    <td>- $@Model.Asset.Groceries</td>
+                </tr>
+                <tr>
+                    <th>Gas</th>
+                    <td>- $@Model.Asset.Gas</td>
+                </tr>
+                <tr>
+                    <th>Subscriptions</th>
+                    <td>- $@Model.Asset.Subscriptions</td>
+                </tr>
+                <tr>
+                    <th>Other</th>
+                    <td>- $@Model.Asset.Other</td>
+                </tr>
+                <tr>
+                    <th>Total Expenses</th>
+                    <td id="total-expenses"></td>
+                </tr>
+                <tr>
+                    <th>Net</th>
+                    <td id="net"></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="actual-expenses-group">
+        <h2>Actual Expenses</h2>
+        <table id="actual-expenses-summary">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Count</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="savings-summary">
+                    <td>Savings</td>
+                    <td id="savings-count">0</td>
+                    <td id="savings-total">$0.00</td>
+                </tr>
+                <tr id="rent-summary">
+                    <td>Rent</td>
+                    <td id="rent-count">0</td>
+                    <td id="rent-total">$0.00</td>
+                </tr>
+                <tr id="utilities-summary">
+                    <td>Utilities</td>
+                    <td id="utilities-count">0</td>
+                    <td id="utilities-total">$0.00</td>
+                </tr>
+                <tr id="car-payment-summary">
+                    <td>Car Payment</td>
+                    <td id="car-payment-count">0</td>
+                    <td id="car-payment-total">$0.00</td>
+                </tr>
+                <tr id="insurances-summary">
+                    <td>Insurances</td>
+                    <td id="insurances-count">0</td>
+                    <td id="insurances-total">$0.00</td>
+                </tr>
+                <tr id="groceries-summary">
+                    <td>Groceries</td>
+                    <td id="groceries-count">0</td>
+                    <td id="groceries-total">$0.00</td>
+                </tr>
+                <tr id="gas-summary">
+                    <td>Gas</td>
+                    <td id="gas-count">0</td>
+                    <td id="gas-total">$0.00</td>
+                </tr>
+                <tr id="subscriptions-summary">
+                    <td>Subscriptions</td>
+                    <td id="subscriptions-count">0</td>
+                    <td id="subscriptions-total">$0.00</td>
+                </tr>
+                <tr id="other-summary">
+                    <td>Other</td>
+                    <td id="other-count">0</td>
+                    <td id="other-total">$0.00</td>
+                </tr>
+                <tr id="total-expenses-summary">
+                    <td>Total Expenses</td>
+                    <td id="total-expenses-count">0</td>
+                    <td id="total-expenses-total">$0.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<button class="button"><a id="link-button" class="nav-link" asp-area="" asp-controller="Home" asp-action="AddTransaction">Add a Transaction</a></button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const transactionTable = document.getElementById('transactions-table');
+        const categoryCounts = {};
+        const categoryTotals = {};
+        const possibleCategories = ["Car Payment", "Gas", "Groceries", "Insurances", "Other", "Rent", "Savings", "Subscriptions", "Utilities"];
+
+        possibleCategories.forEach(category => {
+            categoryCounts[category] = 0;
+            categoryTotals[category] = 0;
+        });
+
+        if (transactionTable) {
+            const rows = transactionTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells.length >= 4) {
+                    const category = cells[2].textContent.trim(); 
+                    const amountText = cells[3].textContent.trim().replace('$', '').replace(',', '');
+                    const amount = parseFloat(amountText);
+
+                    if (possibleCategories.includes(category)) {
+                        categoryCounts[category]++;
+                        categoryTotals[category] += amount;
+                    }
+                }
+            }
+
+            console.log("Category Counts:", categoryCounts);
+            console.log("Category Totals:", categoryTotals);
+
+            let totalCount = 0;
+            let totalExpense = 0;
+
+
+            for (const category in categoryCounts) {
+                const categoryId = category.toLowerCase().replace(' ', '-');
+                const countElement = document.getElementById(`${categoryId}-count`);
+                const totalElement = document.getElementById(`${categoryId}-total`);
+
+                if (countElement) {
+                    countElement.textContent = categoryCounts[category];
+                    totalCount += categoryCounts[category];
+                }
+                if (totalElement) {
+                    totalElement.textContent = `$${categoryTotals[category].toFixed(2)}`;
+                    totalExpense += categoryTotals[category];
+                }
+            }
+
+            const totalExpenses = document.getElementById('total-expenses-summary');
+            const totalExpensesCount = document.getElementById('total-expenses-count');
+            const totalExpensesTotal = document.getElementById('total-expenses-total');
+
+            totalExpensesCount.textContent = totalCount;
+            totalExpensesTotal.textContent = `$${totalExpense.toFixed(2)}`;
+
+        } else {
+            console.error("Transactions table with ID 'transactions-table' not found.");
+        }
+
+        const assetTables = document.querySelectorAll('.assets-table-div table');
+        assetTables.forEach(table => {
+            let totalExpenses = 0;
+            let totalIncome = 0;
+            let balance = 0;
+
+            const rows = table.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const header = row.querySelector('th')?.textContent.trim();
+                const valueCell = row.querySelector('td');
+                if (valueCell) {
+                    const valueText = valueCell.textContent.trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); // Extract number
+
+                    if (header === 'Balance')
+                        balance = numericValue;
+                    else if (header === 'Income')
+                        totalIncome += numericValue;
+                    else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
+                        header === 'Subscriptions' || header === 'Other')
+                        totalExpenses += numericValue;
+                    else if (header === 'Total Expenses') {
+                        const totalExpensesCell = row.querySelector('#total-expenses');
+                        if (totalExpensesCell)
+                            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
+                    }
+                    else if (header === 'Net') {
+                        const netCell = row.querySelector('#net');
+                        if (netCell) {
+                            var netAmount = totalIncome - totalExpenses;
+                            if (netAmount < 0) {
+                                netAmount = -1 * netAmount;
+                                netCell.textContent = "- $" + netAmount.toFixed(2);
+                                netCell.style.color = "red";
+                            }
+                            else {
+                                netCell.textContent = "$" + netAmount.toFixed(2);
+                                netCell.style.color = "green";
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
