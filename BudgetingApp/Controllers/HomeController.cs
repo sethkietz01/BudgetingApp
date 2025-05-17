@@ -15,26 +15,33 @@ namespace BudgetingApp.Controllers
         private readonly string _assetsCollection = "Assets";
         private readonly string _transactionsCollection = "Transactions";
 
-
-
         public HomeController(ILogger<HomeController> logger, FirestoreDb firestoreDb)
         {
             _logger = logger;
             _firestoreDb = firestoreDb;
         }
 
+        /// <summary>
+        /// Gets and displays all data from the Asset document for the current user
+        /// </summary>
+        /// <returns>Assets data</returns>
         public async Task<IActionResult> Index()
         {
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
+            // Get the Asset documenet for the current user
             QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
 
             List<AssetModel> assets = new List<AssetModel>();
+
+            // Go through each Asset document (there should only be one)
             foreach (DocumentSnapshot currentSnapshot in snapshot.Documents)
             {
                 if (currentSnapshot.Exists)
@@ -163,20 +170,25 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'username' in document {currentSnapshot.Id}");
                     }
 
+                    // If everything is good, add the asset to the list
                     assets.Add(asset);
                 }
             }
 
-            int count = assets.Count;
-
             return View(assets);
         }
 
+        /// <summary>
+        /// Gets the Assets data for the current user to populate the edit list
+        /// </summary>
+        /// <returns>Assets data for the current user</returns>
         [HttpGet]
         public async Task<IActionResult> EditAssets()
         {
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
@@ -310,18 +322,23 @@ namespace BudgetingApp.Controllers
             }
 
             if (asset == null)
-            {
                 return NotFound();
-            }
 
             return View(asset);
         }
 
+        /// <summary>
+        /// Updates the Asset document for the current user in the database based on the passed AssetModel
+        /// </summary>
+        /// <param name="model">The new Asset data</param>
+        /// <returns>The page with the new Asset data</returns>
         [HttpPost]
         public async Task<IActionResult> EditAssets(AssetModel model)
         {
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (currentUser == null || currentUser == "")
                 return RedirectToAction("Login", "Auth");
 
@@ -489,22 +506,32 @@ namespace BudgetingApp.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// Error logging method
+        /// </summary>
+        /// <returns>The ErrorViewModel with error data</returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        /// <summary>
+        /// Adds a passed amount to the balance in the database
+        /// </summary>
+        /// <param name="amountToAdd">The amount to add to the balance</param>
+        /// <returns>The view with the updated amount</returns>
         [HttpPost]
         public async Task<IActionResult> AddToBalance(int amountToAdd)
         {
-
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
+            // Query the database for the current user's Asset documents 
             QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
@@ -512,9 +539,11 @@ namespace BudgetingApp.Controllers
             if (snapshot.Documents.Count == 0)
                 return NotFound($"No asset document found for user: {currentUser}");
 
+            // Get the user's Asset document
             DocumentSnapshot assetDocument = snapshot.Documents.First();
             DocumentReference assetReference = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
 
+            // Update the balance
             await assetReference.UpdateAsync("balance", FieldValue.Increment(amountToAdd));
 
             return RedirectToAction("Index");
@@ -528,33 +557,44 @@ namespace BudgetingApp.Controllers
 
             Console.WriteLine(amountToSubtract);
 
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
+            // Query the database for the current user's Asset documents 
             QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
 
             if (snapshot.Documents.Count == 0)
                 return NotFound($"No asset document found for user: {currentUser}");
-
+            // Get the user's Asset document
             DocumentSnapshot assetDocument = snapshot.Documents.First();
             DocumentReference assetReference = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
 
+            // Update the balance
             await assetReference.UpdateAsync("balance", FieldValue.Increment(amountToSubtract));
 
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Gets the Asset data for the current user to use in a What If scenario
+        /// </summary>
+        /// <returns>The view with the user's Asset data</returns>
         public async Task<IActionResult> WhatIf()
         {
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
+            // Query the database for the current user's Asset documents 
             QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
@@ -692,16 +732,22 @@ namespace BudgetingApp.Controllers
                 }
             }
 
-            int count = assets.Count;
-
             return View(assets);
         }
 
+        /// <summary>
+        /// Displays the Settings View
+        /// </summary>
+        /// <returns>The Settings View</returns>
         public IActionResult Settings()
         {
             return View();
         }
 
+        /// <summary>
+        /// Removes the users Session and redirects to the login page
+        /// </summary>
+        /// <returns>The Login View</returns>
         [HttpPost]
         public IActionResult Logout()
         {
@@ -709,16 +755,26 @@ namespace BudgetingApp.Controllers
             return RedirectToAction("Login", "Auth");
         }
 
+        /// <summary>
+        /// Displays the AddTransaction View
+        /// </summary>
+        /// <returns>The AddTranscation View</returns>
         public IActionResult AddTransaction()
         {
             return View();
         }
 
+        /// <summary>
+        /// Gets all Transaction data for the current user and displays the Transaction View
+        /// </summary>
+        /// <returns>The Transaction View with all of the user's Transactions</returns>
         [HttpGet]
         public async Task<IActionResult> Transactions()
         {
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
+            // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
@@ -777,15 +833,19 @@ namespace BudgetingApp.Controllers
             return View(transactions);
         }
 
+        /// <summary>
+        /// Adds a Transaction to the database and displays the Transaction View
+        /// </summary>
+        /// <param name="model">The new Transaction data</param>
+        /// <returns>The Transaction View</returns>
         [HttpPost]
         public async Task<IActionResult> AddTransaction(TransactionModel model)
         {
+            // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
 
             if (currentUser == null || currentUser == "")
-            {
                 return RedirectToAction("Login", "Auth");
-            }
 
             if (ModelState.IsValid)
             {
@@ -831,6 +891,7 @@ namespace BudgetingApp.Controllers
 
                 return RedirectToAction("Transactions");
             }
+
             return View(model);
         }
     }
