@@ -37,6 +37,7 @@ public class AuthController : Controller
             if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
             {
                 ViewBag.ErrorMessage = "Please enter both username and password.";
+                ViewBag.IsLoginPage = true;
                 return View();
             }
 
@@ -65,6 +66,7 @@ public class AuthController : Controller
         }
 
         // If authentication fails or model is invalid, return to the login view with an error message
+        ViewBag.IsLoginPage = true;
         return View();
     }
 
@@ -82,6 +84,7 @@ public class AuthController : Controller
             if (existingUserSnapshot.Documents.Count > 0)
             {
                 ViewBag.ErrorMessage = "An account with this username already exists. Please choose a different username.";
+                ViewBag.IsCreateAccountPage = true;
                 return View("Login", model); // Return to the login page with the error
             }
             else
@@ -127,6 +130,7 @@ public class AuthController : Controller
         else
         {
             // If the model is not valid, return to the login page with validation errors
+            ViewBag.IsCreateAccountPage = true;
             return View("Login", model);
         }
     }
