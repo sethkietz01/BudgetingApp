@@ -171,11 +171,11 @@ else
     </div>
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    // Calculates expenses for and poulates both the budgeted expenses table and the actual expenses table
-    document.addEventListener('DOMContentLoaded', function () {
-        const transactionTable = document.getElementById('transactions-table');
+    // Calculates expenses for and poulates both the budgeted expenses table and the actual expenses table 
+    $(document).ready(function () {
+        const $transactionTable = $('#transactions-table');
         const categoryCounts = {};
         const categoryTotals = {};
         const possibleCategories = ["Car Payment", "Gas", "Groceries", "Insurances", "Other", "Rent", "Savings", "Subscriptions", "Utilities"];
@@ -185,111 +185,93 @@ else
             categoryTotals[category] = 0;
         });
 
-        // If the transcation-table exists
-        if (transactionTable) {
+        // If the transcation-table exists 
+        if ($transactionTable.length) {
             // Select all table rows in the first table body from transaction-table
-            const rows = transactionTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            const $rows = $transactionTable.find('tbody tr');
 
-            // For each row in the table
-            for (let i = 0; i < rows.length; i++) {
-                // Get all table data cells
-                const cells = rows[i].getElementsByTagName('td');
+            // For each row in the table 
+            $rows.each(function () {
+                 // Get all table data cells 
+                const $cells = $(this).find('td');
 
-                // If there are 4 or more fields (Date, Merchant, Category, Amount)
-                if (cells.length >= 4) {
-                    // Extract all infomration from the row
-                    const category = cells[2].textContent.trim(); 
-                    const amountText = cells[3].textContent.trim().replace('$', '').replace(',', '');
+                // If there are 4 or more fields (Date, Merchant, Category, Amount) 
+                if ($cells.length >= 4) {
+                    // Extract all infomration from the row 
+                    const category = $cells.eq(2).text().trim();
+                    const amountText = $cells.eq(3).text().trim().replace('$', '').replace(',', '');
                     const amount = parseFloat(amountText);
 
-                    // Update the category count and the category total expense
+                    // Update the category count and the category total expense 
                     if (possibleCategories.includes(category)) {
                         categoryCounts[category]++;
                         categoryTotals[category] += amount;
                     }
                 }
-            }
+            });
 
-            // Variables to calculate the totals for the actual expenses table
+            // Variables to calculate the totals for the actual expenses table 
             let totalCount = 0;
             let totalExpense = 0;
 
-            // For each category
+             // For each category 
             for (const category in categoryCounts) {
                 // Get the HTML elements for the current category 
                 const categoryId = category.toLowerCase().replace(' ', '-');
-                const countElement = document.getElementById(`${categoryId}-count`);
-                const totalElement = document.getElementById(`${categoryId}-total`);
-
-                // Populate the table and update the total count and cost
-                if (countElement) {
-                    countElement.textContent = categoryCounts[category];
+                const $countElement = $(`#${categoryId}-count`);
+                const $totalElement = $(`#${categoryId}-total`);
+                
+                // Populate the table and update the total count and cost 
+                if ($countElement.length) {
+                    $countElement.text(categoryCounts[category]);
                     totalCount += categoryCounts[category];
                 }
-                if (totalElement) {
-                    totalElement.textContent = `$${categoryTotals[category].toFixed(2)}`;
+                if ($totalElement.length) {
+                    $totalElement.text(`$${categoryTotals[category].toFixed(2)}`);
                     totalExpense += categoryTotals[category];
                 }
             }
 
-            const totalExpensesCount = document.getElementById('total-expenses-count');
-            const totalExpensesTotal = document.getElementById('total-expenses-total');
-
-            // Populate the table with the current expenses
-            totalExpensesCount.textContent = totalCount;
-            totalExpensesTotal.textContent = `$${totalExpense.toFixed(2)}`;
+            // Populate the table with the current expenses 
+            $('#total-expenses-count').text(totalCount);
+            $('#total-expenses-total').text(`$${totalExpense.toFixed(2)}`);
 
         } else {
             console.error("Transactions table with ID 'transactions-table' not found.");
         }
 
-        // Calcualte and populate the total expenses and net for the budgeted expenses table
-        const assetTables = document.querySelectorAll('.assets-table-div table');
-
-        // Iterate through each table in the asset tables div
-        assetTables.forEach(table => {
+        // Calculate and populate the total expenses and net for the budgeted expenses table
+        $('.assets-table-div table').each(function () {
+            const $table = $(this);
             let totalExpenses = 0;
             let totalIncome = 0;
+            let balance = 0;
 
-            // Get all table records in the current table
-            const rows = table.querySelectorAll('tr');
+            $table.find('tr').each(function () {
+                const $row = $(this);
+                const header = $row.find('th').text().trim();
+                const $valueCell = $row.find('td');
 
-            // Iterate through each row in the current table
-            rows.forEach(row => {
-                const header = row.querySelector('th')?.textContent.trim(); // Get all table header cells
-                const valueCell = row.querySelector('td');  // Get all table data cells
+                if ($valueCell.length) {
+                    const valueText = $valueCell.text().trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, ''));
 
-                // If a table data cell exists in the current row
-                if (valueCell) {
-                    const valueText = valueCell.textContent.trim();
-                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); 
-
-                    // Determine which expense it is and add or subtract from totalIncome accordingly
-                    if (header === 'Balance')
+                    if (header === 'Balance') {
                         balance = numericValue;
-                    else if (header === 'Income')
+                    } else if (header === 'Income') {
                         totalIncome += numericValue;
-                    else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
-                        header === 'Subscriptions' || header === 'Other')
+                    } else if (['Rent', 'Savings', 'Utilities', 'Car Payment', 'Insurances', 'Groceries', 'Gas', 'Subscriptions', 'Other'].includes(header)) {
                         totalExpenses += numericValue;
-                    else if (header === 'Total Expenses') {
-                        const totalExpensesCell = row.querySelector('#total-expenses');
-                        if (totalExpensesCell)
-                            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
-                    }
-                    else if (header === 'Net') {
-                        const netCell = row.querySelector('#net');
-                        if (netCell) {
-                            var netAmount = totalIncome - totalExpenses;
-                            if (netAmount < 0) {
-                                netAmount = -1 * netAmount;
-                                netCell.textContent = "- $" + netAmount.toFixed(2);
-                                netCell.style.color = "red";
-                            }
-                            else {
-                                netCell.textContent = "$" + netAmount.toFixed(2);
-                                netCell.style.color = "green";
-                            }
+                    } else if (header === 'Total Expenses') {
+                        $row.find('#total-expenses').text(`- $${totalExpenses.toFixed(2)}`);
+                    } else if (header === 'Net') {
+                        let netAmount = totalIncome - totalExpenses;
+                        const $netCell = $row.find('#net');
+                        if (netAmount < 0) {
+                            netAmount = -1 * netAmount;
+                            $netCell.text(`- $${netAmount.toFixed(2)}`).css('color', 'red');
+                        } else {
+                            $netCell.text(`$${netAmount.toFixed(2)}`).css('color', 'green');
                         }
                     }
                 }

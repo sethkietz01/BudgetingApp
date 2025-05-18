@@ -82,73 +82,65 @@
     <div class="add-to-balance-group">
         <label for="amount-to-add">Add to Balance</label>
         <input id="amount-to-add" type="text" placeholder="Type amount here" />
-        <button id="add-to-balance-button" class="button" onclick="sendAmountToAdd()">Submit</button>
+        <button id="add-to-balance-button" class="button">Submit</button>
     </div>
 
     <div class="subtract-from-balance-group"">
         <label for="amount-to-subtract">Subtract from Balance</label>
         <input id="amount-to-subtract" type="text" placeholder="Type amount here" />
-        <button id="subtract-from-balance-button" class="button" onclick="sendAmountToSubtract()">Submit</button>  
+        <button id="subtract-from-balance-button" class="button">Submit</button>
     </div>
 </div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    // Calculate the total expenses and net gain/loss and create a doughnut chart to represent the budgeted expenses
-    document.addEventListener('DOMContentLoaded', function () {
-        const assetTables = document.querySelectorAll('.assets-table-div table');
+    $(document).ready(function () {
+        // Calculate the total expenses and net gain/loss and create a doughnut chart to represent the budgeted expenses
+        const $assetTables = $('.assets-table-div table');
 
         // Iterate through each table in the asset tables div
-        assetTables.forEach(table => {
+        $assetTables.each(function () {
             let totalExpenses = 0;
             let totalIncome = 0;
+            let balance = 0;
 
             const expenseLabels = [];
             const expenseData = [];
 
             // Get all table records in the current table
-            const rows = table.querySelectorAll('tr');
+            const $rows = $(this).find('tr');
 
             // Iterate through each row in the current table
-            rows.forEach(row => {
-                const header = row.querySelector('th')?.textContent.trim(); // Get all table header cells
-                const valueCell = row.querySelector('td');  // Get all table data cells
+            $rows.each(function () {
+                const $headerCell = $(this).find('th'); // Get all table header cells
+                const $valueCell = $(this).find('td');   // Get all table data cells
 
                 // If a table data cell exists in the current row
-                if (valueCell) {
-                    const valueText = valueCell.textContent.trim();
+                if ($valueCell.length) {
+                    const header = $headerCell.text().trim();
+                    const valueText = $valueCell.text().trim();
                     const numericValue = parseFloat(valueText.replace(/[^\d.]/g, ''));
 
                     // Determine which expense it is and add or subtract from totalIncome accordingly
-                    if (header === 'Balance')
+                    if (header === 'Balance') {
                         balance = numericValue;
-                    else if (header === 'Income')
+                    } else if (header === 'Income') {
                         totalIncome += numericValue;
-                    else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
-                        header === 'Subscriptions' || header === 'Other') {
+                    } else if (['Rent', 'Savings', 'Utilities', 'Car Payment', 'Insurances', 'Groceries', 'Gas', 'Subscriptions', 'Other'].includes(header)) {
                         totalExpenses += numericValue;
                         expenseLabels.push(header);
                         expenseData.push(numericValue);
-                    }
-                    else if (header === 'Total Expenses') {
-                        const totalExpensesCell = row.querySelector('#total-expenses');
-                        if (totalExpensesCell)
-                            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
-                    }
-                    else if (header === 'Net') {
-                        const netCell = row.querySelector('#net');
-                        if (netCell) {
-                            var netAmount = totalIncome - totalExpenses;
-                            if (netAmount < 0) {
-                                netAmount = -1 * netAmount;
-                                netCell.textContent = "- $" + netAmount.toFixed(2);
-                                netCell.style.color = "red";
-                            }
-                            else {
-                                netCell.textContent = "$" + netAmount.toFixed(2);
-                                netCell.style.color = "green";
-                            }
+                    } else if (header === 'Total Expenses') {
+                        $valueCell.text(`- $${totalExpenses.toFixed(2)}`);
+                    } else if (header === 'Net') {
+                        let netAmount = totalIncome - totalExpenses;
+                        if (netAmount < 0) {
+                            netAmount = -1 * netAmount;
+                            $valueCell.text(`- $${netAmount.toFixed(2)}`).css('color', 'red');
+                        } else {
+                            $valueCell.text(`$${netAmount.toFixed(2)}`).css('color', 'green');
                         }
                     }
                 }
@@ -164,7 +156,7 @@
                             backgroundColor: [
                                 "red", "orange", "yellow", "green", "cyan", "blue", "indigo", "violet", "magenta"
                             ],
-                            borderColor: [ 
+                            borderColor: [
                                 "black", "black", "black", "black", "black", "black", "black", "black", "black"
                             ],
                             data: expenseData
@@ -176,7 +168,7 @@
                             text: "Cost Breakdown",
                             fontColor: 'white'
                         },
-                        legend: { 
+                        legend: {
                             labels: {
                                 fontColor: 'white',
                                 borderColor: 'black'
@@ -186,69 +178,69 @@
                 });
             }
         });
+
+        // Sends the amount to add to the balance to the appropriate controller
+        $('#add-to-balance-button').on('click', function () {
+            const amountToAddInput = $('#amount-to-add');
+            const amountValue = amountToAddInput.val();
+
+            if (!amountValue.trim()) {
+                alert('Please enter an amount to add.');
+                return;
+            }
+
+            fetch('@Url.Action("AddToBalance", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `amountToAdd=${amountValue}`
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                        console.log('Balance updated successfully!');
+                    } else {
+                        console.error('Failed to update balance.');
+                        alert('Failed to update balance.');
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    alert('An error occurred while updating the balance.');
+                });
+        });
+
+        // Sends the amount to subtract from the balance to the appropriate controller
+        $('#subtract-from-balance-button').on('click', function () {
+            const amountToSubtractInput = $('#amount-to-subtract');
+            const amountValue = amountToSubtractInput.val();
+
+            if (!amountValue.trim()) {
+                alert('Please enter an amount to subtract.');
+                return;
+            }
+
+            fetch('@Url.Action("SubtractFromBalance", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `amountToSubtract=${amountValue}`
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                        console.log('Balance updated successfully!');
+                    } else {
+                        console.error('Failed to update balance.');
+                        alert('Failed to update balance.');
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    alert('An error occurred while updating the balance.');
+                });
+        });
     });
-
-    // Sends the amount to add to the balance to the appropriate controller
-    function sendAmountToAdd() {
-        const amountToAddInput = document.getElementById('amount-to-add');
-        const amountValue = amountToAddInput.value;
-
-        if (!amountValue.trim()) {
-            alert('Please enter an amount to add.');
-            return;
-        }
-
-        fetch('@Url.Action("AddToBalance", "Home")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `amountToAdd=${amountValue}`
-        })
-            .then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                    console.log('Balance updated successfully!');
-                } else {
-                    console.error('Failed to update balance.');
-                    alert('Failed to update balance.');
-                }
-            })
-            .catch(error => {
-                console.error('There was an error:', error);
-                alert('An error occurred while updating the balance.');
-            });
-    }
-
-    // Sends the amount to subtract from the balance to the appropriate controller
-    function sendAmountToSubtract() {
-        const amountToSubtractInput = document.getElementById('amount-to-subtract');
-        const amountValue = amountToSubtractInput.value;
-
-        if (!amountValue.trim()) {
-            alert('Please enter an amount to subtract.');
-            return;
-        }
-
-        fetch('@Url.Action("SubtractFromBalance", "Home")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `amountToSubtract=${amountValue}`
-        })
-            .then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                    console.log('Balance updated successfully!');
-                } else {
-                    console.error('Failed to update balance.');
-                    alert('Failed to update balance.');
-                }
-            })
-            .catch(error => {
-                console.error('There was an error:', error);
-                alert('An error occurred while updating the balance.');
-            });
-    }
 </script>
