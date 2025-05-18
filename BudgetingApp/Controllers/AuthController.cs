@@ -8,7 +8,7 @@ public class AuthController : Controller
 {
     private readonly FirestoreDb _firestoreDb;
     private readonly string _usersCollection = "Users";
-    private readonly string _assetsCollection = "Assets"; // Add the assets collection name
+    private readonly string _assetsCollection = "Assets"; 
 
     public AuthController(FirestoreDb firestoreDb)
     {
@@ -29,11 +29,17 @@ public class AuthController : Controller
         return View();
     }
 
+    /// <summary>
+    /// Validates a login attempt
+    /// </summary>
+    /// <param name="model">The username and password attempted</param>
+    /// <returns>The Dashboard if the attempt is valid, or the login page otherwise</returns>
     [HttpPost]
     public async Task<IActionResult> Login(UserModel model)
     {
         if (ModelState.IsValid)
         {
+            // Ensure both username and password have values
             if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
             {
                 ViewBag.ErrorMessage = "Please enter both username and password.";
@@ -47,12 +53,12 @@ public class AuthController : Controller
                 .Limit(1)
                 .GetSnapshotAsync();
 
-            if (snapshot.Documents.Count > 0)
-            {
+            // If the user exists, verify the password
+            if (snapshot.Documents.Count > 0) {
                 DocumentSnapshot userDocument = snapshot.Documents.First();
                 if (userDocument.TryGetValue<string>("password", out var storedPassword))
-                    if (BCrypt.Net.BCrypt.Verify(model.Password, storedPassword))
-                    {
+                    if (BCrypt.Net.BCrypt.Verify(model.Password, storedPassword)) {
+                        // Successful attempt
                         HttpContext.Session.SetString("Username", model.Username);
                         return RedirectToAction("Index", "Home");
                     }
@@ -70,40 +76,42 @@ public class AuthController : Controller
         return View();
     }
 
+    /// <summary>
+    /// Creates a new account and updates the Firestore with the new account
+    /// </summary>
+    /// <param name="model">The username and password for the account</param>
+    /// <returns>The login page</returns>
     [HttpPost]
     public async Task<IActionResult> CreateAccount(UserModel model)
     {
-        if (ModelState.IsValid)
-        {
-            // **Check if a user with this username already exists**
+        if (ModelState.IsValid) {
+            // Check if a user with this username already exists
             QuerySnapshot existingUserSnapshot = await _firestoreDb.Collection(_usersCollection)
                 .WhereEqualTo("username", model.Username)
                 .Limit(1)
                 .GetSnapshotAsync();
 
-            if (existingUserSnapshot.Documents.Count > 0)
-            {
+            // If the account already exists, redirect to login
+            if (existingUserSnapshot.Documents.Count > 0) {
                 ViewBag.ErrorMessage = "An account with this username already exists. Please choose a different username.";
                 ViewBag.IsCreateAccountPage = true;
-                return View("Login", model); // Return to the login page with the error
+                return View("Login", model); 
             }
-            else
-            {
+            else {
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
+                // Dictionary for Firestore add
                 Dictionary<string, object> newUser = new Dictionary<string, object>
                 {
                     { "username", model.Username },
-                    { "password", hashedPassword } // Store the hashed password
-                    // Add other user details as needed (e.g., email)
+                    { "password", hashedPassword } 
                 };
 
-                try
-                {
+                try {
                     await _firestoreDb.Collection(_usersCollection).AddAsync(newUser);
 
                     // Create a new assets document for the user with default values
-                    string newUsername = model.Username; // Use the username from the created account
+                    string newUsername = model.Username;
                     Dictionary<string, object> newAssetDocument = new Dictionary<string, object>
                     {
                         { "username", newUsername },
@@ -120,10 +128,9 @@ public class AuthController : Controller
                     // Account creation successful, redirect to login page
                     return RedirectToAction("Login");
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     ViewBag.ErrorMessage = $"Error creating account: {ex.Message}";
-                    return View("Login", model); // Return to the login page with the entered data
+                    return View("Login", model);
                 }
             }
         }
