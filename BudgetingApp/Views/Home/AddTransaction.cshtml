@@ -46,13 +46,19 @@
 </form>
 
 <script>
+    // Populate the date input with the current date
     document.addEventListener('DOMContentLoaded', function() {
-        const dateInput = document.getElementById('transaction-date');
+        const dateInput = document.getElementById('transaction-date'); // Get the date input
+
+        // If the date input exists 
         if (dateInput) {
+            // Get today's date
             const today = new Date();
             const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const month = String(today.getMonth() + 1).padStart(2, '0'); 
             const day = String(today.getDate()).padStart(2, '0');
+
+            // Populate date input with today's date
             dateInput.value = `${year}-${month}-${day}`;
         }
     });

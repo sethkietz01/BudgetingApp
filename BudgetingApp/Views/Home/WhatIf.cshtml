@@ -73,63 +73,64 @@
 <p id="what-if-explanation">Click on the amounts to change them and calculate a hypothetical cost without saving your assets</p>
 
 <script>
+    // Get all elements needed for expense calculation
     document.addEventListener('DOMContentLoaded', function () {
-    const whatIfAssetsTable = document.getElementById('what-if-assets-table');
-    const editableValues = whatIfAssetsTable.querySelectorAll('td > div[contenteditable="true"]');
-    const totalExpensesCell = document.getElementById('total-expenses');
-    const netCell = document.getElementById('net');
+        const whatIfAssetsTable = document.getElementById('what-if-assets-table');
+        const editableValues = whatIfAssetsTable.querySelectorAll('td > div[contenteditable="true"]');
+        const totalExpensesCell = document.getElementById('total-expenses');
+        const netCell = document.getElementById('net');
 
-    function recalculateTotals() {
-        let totalExpenses = 0;
-        let totalIncome = 0;
-        let balance = 0;
+        // Calcualte and populate the total expenses and net for the budgeted expenses table
+        function recalculateTotals() {
+            let totalExpenses = 0;
+            let totalIncome = 0;
 
-        const rows = whatIfAssetsTable.querySelectorAll('tr');
-        rows.forEach(row => {
-            const header = row.querySelector('th')?.textContent.trim();
-            const valueCell = row.querySelector('td');
+            const rows = whatIfAssetsTable.querySelectorAll('tr');
+            rows.forEach(row => {
+                const header = row.querySelector('th')?.textContent.trim();
+                const valueCell = row.querySelector('td');
 
-            if (valueCell) {
-                const editableDiv = valueCell.querySelector('div[contenteditable="true"]');
-                let valueText = editableDiv ? editableDiv.textContent.trim() : valueCell.textContent.trim();
-                const numericValue = parseFloat(valueText.replace(/[^\d.-]/g, '')) || 0; 
+                if (valueCell) {
+                    const editableDiv = valueCell.querySelector('div[contenteditable="true"]');
+                    let valueText = editableDiv ? editableDiv.textContent.trim() : valueCell.textContent.trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.-]/g, '')) || 0; 
 
-                if (header === 'Balance') {
-                    balance = numericValue;
-                } else if (header === 'Income') {
-                    totalIncome += numericValue;
-                } else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
-                    header === 'Subscriptions' || header === 'Other') {
-                    totalExpenses += numericValue;
+                    if (header === 'Balance') {
+                        balance = numericValue;
+                    } else if (header === 'Income') {
+                        totalIncome += numericValue;
+                    } else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
+                        header === 'Subscriptions' || header === 'Other') {
+                        totalExpenses += numericValue;
+                    }
+                }
+            });
+
+            if (totalExpensesCell) {
+                totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
+            }
+
+            if (netCell) {
+                var netAmount = totalIncome - totalExpenses;
+                if (netAmount < 0)
+                {
+                    netAmount = -1 * netAmount;
+                    netCell.textContent = "- $" + netAmount.toFixed(2);
+                    netCell.style.color = "red";
+                }
+                else
+                {
+                    netCell.textContent = "$" + netAmount.toFixed(2);
+                    netCell.style.color = "green";
                 }
             }
+        }
+
+        editableValues.forEach(editableDiv => {
+            editableDiv.addEventListener('input', recalculateTotals);
         });
 
-        if (totalExpensesCell) {
-            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
-        }
-
-        if (netCell) {
-            var netAmount = totalIncome - totalExpenses;
-            if (netAmount < 0)
-            {
-                netAmount = -1 * netAmount;
-                netCell.textContent = "- $" + netAmount.toFixed(2);
-                netCell.style.color = "red";
-            }
-            else
-            {
-                netCell.textContent = "$" + netAmount.toFixed(2);
-                netCell.style.color = "green";
-            }
-        }
-    }
-
-    editableValues.forEach(editableDiv => {
-        editableDiv.addEventListener('input', recalculateTotals);
+        // Initial calculation on page load
+        recalculateTotals();
     });
-
-    // Initial calculation on page load
-    recalculateTotals();
-});
 </script>

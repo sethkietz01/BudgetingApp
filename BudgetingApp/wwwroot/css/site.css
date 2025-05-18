@@ -198,7 +198,6 @@ body {
 
 .transactions-table {
     color: white;
-    margin-bottom: 75px;
 }
 
 #submit-new-transaction-button {
@@ -258,4 +257,8 @@ body {
 
 #actual-expenses-summary tr:last-child {
     border-bottom: none;
+}
+
+#add-transaction-button {
+    margin-bottom: 75px;
 }

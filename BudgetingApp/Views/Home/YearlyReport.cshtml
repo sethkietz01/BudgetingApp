@@ -70,23 +70,29 @@
 </div>
 
 <script>
+    // Calcualte and populate the total expenses and net for the budgeted expenses table
     document.addEventListener('DOMContentLoaded', function () {
         const assetTables = document.querySelectorAll('.assets-table-div table');
 
+        // Iterate through each table in the asset tables div
         assetTables.forEach(table => {
             let totalExpenses = 0;
             let totalIncome = 0;
 
+            // Get all table records in the current table
             const rows = table.querySelectorAll('tr');
 
+            // Iterate through each row in the current table
             rows.forEach(row => {
                 const header = row.querySelector('th')?.textContent.trim();
                 const valueCell = row.querySelector('td');
 
+                // If a table data cell exists in the current row
                 if (valueCell) {
                     const valueText = valueCell.textContent.trim();
                     const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); // Extract number
 
+                    // Determine which expense it is and add or subtract from totalIncome accordingly
                     if (header === 'Balance')
                         balance = numericValue;
                     else if (header === 'Income')

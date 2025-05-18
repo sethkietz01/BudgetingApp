@@ -40,6 +40,9 @@ else
     <p>No transactions found.</p>
 }
 
+<button id="add-transaction-button" class="button"><a id="link-button" class="nav-link" asp-area="" asp-controller="Home" asp-action="AddTransaction">Add a Transaction</a></button>
+
+
 <div class="assets-table-div two-table-group">
     <div class="budgeted-expenses-group">
         <h2>Budgeted Expenses</h2>
@@ -167,9 +170,9 @@ else
     </div>
 </div>
 
-<button class="button"><a id="link-button" class="nav-link" asp-area="" asp-controller="Home" asp-action="AddTransaction">Add a Transaction</a></button>
 
 <script>
+    // Calculates expenses for and poulates both the budgeted expenses table and the actual expenses table
     document.addEventListener('DOMContentLoaded', function () {
         const transactionTable = document.getElementById('transactions-table');
         const categoryCounts = {};
@@ -181,16 +184,24 @@ else
             categoryTotals[category] = 0;
         });
 
+        // If the transcation-table exists
         if (transactionTable) {
+            // Select all table rows in the first table body from transaction-table
             const rows = transactionTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
+            // For each row in the table
             for (let i = 0; i < rows.length; i++) {
+                // Get all table data cells
                 const cells = rows[i].getElementsByTagName('td');
+
+                // If there are 4 or more fields (Date, Merchant, Category, Amount)
                 if (cells.length >= 4) {
+                    // Extract all infomration from the row
                     const category = cells[2].textContent.trim(); 
                     const amountText = cells[3].textContent.trim().replace('$', '').replace(',', '');
                     const amount = parseFloat(amountText);
 
+                    // Update the category count and the category total expense
                     if (possibleCategories.includes(category)) {
                         categoryCounts[category]++;
                         categoryTotals[category] += amount;
@@ -198,18 +209,18 @@ else
                 }
             }
 
-            console.log("Category Counts:", categoryCounts);
-            console.log("Category Totals:", categoryTotals);
-
+            // Variables to calculate the totals for the actual expenses table
             let totalCount = 0;
             let totalExpense = 0;
 
-
+            // For each category
             for (const category in categoryCounts) {
+                // Get the HTML elements for the current category 
                 const categoryId = category.toLowerCase().replace(' ', '-');
                 const countElement = document.getElementById(`${categoryId}-count`);
                 const totalElement = document.getElementById(`${categoryId}-total`);
 
+                // Populate the table and update the total count and cost
                 if (countElement) {
                     countElement.textContent = categoryCounts[category];
                     totalCount += categoryCounts[category];
@@ -220,10 +231,10 @@ else
                 }
             }
 
-            const totalExpenses = document.getElementById('total-expenses-summary');
             const totalExpensesCount = document.getElementById('total-expenses-count');
             const totalExpensesTotal = document.getElementById('total-expenses-total');
 
+            // Populate the table with the current expenses
             totalExpensesCount.textContent = totalCount;
             totalExpensesTotal.textContent = `$${totalExpense.toFixed(2)}`;
 
@@ -231,21 +242,28 @@ else
             console.error("Transactions table with ID 'transactions-table' not found.");
         }
 
+        // Calcualte and populate the total expenses and net for the budgeted expenses table
         const assetTables = document.querySelectorAll('.assets-table-div table');
+
+        // Iterate through each table in the asset tables div
         assetTables.forEach(table => {
             let totalExpenses = 0;
             let totalIncome = 0;
-            let balance = 0;
 
+            // Get all table records in the current table
             const rows = table.querySelectorAll('tr');
 
+            // Iterate through each row in the current table
             rows.forEach(row => {
-                const header = row.querySelector('th')?.textContent.trim();
-                const valueCell = row.querySelector('td');
+                const header = row.querySelector('th')?.textContent.trim(); // Get all table header cells
+                const valueCell = row.querySelector('td');  // Get all table data cells
+
+                // If a table data cell exists in the current row
                 if (valueCell) {
                     const valueText = valueCell.textContent.trim();
-                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); // Extract number
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); 
 
+                    // Determine which expense it is and add or subtract from totalIncome accordingly
                     if (header === 'Balance')
                         balance = numericValue;
                     else if (header === 'Income')

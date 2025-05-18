@@ -95,10 +95,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script>
-
+    // Calculate the total expenses and net gain/loss and create a doughnut chart to represent the budgeted expenses
     document.addEventListener('DOMContentLoaded', function () {
         const assetTables = document.querySelectorAll('.assets-table-div table');
 
+        // Iterate through each table in the asset tables div
         assetTables.forEach(table => {
             let totalExpenses = 0;
             let totalIncome = 0;
@@ -106,15 +107,20 @@
             const expenseLabels = [];
             const expenseData = [];
 
+            // Get all table records in the current table
             const rows = table.querySelectorAll('tr');
 
+            // Iterate through each row in the current table
             rows.forEach(row => {
-                const header = row.querySelector('th')?.textContent.trim();
-                const valueCell = row.querySelector('td');
+                const header = row.querySelector('th')?.textContent.trim(); // Get all table header cells
+                const valueCell = row.querySelector('td');  // Get all table data cells
+
+                // If a table data cell exists in the current row
                 if (valueCell) {
                     const valueText = valueCell.textContent.trim();
                     const numericValue = parseFloat(valueText.replace(/[^\d.]/g, ''));
 
+                    // Determine which expense it is and add or subtract from totalIncome accordingly
                     if (header === 'Balance')
                         balance = numericValue;
                     else if (header === 'Income')
@@ -125,25 +131,21 @@
                         expenseLabels.push(header);
                         expenseData.push(numericValue);
                     }
-                    else if (header === 'Total Expenses')
-                    {
+                    else if (header === 'Total Expenses') {
                         const totalExpensesCell = row.querySelector('#total-expenses');
                         if (totalExpensesCell)
                             totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
                     }
                     else if (header === 'Net') {
                         const netCell = row.querySelector('#net');
-                        if (netCell)
-                        {
+                        if (netCell) {
                             var netAmount = totalIncome - totalExpenses;
-                            if (netAmount < 0)
-                            {
+                            if (netAmount < 0) {
                                 netAmount = -1 * netAmount;
                                 netCell.textContent = "- $" + netAmount.toFixed(2);
                                 netCell.style.color = "red";
                             }
-                            else
-                            {
+                            else {
                                 netCell.textContent = "$" + netAmount.toFixed(2);
                                 netCell.style.color = "green";
                             }
@@ -152,6 +154,7 @@
                 }
             });
 
+            // Create the doughnut chart
             if (expenseLabels.length > 0) {
                 new Chart("assetsChart", {
                     type: "doughnut",
@@ -185,58 +188,7 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const assetTables = document.querySelectorAll('.assets-table-div table');
-
-        assetTables.forEach(table => {
-            let totalExpenses = 0;
-            let totalIncome = 0;
-
-            const rows = table.querySelectorAll('tr');
-
-            rows.forEach(row => {
-                const header = row.querySelector('th')?.textContent.trim();
-                const valueCell = row.querySelector('td');
-                if (valueCell) {
-                    const valueText = valueCell.textContent.trim();
-                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); // Extract number
-
-                    if (header === 'Balance') 
-                        balance = numericValue;
-                    else if (header === 'Income') 
-                        totalIncome += numericValue;
-                    else if (header === 'Rent' || header === 'Savings' || header === 'Utilities' || header === 'Car Payment' || header === 'Insurances' || header === 'Groceries' || header === 'Gas' ||
-                        header === 'Subscriptions' || header === 'Other') 
-                        totalExpenses += numericValue;
-                    else if (header === 'Total Expenses') 
-                    {
-                        const totalExpensesCell = row.querySelector('#total-expenses');
-                        if (totalExpensesCell) 
-                            totalExpensesCell.textContent = "- $" + totalExpenses.toFixed(2);
-                    } 
-                    else if (header === 'Net') {
-                        const netCell = row.querySelector('#net');
-                        if (netCell) 
-                        {
-                            var netAmount = totalIncome - totalExpenses;
-                            if (netAmount < 0) 
-                            { 
-                                netAmount = -1 * netAmount;
-                                netCell.textContent = "- $" + netAmount.toFixed(2);
-                                netCell.style.color = "red";
-                            }
-                            else
-                            {
-                                netCell.textContent = "$" + netAmount.toFixed(2);
-                                netCell.style.color = "green";
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    });
-
+    // Sends the amount to add to the balance to the appropriate controller
     function sendAmountToAdd() {
         const amountToAddInput = document.getElementById('amount-to-add');
         const amountValue = amountToAddInput.value;
@@ -268,6 +220,7 @@
             });
     }
 
+    // Sends the amount to subtract from the balance to the appropriate controller
     function sendAmountToSubtract() {
         const amountToSubtractInput = document.getElementById('amount-to-subtract');
         const amountValue = amountToSubtractInput.value;
