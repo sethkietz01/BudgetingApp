@@ -32,11 +32,16 @@ None of the input data here will be saved to the database, so there is no need t
 
 ## Transactions
 ![Transactions](Demo%20Screenshots/Transactions.png)
-Transactions are a way to visualize and keep track of non-recurring charges. Here you will see a list of all manually-entered transactions consisting of the transaction date, the merchant name, and the amount cost.
+Transactions are a way to visualize and keep track of non-recurring charges. Here you will see a list of all manually-entered transactions consisting of the transaction date, the merchant name, and the amount cost. 
+You will also see your budgeted vs actual expenses based on your transaction history to help you see if you are staying within or exceeding your budget for each category.
 
 ## Add Transaction
-![Add Transactoin](Demo%20Screenshots/Add%20Transaction.png)
+![Add Transaction](Demo%20Screenshots/Add%20Transaction.png)
 You may add a new transaction by entering the date, merchant name, and amount cost. The amount will automatically be deducted from your balance.
+
+## Yearly Report
+![Yearly Report](Demo%20Screenshots/Yearly%20Report.png)
+Here you can see a yearly report of your budgeted expenses instead of a monthly view. Programmatically, it simply multiplies each expense by 12 before displaying it in the table.
 
 ## Settings
 ![Settings](Demo%20Screenshots/Settings.png)
@@ -47,4 +52,4 @@ Currently, the only setting is to logout of your account. Once you press the log
 Here is a basic flowchart for the application in the primary scenario.
 
 # Technology Stack
-This application is written in C# using .NET 8 MVC architecture for back-end design and HTML/CSS and vanilla JavaScript for front-end design. The project is coded in Visual Studio Community 2022 on a Windows 10 machine. NuGet packages BCrypt.Net-Netx (for hashing passwords) and Google.Cloud.Firestore (for interacting with the Firebase) are necessary to build the project. The database is a No-SQL Cloud Firestore and the project is hosted on Azure Web Apps.
+This application is written in C# using .NET 8 MVC architecture for back-end design and HTML/CSS and vanilla JavaScript for front-end design. The project is coded in Visual Studio Community 2022 on a Windows 10 machine. NuGet packages BCrypt.Net-Next (for hashing passwords) and Google.Cloud.Firestore (for interacting with the Firebase) are necessary to build the project. The database is a No-SQL Cloud Firestore and the project is hosted on Azure Web Apps.
