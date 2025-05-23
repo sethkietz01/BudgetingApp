@@ -17,8 +17,8 @@ If you do not have an account, you can create one here.
 
 ## Dashboard
 ![Dashboard](Demo%20Screenshots/Dashboard.png)
-After you login, you will be taken to the Dashboard. Here you will find a read-only table that includes your overall balance, your income and monthly expenses, and net monthly gain or loss (income - expenses).
-A Chart.js Doughnut Chart is provided to give a visual representation of your monthly expenses.
+After you login, you will be taken to the Dashboard. Here you will find a read-only table that includes your overall balance, your income and expenses, and net gain or loss (income - expenses) per month and per year.
+A Chart.js Doughnut Chart is provided to give a visual representation of your monthlyexpenses.
 You may add or subtract money directly to or from the balance.
 
 ## Edit Assets
@@ -38,10 +38,6 @@ You will also see your budgeted vs actual expenses based on your transaction his
 ## Add Transaction
 ![Add Transaction](Demo%20Screenshots/Add%20Transaction.png)
 You may add a new transaction by entering the date, merchant name, and amount cost. The amount will automatically be deducted from your balance.
-
-## Yearly Report
-![Yearly Report](Demo%20Screenshots/Yearly%20Report.png)
-Here you can see a yearly report of your budgeted expenses instead of a monthly view. Programmatically, it simply multiplies each expense by 12 before displaying it in the table.
 
 ## Settings
 ![Settings](Demo%20Screenshots/Settings.png)
