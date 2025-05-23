@@ -1,5 +1,5 @@
 # Project Overview
-This project is a budgeting app used to track monthly expenses, income, and current balance to calculate the net gain or loss per month. It is written in C#, .NET 8, MVC architecture using HTML/CSS/JavaScript for front-end design. Firebase is used for datastores and the application is hosted on Azure Web Apps.
+This project is a budgeting app used to track monthly expenses, income, and current balance to calculate the net gain or loss per month. It is written in C# .NET 8 MVC architecture using HTML/CSS/JavaScript for front-end design. Firebase is used for datastores and the application is hosted on Azure Web Apps.
 
 # Getting Started
 The most recent publish may be viewed here: https://budgetingapp41674.azurewebsites.net
@@ -52,4 +52,4 @@ Currently, the only setting is to logout of your account. Once you press the log
 Here is a basic flowchart for the application in the primary scenario.
 
 # Technology Stack
-This application is written in C# using .NET 8 MVC architecture for back-end design and HTML/CSS and vanilla JavaScript for front-end design. The project is coded in Visual Studio Community 2022 on a Windows 10 machine. NuGet packages BCrypt.Net-Next (for hashing passwords) and Google.Cloud.Firestore (for interacting with the Firebase) are necessary to build the project. The database is a No-SQL Cloud Firestore and the project is hosted on Azure Web Apps.
+This application is written in C# using .NET 8 MVC architecture for back-end design and HTML/CSS and JavaScript using jQuery for front-end design. The project is coded in Visual Studio Community 2022 on a Windows 10 machine. NuGet packages BCrypt.Net-Next (for hashing passwords) and Google.Cloud.Firestore (for interacting with the Firebase) are necessary to build the project. The database is a No-SQL Cloud Firestore and the project is hosted on Azure Web Apps.
