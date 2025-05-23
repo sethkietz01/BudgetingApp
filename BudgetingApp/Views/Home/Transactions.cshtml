@@ -175,6 +175,9 @@ else
 <script>
     // Calculates expenses for and poulates both the budgeted expenses table and the actual expenses table 
     $(document).ready(function () {
+        // Set the link color to gold
+        $('#transactions-link').css('color', '#fed66d');
+
         const $transactionTable = $('#transactions-table');
         const categoryCounts = {};
         const categoryTotals = {};

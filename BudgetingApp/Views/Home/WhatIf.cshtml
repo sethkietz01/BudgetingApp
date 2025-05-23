@@ -74,6 +74,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Set the link color to gold
+        $('#what-if-link').css('color', '#fed66d');
+
         const $whatIfAssetsTable = $('#what-if-assets-table');
         const $editableValues = $whatIfAssetsTable.find('td > div[contenteditable="true"]');
         const $totalExpensesCell = $('#total-expenses');

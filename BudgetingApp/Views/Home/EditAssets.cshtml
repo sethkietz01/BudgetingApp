@@ -10,54 +10,67 @@
 <form asp-controller="Home" asp-action="EditAssets" method="post">
     <div class="edit-assets-form">
 
-        <label for="Balance">Balance</label>
-        <input id="balance-input" class="asset-input" type="text" asp-for="Balance" />
-        <span asp-validation-for="Balance" class="text-danger"></span>
+        <div class="edit-group-one">
+            <label for="Balance">Balance</label>
+            <input id="balance-input" class="asset-input" type="text" asp-for="Balance" />
+            <span asp-validation-for="Balance" class="text-danger"></span>
 
-        <label for="Income">Income</label>
-        <input id="income-input" class="asset-input" type="text" asp-for="Income" />
-        <span asp-validation-for="Income" class="text-danger"></span>
+            <label for="Income">Income</label>
+            <input id="income-input" class="asset-input" type="text" asp-for="Income" />
+            <span asp-validation-for="Income" class="text-danger"></span>
 
-        <label for="Savings">Savings</label>
-        <input id="savings-input" class="savings-input" type="text" asp-for="Savings" />
-        <span asp-validation-for="Savings" class="text-danger"></span>
+            <label for="Savings">Savings</label>
+            <input id="savings-input" class="savings-input" type="text" asp-for="Savings" />
+            <span asp-validation-for="Savings" class="text-danger"></span>
 
-        <label for="Rent">Rent</label>
-        <input id="rent-input" class="asset-input" type="text" asp-for="Rent" />
-        <span asp-validation-for="Rent" class="text-danger"></span>
+            <label for="Rent">Rent</label>
+            <input id="rent-input" class="asset-input" type="text" asp-for="Rent" />
+            <span asp-validation-for="Rent" class="text-danger"></span>
 
-        <label for="Utilities">Utilities</label>
-        <input id="utilities-input" class="asset-input" type="text" asp-for="Utilities"  />
-        <span asp-validation-for="Utilities" class="text-danger"></span>
+            <label for="Utilities">Utilities</label>
+            <input id="utilities-input" class="asset-input" type="text" asp-for="Utilities"  />
+            <span asp-validation-for="Utilities" class="text-danger"></span>
 
-        <label for="CarPayment">Car Payment</label>
-        <input id="car-payment-input" class="asset-input" type="text" asp-for="CarPayment"  />
-        <span asp-validation-for="CarPayment" class="text-danger"></span>
+            <label for="CarPayment">Car Payment</label>
+            <input id="car-payment-input" class="asset-input" type="text" asp-for="CarPayment"  />
+            <span asp-validation-for="CarPayment" class="text-danger"></span>
 
-        <label for="Insurances">Insurances</label>
-        <input id="insurances-input" class="asset-input" type="text" asp-for="Insurances"  />
-        <span asp-validation-for="Insurances" class="text-danger"></span>
+            <div class="edit-assets-button-group">
+                <button type="submit" id="submit-assets-button" class="edit-assets-button button">Submit</button>
+            </div>
+        </div>
+        <div class="edit-group-two">
+            <label for="Insurances">Insurances</label>
+            <input id="insurances-input" class="asset-input" type="text" asp-for="Insurances"  />
+            <span asp-validation-for="Insurances" class="text-danger"></span>
 
-        <label for="Groceries">Groceries</label>
-        <input id="groceries-input" class="asset-input" type="text" asp-for="Groceries" />
-        <span asp-validation-for="Groceries" class="text-danger"></span>
+            <label for="Groceries">Groceries</label>
+            <input id="groceries-input" class="asset-input" type="text" asp-for="Groceries" />
+            <span asp-validation-for="Groceries" class="text-danger"></span>
 
-        <label for="Gas">Gas</label>
-        <input id="gas-input" class="asset-input" type="text" asp-for="Gas" />
-        <span asp-validation-for="Gas" class="text-danger"></span>
+            <label for="Gas">Gas</label>
+            <input id="gas-input" class="asset-input" type="text" asp-for="Gas" />
+            <span asp-validation-for="Gas" class="text-danger"></span>
 
-        <label for="Subscriptions">Subscriptions</label>
-        <input id="subscriptions-input" class="asset-input" type="text" asp-for="Subscriptions" />
-        <span asp-validation-for="Subscriptions" class="text-danger"></span>
+            <label for="Subscriptions">Subscriptions</label>
+            <input id="subscriptions-input" class="asset-input" type="text" asp-for="Subscriptions" />
+            <span asp-validation-for="Subscriptions" class="text-danger"></span>
 
-        <label for="Other">Other</label>
-        <input id="other-input" class="asset-input" type="text" asp-for="Other" />
-        <span asp-validation-for="Other" class="text-danger"></span>
+            <label for="Other">Other</label>
+            <input id="other-input" class="asset-input" type="text" asp-for="Other" />
+            <span asp-validation-for="Other" class="text-danger"></span>
+        </div>
 
         <input type="hidden" asp-for="Username" value="@Context.Session.GetString("Username")" />
 
-        <div class="edit-assets-button-group">
-            <button type="submit" id="submit-assets-button" class="edit-assets-button button">Submit</button>
-        </div>
+        
     </div>
 </form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Set the link color to gold
+        $('#edit-link').css('color', '#fed66d');
+    });
+</script>

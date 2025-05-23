@@ -45,9 +45,13 @@
     </div>
 </form>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     // Populate the date input with the current date
     document.addEventListener('DOMContentLoaded', function() {
+        // Set the link color to gold
+        $('#transactions-link').css('color', '#fed66d');
+
         const dateInput = document.getElementById('transaction-date'); // Get the date input
 
         // If the date input exists 

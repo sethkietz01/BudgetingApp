@@ -8,7 +8,10 @@
     <h1 class="display-4">View Assets</h1>
 </div>
 
-<h3>Monthly Expenses</h3>
+<div class="label-headers">
+    <h3>Monthly Expenses</h3>
+    <h3>Yearly Expenses</h3>
+</div>
 
 <div class="assets-table-div">
 
@@ -72,10 +75,73 @@
         </thead>
     </table>
 
+    <div class="yearly-assets-table-div">
+
+        <table id="yearly-assets-table">
+            <thead>
+                @foreach (var asset in Model)
+                {
+                    <tr>
+                        <td>$@(asset.Balance * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Income</th>
+                        <td>+ $@(asset.Income * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Savings</th>
+                        <td>- $@(asset.Savings * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Rent</th>
+                        <td>- $@(asset.Rent * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Utilities</th>
+                        <td>- $@(asset.Utilities * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Car Payment</th>
+                        <td>- $@(asset.CarPayment * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Insurances</th>
+                        <td>- $@(asset.Insurances * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Groceries</th>
+                        <td>- $@(asset.Groceries * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Gas</th>
+                        <td>- $@(asset.Gas * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Subscriptions</th>
+                        <td>- $@(asset.Subscriptions * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Other</th>
+                        <td>- $@(asset.Other * 12)</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Total Expenses</th>
+                        <td id="yearly-total-expenses">- $</td>
+                    </tr>
+                    <tr>
+                        <th hidden>Net</th>
+                        <td id="yearly-net">$</td>
+                    </tr>
+                }
+            </thead>
+        </table>
+    </div>
 
     <div class="assets-chart-group">
         <canvas id="assetsChart"></canvas>
     </div>
+
+   
 </div>
 
 <div class="form-buttons">
@@ -97,6 +163,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Set the link color to gold
+        $('#home-link').css('color', '#fed66d');
+
         // Calculate the total expenses and net gain/loss and create a doughnut chart to represent the budgeted expenses
         const $assetTables = $('.assets-table-div table');
 
@@ -166,17 +235,63 @@
                         title: {
                             display: true,
                             text: "Cost Breakdown",
-                            fontColor: 'white'
+                            fontColor: 'black'
                         },
                         legend: {
                             labels: {
-                                fontColor: 'white',
+                                fontColor: 'black',
                                 borderColor: 'black'
                             }
                         }
                     }
                 });
             }
+        });
+
+        // Iterate through each table in the asset tables div
+        $('.yearly-assets-table-div table').each(function() {
+            let totalExpenses = 0;
+            let totalIncome = 0;
+
+            // Get all table records in the current table
+            const $table = $(this);
+            const $rows = $table.find('tr');
+
+            // Iterate through each row in the current table
+            $rows.each(function() {
+                const $row = $(this);
+                const header = $row.find('th').text().trim();
+                const $valueCell = $row.find('td');
+
+                // If a table data cell exists in the current row
+                if ($valueCell.length) {
+                    const valueText = $valueCell.text().trim();
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')); // Extract number
+
+                    // Determine which expense it is and add or subtract from totalIncome accordingly
+                    if (header === 'Balance')
+                        balance = numericValue;
+                    else if (header === 'Income')
+                        totalIncome += numericValue;
+                    else if (['Rent', 'Savings', 'Utilities', 'Car Payment', 'Insurances', 'Groceries', 'Gas', 'Subscriptions', 'Other'].includes(header))
+                    {
+                        totalExpenses += numericValue;
+                        console.log(numericValue);
+                    }
+                    else if (header === 'Total Expenses')
+                        $row.find('#yearly-total-expenses').text('- $' + totalExpenses.toFixed(2));
+                    else if (header === 'Net') {
+                        const $netCell = $row.find('#yearly-net');
+                        const netAmount = totalIncome - totalExpenses;
+                        $netCell.text('$' + netAmount.toFixed(2));
+
+                        if (netAmount < 0)
+                            $netCell.css('color', 'red');
+                        else
+                            $netCell.css('color', 'green');
+                    }
+                }
+            });
         });
 
         // Sends the amount to add to the balance to the appropriate controller

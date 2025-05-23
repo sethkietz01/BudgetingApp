@@ -16,8 +16,8 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: #303030;
-    color: white;
+    background-color: whitesmoke;
+    color: black;
 }
 
 .login {
@@ -40,7 +40,8 @@ body {
 
 .edit-assets-form {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    gap: 50px;
 }
 
 .edit-assets-form label, .edit-assets-form input {
@@ -123,7 +124,26 @@ body {
     border-bottom: none; 
 }
 
+#yearly-assets-table {
+    font-size:18px;
+    width: 150px;
+}
+
+#yearly-assets-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#yearly-assets-table tr:last-child {
+    border-bottom: none; 
+}
+
+.label-headers {
+    display: flex;
+    gap: 100px;
+}
+
 .assets-chart-group {
+    margin-left: 75px;  
     width: 50%;
 }
 
@@ -151,17 +171,23 @@ body {
 }
 
 .navbar {
-    background-color: #202020;
-    color: white;
+    background-color: #560789;
+    border-bottom: 2px solid #fed66d !important;
 }
 
+    
+
 .navbar-brand {
-    color: white;
+    color: #fed66d;
 }
 
 .nav-link {
-    color: white;
+    color: whitesmoke;
 }
+
+    .nav-link:hover, .navbar-brand:hover {
+        color: #f9c744;
+    }
 
 #what-if-assets-table {
     font-size: 22px;
@@ -197,7 +223,7 @@ body {
 }
 
 .transactions-table {
-    color: white;
+    color: black;
 }
 
 #submit-new-transaction-button {
@@ -243,6 +269,7 @@ body {
 
 .two-table-group {
     gap: 50px;
+    justify-content: center;
 }
 
 #actual-expenses-summary {
@@ -261,4 +288,9 @@ body {
 
 #add-transaction-button {
     margin-bottom: 75px;
+}
+
+.edit-group-one, .edit-group-two {
+    display: flex;
+    flex-direction: column;
 }
