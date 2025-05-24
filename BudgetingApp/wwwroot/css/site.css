@@ -18,6 +18,14 @@ body {
     margin-bottom: 60px;
     background-color: whitesmoke;
     color: black;
+    background-image: url('../../Resources/Images/marble.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: "Cardo", serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .login {
@@ -173,6 +181,11 @@ body {
 .navbar {
     background-color: #560789;
     border-bottom: 2px solid #fed66d !important;
+    background-image: url('../../Resources/Images/nav-background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center -550px;
+    background-attachment: fixed;
 }
 
     
@@ -286,11 +299,20 @@ body {
     border-bottom: none;
 }
 
-#add-transaction-button {
-    margin-bottom: 75px;
-}
-
 .edit-group-one, .edit-group-two {
     display: flex;
     flex-direction: column;
+}
+
+.transactions-filters {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.transactions-filters label {
+    margin-left: 20px;
+}
+
+.price-range-input {
+    width: 100px;
 }

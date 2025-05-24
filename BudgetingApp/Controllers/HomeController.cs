@@ -772,7 +772,7 @@ namespace BudgetingApp.Controllers
         /// </summary>
         /// <returns>The Transaction View with all of the user's Transactions</returns>
         [HttpGet]
-        public async Task<IActionResult> Transactions()
+        public async Task<IActionResult> Transactions(DateTime? filterStartDate, DateTime? filterEndDate, string? filterMerchant, string? filterCategory)
         {
             // Determine who is currently logged in
             string currentUser = HttpContext.Session.GetString("Username");
@@ -780,10 +780,28 @@ namespace BudgetingApp.Controllers
             // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
+            
+            // Set up an intial query for the database
+            Query query = _firestoreDb.Collection(_transactionsCollection)
+                .WhereEqualTo("username", currentUser);
 
-            QuerySnapshot snapshot = await _firestoreDb.Collection(_transactionsCollection)
-                .WhereEqualTo("username", currentUser)
-                .GetSnapshotAsync();
+            // Check the date range
+            if (filterStartDate.HasValue)
+                query = query.WhereGreaterThanOrEqualTo("date", DateTime.SpecifyKind(filterStartDate.Value, DateTimeKind.Utc));
+
+            if (filterEndDate.HasValue)
+                query = query.WhereLessThanOrEqualTo("date", DateTime.SpecifyKind(filterEndDate.Value, DateTimeKind.Utc)); 
+
+            // Check the merchant
+            if (!string.IsNullOrEmpty(filterMerchant))
+                query = query.WhereEqualTo("merchant", filterMerchant);
+
+            // Check the category
+            if (!string.IsNullOrEmpty(filterCategory))
+                query = query.WhereEqualTo("category", filterCategory);
+
+            // Execute the query
+            QuerySnapshot snapshot = await query.GetSnapshotAsync();
 
             List<TransactionModel> transactions = new List<TransactionModel>();
             foreach (DocumentSnapshot currentSnapshot in snapshot.Documents)

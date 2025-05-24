@@ -5,6 +5,34 @@
 
 <h1>Transactions</h1>
 
+<div class="transactions-filters">
+    <form asp-controller="Home" asp-action="Transactions" method="get">
+        <label for="date-range-input">Date</label>
+        <input id="start-date-range-input" type="date" name="filterStartDate" />
+        <input id="end-date-range-input" type="date" name="filterEndDate" />
+
+        <label for="merchant-input">Merchant</label>
+        <input id="merchant-input" type="text" name="filterMerchant" /> 
+
+        <label for="category-input">Category</label>
+        <select id="category-input" name="filterCategory">
+            <option value="">All Categories</option> 
+            <option value="CarPayment">Car Payment</option>
+            <option value="Gas">Gas</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Insurances">Insurances</option>
+            <option value="Other">Other</option>
+            <option value="Rent">Rent</option>
+            <option value="Subscriptions">Subscriptions</option>
+            <option value="Utilities">Utilities</option>
+        </select>
+
+        <button type="submit" id="filter-button" class="button">Filter</button>
+        <button type="reset" id="reset-button" class="button">Reset</button>
+    </form>
+</div>
+
+
 @if (Model != null && Model.Transactions.Any())
 {
     <table class="table transactions-table" id="transactions-table">
