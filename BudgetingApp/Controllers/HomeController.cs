@@ -14,6 +14,7 @@ namespace BudgetingApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly FirestoreDb _firestoreDb;
         private readonly string _assetsCollection = "Assets";
+        private readonly string _usersCollection = "Users";
         private readonly string _transactionsCollection = "Transactions";
         private readonly BudgetingApp.Services.IAssetService _assetService;
 
@@ -1133,6 +1134,58 @@ namespace BudgetingApp.Controllers
             }
 
             return View(assets);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            // Determine who is currently logged in 
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            // Get the User document for the current user
+            QuerySnapshot snapshot = await _firestoreDb.Collection(_usersCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            DocumentSnapshot userDocument = snapshot.Documents.First();
+
+            // Check if the given current password matches the users actual current password
+            string password = userDocument.GetValue<string>("password");
+
+            if (!password.Equals(currentPassword))
+            {
+                // The password does not match
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(currentPassword, password))
+            {
+                // Current passwords do not match
+                ViewBag.ErrorMessage = "The current password you entered is incorrect.";
+                return View("Settings");
+            }
+
+            // Check if new password and confirm password match
+            if (!newPassword.Equals(confirmPassword))
+            {
+                // New passwords do not match
+                ViewBag.ErrorMessage = "The new password and confirm password do not match.";
+                return View("Settings");
+            }
+
+            // Update the password
+            DocumentReference assetRef = _firestoreDb.Collection(_usersCollection).Document(userDocument.Id);
+            Dictionary<string, object> updatePassword = new Dictionary<string, object>
+            {
+                { "password", BCrypt.Net.BCrypt.HashPassword(newPassword) }
+            };
+            await assetRef.UpdateAsync(updatePassword);
+
+            ViewBag.SuccessMessage = "Your password has been changed successfully!";
+            return View("Settings");
         }
     }
 }

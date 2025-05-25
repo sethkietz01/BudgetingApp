@@ -316,3 +316,22 @@ body {
 .price-range-input {
     width: 100px;
 }
+
+.settings-header {
+    margin-top: 25px;
+}
+
+.change-password-group {
+    margin-top: 25px;
+}
+
+.change-password-inputs  {
+    display: flex;
+    flex-direction: column;
+    width: 175px;
+    margin-bottom: 10px;
+}
+
+.change-password-inputs input {
+    margin-bottom: 10px;
+}

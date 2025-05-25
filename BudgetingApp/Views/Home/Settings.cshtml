@@ -1,9 +1,46 @@
-﻿@{
+﻿@model BudgetingApp.Models.UserModel
+
+@{
     ViewData["Title"] = "Settings";
 }
 
 <div class="settings-group">
-    <h2>Account</h2>
+    <h1>Account</h1>
+    
+
+    <div class="change-password-group">
+
+        <h6 class="settings-header">Change Password</h6>
+
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.ErrorMessage
+            </div>
+        }
+
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewBag.SuccessMessage
+            </div>
+        }
+        <form id="change-password-form" method="post" asp-controller="Home" asp-action="ChangePassword">
+            <div class="change-password-inputs">
+                <label for="current-password-input">Current Password</label>
+                <input id="current-password-input" type="password" name="currentPassword" />
+
+                <label for="new-password-input">New Password</label>
+                <input id="new-password-input" type="password" name="newPassword" />
+
+                <label for="confirm-password-input">Confirm Password</label>
+                <input id="confirm-new-password-input" type="password" name="confirmPassword" />
+            </div>
+
+            <button class="button" type="submit">Change Password</button>
+        </form>
+    </div>
+
     <form method="post" asp-controller="Home" asp-action="Logout">
         <button class="button" type="submit">Logout</button>
     </form>
