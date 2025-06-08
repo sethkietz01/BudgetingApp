@@ -2,8 +2,12 @@
 This project is a budgeting app used to track monthly expenses, income, and current balance to calculate the net gain or loss per month. It is written in C# .NET 8 MVC architecture using HTML/CSS/JavaScript for front-end design. Firebase is used for datastores and the application is hosted on Azure Web Apps.
 
 # Getting Started
-The most recent publish may be viewed here: https://budgetingapp41674.azurewebsites.net
-You may create a new account to login to the application. Passwords are hashed, but please do no use any sensitive information regardless.
+The most recent publish may be viewed here: https://budgetingapp41674.azurewebsites.net  
+  
+Please note that this application is hosted on Azure using the free tier (F1), which has strict limitations. The app will likely have to cold start, which may take a while to start up, and is limited to 1 hour of usage per day. Therefore it may be possible
+ that this limit has been exceeded and the app will no longer function until the daily limit resets. 
+   
+  You may create a new account to login to the application. Passwords are hashed, but please do no use any sensitive information regardless.
 
 # User Manual
 Here we will walk through how to use the application
