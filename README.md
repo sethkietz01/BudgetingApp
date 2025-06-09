@@ -9,6 +9,66 @@ Please note that this application is hosted on Azure using the free tier (F1), w
    
   You may create a new account to login to the application. Passwords are hashed, but please do no use any sensitive information regardless.
 
+Alternatively, you may create your own Firebase and run the application locally. There is a publish folder containing the file "BudgetingApp/bin/Release/net8.0/publish/BudgetingApp.exe" that you may run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
+
+## Firebase Configuration
+**Note that this tutorial was heavily written by Google Gemini**
+
+This project uses Firebase for its backend services. To run the application locally with full Firebase functionality, you will need to set up your own Firebase project and provide its credentials.
+
+### 1. Client-Side Configuration (Frontend)
+
+The client-side Firebase configuration is embedded in the project (e.g., in `wwwroot/js/firebase-config.js` or directly in your `_Layout.cshtml` if you followed the client-side setup). This allows the frontend to interact with Firebase directly. **No action is typically needed here for local setup.**
+
+### 2. Server-Side Configuration (Backend - Admin SDK)
+
+The backend of this application uses the Firebase Admin SDK, which requires a **service account key** for administrative access to your Firebase project. **This key is sensitive and should never be exposed in your code or committed to version control.**
+
+**Steps to set up your local Firebase Admin SDK credentials:**
+
+1.  **Create a Firebase Project:**
+    * Go to the [Firebase Console](https://console.firebase.google.com/).
+    * Create a new Firebase project (or use an existing one).
+
+2.  **Generate a Service Account Key:**
+    * In your Firebase project, go to **Project settings** (the gear icon) > **Service accounts**.
+    * Click "Generate new private key" and then "Generate Key".
+    * A JSON file will be downloaded (e.g., `your-project-name-firebase-adminsdk-xxxxx-yyyyy.json`).
+
+3.  **Securely Store the Key:**
+    * Save this JSON file to a **secure location** on your local machine (e.g., `C:\Users\YourUser\Documents\FirebaseKeys\my-app-service-account.json` on Windows, or `/home/youruser/firebase-keys/my-app-service-account.json` on Linux/macOS).
+    * **Important:** Ensure this file is NOT inside your project's directory, or if it is temporarily for testing, make sure it's ignored by Git (`.gitignore`).
+
+4.  **Set the `GOOGLE_APPLICATION_CREDENTIALS` Environment Variable:**
+    Your application will look for this environment variable to find the service account key.
+
+    * **Windows (Command Prompt for current session):**
+        ```cmd
+        set GOOGLE_APPLICATION_CREDENTIALS=C:\path\to\your-service-account-file.json
+        ```
+        To set permanently (recommended for local development):
+        * Search for "Environment Variables" in Windows.
+        * Click "Edit the system environment variables".
+        * Click "Environment Variables..." button.
+        * Under "User variables for [YourUser]", click "New...".
+        * Variable name: `GOOGLE_APPLICATION_CREDENTIALS`
+        * Variable value: `C:\path\to\your-service-account-file.json` (the full path to your downloaded JSON file)
+        * Click OK on all dialogs.
+        * You may need to restart your command prompt or Visual Studio for the changes to take effect.
+
+    * **Linux/macOS (for current session):**
+        ```bash
+        export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-file.json"
+        ```
+        To set permanently (add to `~/.bashrc`, `~/.zshrc`, etc., then `source ~/.bashrc`):
+        ```bash
+        echo 'export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-service-account-file.json"' >> ~/.bashrc
+        source ~/.bashrc
+        ```
+
+5.  **Run the Application:**
+    Once the environment variable is set, your ASP.NET MVC application (assuming it uses `GoogleCredential.GetApplicationDefault()`) should be able to initialize the Firebase Admin SDK correctly.
+
 # User Manual
 Here we will walk through how to use the application
 ## Login Page
