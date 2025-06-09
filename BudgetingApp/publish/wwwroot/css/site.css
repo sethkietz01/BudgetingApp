@@ -1,0 +1,337 @@
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: whitesmoke;
+    color: black;
+    background-image: url('../../Resources/Images/marble.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: "Cardo", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-input {
+    height: 25px;
+    width: 200px
+}
+
+.login-button-group {
+    display: flex;
+    flex-direction: row; 
+    height: 25px;
+    font-size: 15px;
+    gap: 20px;
+}
+
+.edit-assets-form {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.edit-assets-form label, .edit-assets-form input {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.edit-assets-form label {
+    margin-top: 15px;
+}
+
+.edit-assets-form input {
+    width: 80px;
+    text-align: center;
+}
+
+.login-input {
+    width: 200px;
+}
+
+.login-button-group {
+    padding-top: 10px;
+    height: auto;
+    width: auto;
+}
+
+.create-account-button-group {
+    padding-top: 10px;
+    height: auto;
+    width: auto;
+}
+
+.button {
+    background-color: lightgray;
+    color: black;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+#password-label {
+    padding-top: 20px;
+}
+
+#create-password-label {
+    padding-top: 20px;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#create-account-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.assets-table-div {
+    display: flex;
+}
+
+.assets-table-div table td {
+    padding-left: 20px;
+}
+
+.form-buttons {
+    padding-top: 20px;
+}
+
+#assets-table {
+    font-size:18px;
+    width: 325px;
+}
+
+#assets-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#assets-table tr:last-child {
+    border-bottom: none; 
+}
+
+#yearly-assets-table {
+    font-size:18px;
+    width: 150px;
+}
+
+#yearly-assets-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#yearly-assets-table tr:last-child {
+    border-bottom: none; 
+}
+
+.label-headers {
+    display: flex;
+    gap: 100px;
+}
+
+.assets-chart-group {
+    margin-left: 75px;  
+    width: 50%;
+}
+
+.add-to-balance-group {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
+#add-to-balance-button {
+    width: 75px;
+    margin-top: 5px;
+}
+
+.subtract-from-balance-group {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    padding-top: 20px;
+}
+
+#subtract-from-balance-button {
+    width: 75px;
+    margin-top: 5px;
+}
+
+.navbar {
+    background-color: #560789;
+    border-bottom: 2px solid #fed66d !important;
+    background-image: url('../../Resources/Images/nav-background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center -550px;
+    background-attachment: fixed;
+}
+
+    
+
+.navbar-brand {
+    color: #fed66d;
+}
+
+.nav-link {
+    color: whitesmoke;
+}
+
+    .nav-link:hover, .navbar-brand:hover {
+        color: #f9c744;
+    }
+
+#what-if-assets-table {
+    font-size: 22px;
+    width: 400px;
+    margin: auto;
+}
+
+#what-if-assets-table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#what-if-assets-table tr:last-child {
+    border-bottom: none;
+}
+
+#what-if-assets-table td {
+    display: flex;
+}
+
+#what-if-explanation {
+    font-size: 18px;
+    text-align: center;
+    padding-top: 50px;
+}
+
+.edit-assets-button-group {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#submit-assets-button {
+    margin-top: 10px;
+}
+
+.transactions-table {
+    color: black;
+}
+
+#submit-new-transaction-button {
+    margin-top: 5px;
+}
+
+#new-transaction-form {
+    gap: 20px
+}
+
+.transaction-form-group {
+    display: flex;
+    width: auto;
+    gap: 30px;
+}
+
+.transaction-button-group {
+    display: flex;
+}
+
+.transaction-input {
+    display: flex;
+    flex-direction: column;
+}
+
+#link-button {
+    color: black;
+}
+
+.table-centered {
+    margin: auto;
+    width: 400px;
+}
+
+.table-centered td, .table-centered th {
+    font-size: 22px;
+}
+
+#nav-bar-list {
+    gap: 10px;
+    font-size: 16px;
+}
+
+.two-table-group {
+    gap: 50px;
+    justify-content: center;
+}
+
+#actual-expenses-summary {
+    font-size: 18px;
+    width: 450px;
+
+}
+
+#actual-expenses-summary tr {
+    border-bottom: 1px solid #ccc;
+}
+
+#actual-expenses-summary tr:last-child {
+    border-bottom: none;
+}
+
+.edit-group-one, .edit-group-two {
+    display: flex;
+    flex-direction: column;
+}
+
+.transactions-filters {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.transactions-filters label {
+    margin-left: 20px;
+}
+
+.price-range-input {
+    width: 100px;
+}
+
+.settings-header {
+    margin-top: 25px;
+}
+
+.change-password-group {
+    margin-top: 25px;
+}
+
+.change-password-inputs  {
+    display: flex;
+    flex-direction: column;
+    width: 175px;
+    margin-bottom: 10px;
+}
+
+.change-password-inputs input {
+    margin-bottom: 10px;
+}
