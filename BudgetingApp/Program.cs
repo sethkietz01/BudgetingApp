@@ -1,6 +1,7 @@
 using Google.Cloud.Firestore;
 using Google.Apis.Auth.OAuth2;
-using System.Text.Json; 
+// System.Text.Json is not strictly needed for this approach, but keep if used elsewhere
+// using System.Text.Json; 
 using BudgetingApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,49 +18,34 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Initialize Firestore using environment variable for credentials
-string projectId = "budgetingdatabase";
-string firebaseCredentialsJson = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
+// Initialize Firestore using Application Default Credentials
+string projectId = "budgetingdatabase"; // Your Firebase Project ID
 
 try
 {
-    if (!string.IsNullOrEmpty(firebaseCredentialsJson))
+    // GoogleCredential.GetApplicationDefault() automatically looks for:
+    // 1. GOOGLE_APPLICATION_CREDENTIALS environment variable
+    // 2. Default credentials from Google Cloud environments (e.g., App Engine, Cloud Run)
+    // 3. gcloud CLI credentials (for local development)
+    GoogleCredential credential = GoogleCredential.GetApplicationDefault();
+
+    FirestoreDbBuilder dbBuilder = new FirestoreDbBuilder
     {
-        GoogleCredential credential = GoogleCredential.FromJson(firebaseCredentialsJson);
-        FirestoreDbBuilder dbBuilder = new FirestoreDbBuilder
-        {
-            ProjectId = projectId,
-            Credential = credential
-        };
-        FirestoreDb db = dbBuilder.Build();
-        builder.Services.AddSingleton(db); // Register FirestoreDb as a singleton
-        Console.WriteLine("Firestore initialized successfully using environment variable.");
-    }
-    else
-    {
-        // Fallback to file-based configuration if the environment variable is not set
-        string credentialsPath = Path.Combine(AppContext.BaseDirectory, "Config", "budgetingdatabase-firebase-adminsdk-fbsvc-d6fd0e7d46.json");
-        if (File.Exists(credentialsPath))
-        {
-            GoogleCredential credential = GoogleCredential.FromFile(credentialsPath);
-            FirestoreDbBuilder dbBuilder = new FirestoreDbBuilder
-            {
-                ProjectId = projectId,
-                Credential = credential
-            };
-            FirestoreDb db = dbBuilder.Build();
-            builder.Services.AddSingleton(db); // Register FirestoreDb as a singleton
-            Console.WriteLine("Firestore initialized successfully using file-based configuration.");
-        }
-        else
-        {
-            Console.WriteLine("Warning: FIREBASE_SERVICE_ACCOUNT_JSON environment variable not set and Firebase credentials file not found.");
-        }
-    }
+        ProjectId = projectId,
+        Credential = credential
+    };
+    FirestoreDb db = dbBuilder.Build();
+    builder.Services.AddSingleton(db); // Register FirestoreDb as a singleton
+    Console.WriteLine("Firestore initialized successfully using Application Default Credentials.");
 }
 catch (Exception ex)
 {
+    // This catch block will now also handle cases where GOOGLE_APPLICATION_CREDENTIALS
+    // is not set, or if the file it points to is invalid/inaccessible.
     Console.WriteLine($"Error initializing Firestore: {ex.Message}");
+    Console.WriteLine("Ensure GOOGLE_APPLICATION_CREDENTIALS environment variable is set and points to your service account key file.");
+    // Optionally, rethrow the exception if Firestore is critical for the app to start
+    // throw;
 }
 
 builder.Services.AddScoped<UserService>();
