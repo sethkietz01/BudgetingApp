@@ -22,7 +22,7 @@ If you do not have an account, you can create one here.
 ## Dashboard
 ![Dashboard](Demo%20Screenshots/Dashboard.png)
 After you login, you will be taken to the Dashboard. Here you will find a read-only table that includes your overall balance, your income and expenses, and net gain or loss (income - expenses) per month and per year.
-A Chart.js Doughnut Chart is provided to give a visual representation of your monthlyexpenses.
+A Chart.js Doughnut Chart is provided to give a visual representation of your monthly expenses.
 You may add or subtract money directly to or from the balance.
 
 ## Edit Assets
@@ -36,16 +36,16 @@ None of the input data here will be saved to the database, so there is no need t
 
 ## Transactions
 ![Transactions](Demo%20Screenshots/Transactions.png)
-Transactions are a way to visualize and keep track of non-recurring charges. Here you will see a list of all manually-entered transactions consisting of the transaction date, the merchant name, and the amount cost. 
+Transactions are a way to visualize and keep track of non-recurring charges. Here you will see a list of all manually-entered transactions consisting of the transaction date, the merchant name, transaction category, and the amount cost. 
 You will also see your budgeted vs actual expenses based on your transaction history to help you see if you are staying within or exceeding your budget for each category.
 
 ## Add Transaction
 ![Add Transaction](Demo%20Screenshots/Add%20Transaction.png)
-You may add a new transaction by entering the date, merchant name, and amount cost. The amount will automatically be deducted from your balance.
+You may add a new transaction by entering the date, merchant name, transaction category, and amount cost. The amount will automatically be deducted from your balance.
 
 ## Settings
 ![Settings](Demo%20Screenshots/Settings.png)
-Currently, the only setting is to logout of your account. Once you press the logout button, your session will be deleted and you will be redirected to the login page.
+Here you will find your account settings. You may change your password or logout of your account. If you choose to logout, your session will be deleted and you will be redirected to the Login page.
 
 # Flowchart
 ![Flowchart ](Demo%20Screenshots/Flowchart%20(Primary%20Scenario).png)  
