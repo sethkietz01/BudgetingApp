@@ -9,7 +9,7 @@ Please note that this application is hosted on Azure using the free tier (F1), w
    
   You may create a new account to login to the application. Passwords are hashed, but please do no use any sensitive information regardless.
 
-Alternatively, you may create your own Firebase and run the application locally. There is a publish folder containing the file "BudgetingApp/bin/Release/net8.0/publish/BudgetingApp.exe" that you may run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
+Alternatively, you may create your own Firebase and run the application locally. There is a publish folder containing the file "BudgetingApp/publish/BudgetingApp.exe" that you may run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
 
 ## Firebase Configuration
 **Note that this tutorial was heavily written by Google Gemini**
