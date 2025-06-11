@@ -1,8 +1,9 @@
-using Google.Cloud.Firestore;
-using Google.Apis.Auth.OAuth2;
 // System.Text.Json is not strictly needed for this approach, but keep if used elsewhere
 // using System.Text.Json; 
 using BudgetingApp.Services;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Firestore;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +19,27 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Initialize Firestore using Application Default Credentials
-string projectId = "budgetingdatabase"; // Your Firebase Project ID
+string credentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
 
 try
 {
+    string jsonCredentialsString = File.ReadAllText(credentialsPath);
+    Console.WriteLine("Successfully read GOOGLE_APPLICATION_CREDENTIALS file content.");
+
+    string projectId = "";
+
+    using (JsonDocument document = JsonDocument.Parse(jsonCredentialsString))
+    {
+        JsonElement root = document.RootElement;
+        if (root.TryGetProperty("project_id", out JsonElement projectIdElement))
+        {
+            projectId = projectIdElement.GetString();
+            Console.WriteLine($"Project ID: {projectId}");
+        }
+        else
+            Console.WriteLine("Project ID property not found.");
+    }
+
     // GoogleCredential.GetApplicationDefault() automatically looks for:
     // 1. GOOGLE_APPLICATION_CREDENTIALS environment variable
     // 2. Default credentials from Google Cloud environments (e.g., App Engine, Cloud Run)
@@ -40,12 +57,8 @@ try
 }
 catch (Exception ex)
 {
-    // This catch block will now also handle cases where GOOGLE_APPLICATION_CREDENTIALS
-    // is not set, or if the file it points to is invalid/inaccessible.
     Console.WriteLine($"Error initializing Firestore: {ex.Message}");
     Console.WriteLine("Ensure GOOGLE_APPLICATION_CREDENTIALS environment variable is set and points to your service account key file.");
-    // Optionally, rethrow the exception if Firestore is critical for the app to start
-    // throw;
 }
 
 builder.Services.AddScoped<UserService>();
