@@ -40,8 +40,15 @@ The backend of this application uses the Firebase Admin SDK, which requires a se
         * Variable name: `GOOGLE_APPLICATION_CREDENTIALS`
         * Variable value: `C:\path\to\your-service-account-file.json` (the full path to your downloaded JSON file)
         * Click OK on all dialogs.
+          
+5. **Create the Firestore**
+   * In Firebase Console, go to project overview.
+   * Scroll down if needed and click "Cloud Firestore".
+   * Click "Create database".
+   * Use default settings and press "Next".
+   * Ensure "Start in production mode" is selected and press "Create".
 
-Once you have set the environment variable, you should now be able to run the application (BudegtingApp.exe) and copy/paste the localhost URL into your browser to use the application.
+Once you have set the environment variable and created a Firestore, you should now be able to run the application (BudegtingApp.exe) and copy/paste the localhost URL into your browser to use the application.
 
 # User Manual
 Here we will walk through how to use the application
