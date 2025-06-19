@@ -204,7 +204,7 @@ body {
 
 #what-if-assets-table {
     font-size: 22px;
-    width: 400px;
+    width: 600px;
     margin: auto;
 }
 
@@ -214,10 +214,6 @@ body {
 
 #what-if-assets-table tr:last-child {
     border-bottom: none;
-}
-
-#what-if-assets-table td {
-    display: flex;
 }
 
 #what-if-explanation {
@@ -334,4 +330,8 @@ body {
 
 .change-password-inputs input {
     margin-bottom: 10px;
+}
+
+.asset-amount {
+    display: inline;
 }

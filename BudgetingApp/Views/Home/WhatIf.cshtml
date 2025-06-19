@@ -10,66 +10,96 @@
 <div class="assets-table-div">
     <table id="what-if-assets-table">
         <thead>
-            @foreach (var asset in Model)
+            <tr>
+                <th></th>
+                <th>Monthly</th> 
+                <th>Annual</th> 
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
             {
+                var asset = Model.First(); 
                 <tr>
                     <th>Balance</th>
-                    <td>$<div contenteditable="true">@asset.Balance</div></td>
+                    <td>$<div class="asset-amount" contenteditable="true">@asset.Balance</div></td>
+                    <td>$<div class="asset-amount">@asset.Balance</div></td>
                 </tr>
                 <tr>
                     <th>Income</th>
-                    <td>+ $<div contenteditable="true">@asset.Income</div></td>
+                    <td>+ $<div class="asset-amount" contenteditable="true">@asset.Income</div></td>
+                    <td>+ $<div class="asset-amount">@(asset.Income * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Savings</th>
-                    <td>- $<div contenteditable="true">@asset.Savings</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Savings</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Savings * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Rent</th>
-                    <td>- $<div contenteditable="true">@asset.Rent</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Rent</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Rent * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Utilities</th>
-                    <td>- $<div contenteditable="true">@asset.Utilities</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Utilities</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Utilities * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Car Payment</th>
-                    <td>- $<div contenteditable="true">@asset.CarPayment</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.CarPayment</div></td>
+                    <td>- $<div class="asset-amount">@(asset.CarPayment * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Insurances</th>
-                    <td>- $<div contenteditable="true">@asset.Insurances</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Insurances</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Insurances * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Groceries</th>
-                    <td>- $<div contenteditable="true">@asset.Groceries</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Groceries</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Groceries * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Gas</th>
-                    <td>- $<div contenteditable="true">@asset.Gas</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Gas</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Gas * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Subscriptions</th>
-                    <td>- $<div contenteditable="true">@asset.Subscriptions</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Subscriptions</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Subscriptions * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Other</th>
-                    <td>- $<div contenteditable="true">@asset.Other</div></td>
+                    <td>- $<div class="asset-amount" contenteditable="true">@asset.Other</div></td>
+                    <td>- $<div class="asset-amount">@(asset.Other * 12)</div></td>
                 </tr>
                 <tr>
                     <th>Total Expenses</th>
-                    <td id="total-expenses">$</td>
+                    <td id="total-expenses-monthly">$</td>
+                    <td id="total-expenses-annual">$</td> 
                 </tr>
                 <tr>
                     <th>Net</th>
-                    <td id="net">$</td>
+                    <td id="net-monthly">$</td>
+                    <td id="net-annual">$</td>
                 </tr>
             }
-        </thead>
+            else
+            {
+                <tr>
+                    <td colspan="3">No asset data available to display.</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>
 
-<p id="what-if-explanation">Click on the amounts to change them and calculate a hypothetical cost without saving your assets</p>
+
+
+
+<p id="what-if-explanation">Click on the monthly expense amounts to change them and calculate a hypothetical cost without saving your assets</p>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
@@ -79,45 +109,76 @@
 
         const $whatIfAssetsTable = $('#what-if-assets-table');
         const $editableValues = $whatIfAssetsTable.find('td > div[contenteditable="true"]');
-        const $totalExpensesCell = $('#total-expenses');
-        const $netCell = $('#net');
+
+        // Update these selectors to target the new monthly/annual cells
+        const $totalExpensesMonthlyCell = $('#total-expenses-monthly');
+        const $totalExpensesAnnualCell = $('#total-expenses-annual');
+        const $netMonthlyCell = $('#net-monthly');
+        const $netAnnualCell = $('#net-annual');
 
         function recalculateTotals() {
-            let totalExpenses = 0;
-            let totalIncome = 0;
-            let balance = 0;
+            let totalMonthlyExpenses = 0;
+            let totalMonthlyIncome = 0;
+            let balance = 0; // Balance is typically a single value, not part of monthly/annual calculations in this context
 
-            $whatIfAssetsTable.find('tr').each(function () {
+            $whatIfAssetsTable.find('tbody tr').each(function () { // Target rows in tbody
                 const $row = $(this);
                 const header = $row.find('th').text().trim();
-                const $valueCell = $row.find('td');
+                const $monthlyValueCell = $row.find('td:nth-child(2)'); // Second column for monthly
+                const $annualValueCell = $row.find('td:nth-child(3)');  // Third column for annual
 
-                if ($valueCell.length) {
-                    const $editableDiv = $valueCell.find('div[contenteditable="true"]');
-                    let valueText = $editableDiv.length ? $editableDiv.text().trim() : $valueCell.text().trim();
-                    const numericValue = parseFloat(valueText.replace(/[^\d.-]/g, '')) || 0;
+                if ($monthlyValueCell.length) {
+                    const $editableMonthlyDiv = $monthlyValueCell.find('div[contenteditable="true"]');
+                    let monthlyValueText = $editableMonthlyDiv.length ? $editableMonthlyDiv.text().trim() : $monthlyValueCell.text().trim();
+                    const numericMonthlyValue = parseFloat(monthlyValueText.replace(/[^\d.-]/g, '')) || 0;
 
                     if (header === 'Balance') {
-                        balance = numericValue;
+                        balance = numericMonthlyValue; // Only capture balance once
                     } else if (header === 'Income') {
-                        totalIncome += numericValue;
-                    } else if (['Rent', 'Savings', 'Utilities', 'Car Payment', 'Insurances', 'Groceries', 'Gas', 'Subscriptions', 'Other'].includes(header)) {
-                        totalExpenses += numericValue;
+                        totalMonthlyIncome += numericMonthlyValue;
+                    } else if (['Savings', 'Rent', 'Utilities', 'Car Payment', 'Insurances', 'Groceries', 'Gas', 'Subscriptions', 'Other'].includes(header)) {
+                        totalMonthlyExpenses += numericMonthlyValue;
+                    }
+
+                    // Update annual amount if monthly amount changes and it's not Balance
+                    if (header !== 'Balance' && $annualValueCell.length && $editableMonthlyDiv.length) {
+                        const annualCalculated = numericMonthlyValue * 12;
+                        const $editableAnnualDiv = $annualValueCell.find('div[contenteditable="true"]');
+                        if ($editableAnnualDiv.length) {
+                            $editableAnnualDiv.text(annualCalculated.toFixed(2));
+                        }
                     }
                 }
             });
 
-            if ($totalExpensesCell.length) {
-                $totalExpensesCell.text('- $' + totalExpenses.toFixed(2));
+            // Calculate Annual Totals
+            const totalAnnualIncome = totalMonthlyIncome * 12;
+            const totalAnnualExpenses = totalMonthlyExpenses * 12;
+
+            // Update Total Expenses (Monthly and Annual)
+            if ($totalExpensesMonthlyCell.length) {
+                $totalExpensesMonthlyCell.text('- $' + totalMonthlyExpenses.toFixed(2));
+            }
+            if ($totalExpensesAnnualCell.length) {
+                $totalExpensesAnnualCell.text('- $' + totalAnnualExpenses.toFixed(2));
             }
 
-            if ($netCell.length) {
-                let netAmount = totalIncome - totalExpenses;
-                if (netAmount < 0) {
-                    netAmount = -1 * netAmount;
-                    $netCell.text('- $' + netAmount.toFixed(2)).css('color', 'red');
+            // Update Net (Monthly and Annual)
+            let netMonthlyAmount = totalMonthlyIncome - totalMonthlyExpenses;
+            let netAnnualAmount = totalAnnualIncome - totalAnnualExpenses;
+
+            if ($netMonthlyCell.length) {
+                if (netMonthlyAmount < 0) {
+                    $netMonthlyCell.text('- $' + Math.abs(netMonthlyAmount).toFixed(2)).css('color', 'red');
                 } else {
-                    $netCell.text('$' + netAmount.toFixed(2)).css('color', 'green');
+                    $netMonthlyCell.text('$' + netMonthlyAmount.toFixed(2)).css('color', 'green');
+                }
+            }
+            if ($netAnnualCell.length) {
+                if (netAnnualAmount < 0) {
+                    $netAnnualCell.text('- $' + Math.abs(netAnnualAmount).toFixed(2)).css('color', 'red');
+                } else {
+                    $netAnnualCell.text('$' + netAnnualAmount.toFixed(2)).css('color', 'green');
                 }
             }
         }
