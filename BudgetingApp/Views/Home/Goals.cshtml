@@ -1,0 +1,75 @@
+﻿@model List<BudgetingApp.Models.GoalModel>
+@{
+    ViewData["Title"] = "Edit Assets";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Goals</h1>
+</div>
+
+<div class="goals-table-group">
+    <table id="goals-table">
+        <thead>
+            <tr>
+                <th>Goal Name</th>
+                <th>Goal Amount</th>
+                <th>Goal Date</th>
+                <th>Goal Priority</th>
+                <th>Monthly Savings Needed</th>
+                <th>Saved Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var goal in Model)
+                {
+                    <tr>
+                        <td>@goal.GoalName</td>
+                        <td>$@goal.GoalAmount</td>
+                        <td>@goal.GoalDate.ToString("d")</td>
+                        <td class="goal-priority" data-priority="@goal.GoalPriority"></td>
+                        <td class="monthly-savings-needed"></td>
+                        <td>$@goal.SavedAmount</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6">No goals found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set the link color to gold
+        $('#goals-link').css('color', '#fed66d');
+
+        // Get all elements with the class 'goal-priority'
+        var goalPriorityCells = document.querySelectorAll('.goal-priority');
+
+        goalPriorityCells.forEach(function(cell) {
+            // Get the priority value from the data-priority attribute
+            var priorityValue = parseInt(cell.dataset.priority); // Convert to integer
+
+            var displayValue = '';
+            if (priorityValue === 0) {
+                displayValue = 'Low';
+            } else if (priorityValue === 1) {
+                displayValue = 'Medium';
+            } else if (priorityValue === 2) {
+                displayValue = 'High';
+            } else {
+                displayValue = 'Medium'; // Default value
+            }
+
+            cell.textContent = displayValue;
+        });
+    });
+</script>

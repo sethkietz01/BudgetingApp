@@ -16,6 +16,7 @@ namespace BudgetingApp.Controllers
         private readonly string _assetsCollection = "Assets";
         private readonly string _usersCollection = "Users";
         private readonly string _transactionsCollection = "Transactions";
+        private readonly string _goalsCollection = "Goals";
         private readonly BudgetingApp.Services.IAssetService _assetService;
 
         public HomeController(ILogger<HomeController> logger, FirestoreDb firestoreDb, IAssetService assetService)
@@ -1186,6 +1187,93 @@ namespace BudgetingApp.Controllers
 
             ViewBag.SuccessMessage = "Your password has been changed successfully!";
             return View("Settings");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Goals()
+        {
+            // Determine who is currently logged in 
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            // Get the Asset documenet for the current user
+            QuerySnapshot snapshot = await _firestoreDb.Collection(_goalsCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+
+            List<GoalModel> goals = new List<GoalModel>();
+            foreach (DocumentSnapshot currentSnapshot in snapshot.Documents)
+            {
+                if (currentSnapshot.Exists)
+                {
+                    GoalModel goal = new GoalModel
+                    {
+                        GoalName = string.Empty,
+                        GoalPriority = 0,
+                        GoalAmount = 0,
+                        SavedAmount = 0,
+                        GoalDate = DateTime.Now,
+                        Username = currentUser
+                    };
+
+                    if (currentSnapshot.TryGetValue<string>("goalName", out var goalName))
+                        goal.GoalName = goalName;
+                    else
+                        _logger.LogWarning($"Unexpected data type for 'goalName' in goal document {currentSnapshot.Id}");
+
+                    if (currentSnapshot.TryGetValue<int>("goalPriority", out var goalPriority))
+                        goal.GoalPriority = goalPriority;
+                    else
+                        _logger.LogWarning($"Unexpected data type for 'goalPriority' in goal document {currentSnapshot.Id}");
+
+                    if (currentSnapshot.TryGetValue<double>("goalAomunt", out var goalAmountDouble))
+                        goal.GoalAmount = goalAmountDouble;
+                    else if (currentSnapshot.TryGetValue<long>("goalAmount", out var goalAmountLong))
+                        goal.GoalAmount = goalAmountLong;
+                    else
+                        _logger.LogWarning($"Unexpected data type for 'goalAmount' in goal document {currentSnapshot.Id}");
+
+                    if (currentSnapshot.TryGetValue<double>("savedAmount", out var savedAmountDouble))
+                    {
+                        goal.SavedAmount = savedAmountDouble;
+                        Console.WriteLine("saved a double " + savedAmountDouble);
+                        Console.WriteLine("so now goal.savedAmount = " + goal.SavedAmount);
+                    }
+                    else if (currentSnapshot.TryGetValue<long>("savedAmount", out var savedAmountLong))
+                    {
+                        Console.WriteLine("saved a long " + savedAmountLong);
+                        goal.SavedAmount = savedAmountLong;
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Unexpected data type for 'savedAmount' in goal document {currentSnapshot.Id}");
+                        Console.WriteLine("Default value applied");
+                    }
+
+                    if (currentSnapshot.TryGetValue<DateTime>("goalDate", out var goalDate))
+                        goal.GoalDate = goalDate;
+                    else
+                        _logger.LogWarning($"Unexpected data type for 'goalDate' in goal document {currentSnapshot.Id}");
+
+                    if (currentSnapshot.TryGetValue<string>("username", out var username))
+                        goal.Username = username;
+                    else
+                        _logger.LogWarning($"Unexpected data type for 'username' in goal document {currentSnapshot.Id}");
+
+                    Console.WriteLine("\n" + goal.SavedAmount + "\n");
+
+                    goals.Add(goal);
+                }
+            }
+
+            // Sort the goals list by the priority in descending order
+            goals = goals.OrderByDescending(g => g.GoalPriority).ToList();
+
+            return View(goals);
         }
     }
 }
