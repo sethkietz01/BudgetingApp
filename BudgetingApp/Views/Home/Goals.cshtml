@@ -17,6 +17,7 @@
                 <th>Goal Priority</th>
                 <th>Monthly Savings Needed</th>
                 <th>Saved Amount</th>
+                <th>Progress</th>
             </tr>
         </thead>
         <tbody>
@@ -29,24 +30,78 @@
                         <td>$@goal.GoalAmount</td>
                         <td>@goal.GoalDate.ToString("d")</td>
                         <td class="goal-priority" data-priority="@goal.GoalPriority"></td>
-                        <td class="monthly-savings-needed"></td>
+
+                        @{
+                            /* Calculate the monthly savings needed to reach the goal on time */
+
+                            // Calculate remaining cost
+                            double remainingAmount = goal.GoalAmount - goal.SavedAmount;
+
+                            // Determine the number of months from now to the goal date
+                            int numberOfMonthsRemaining = 0;
+
+                            if (goal.GoalDate > DateTime.Now)
+                            {
+                                int years = goal.GoalDate.Year - DateTime.Now.Year;
+                                int months = goal.GoalDate.Month - DateTime.Now.Month;
+
+                                numberOfMonthsRemaining = months + years * 12;
+
+                                if (goal.GoalDate.Day < DateTime.Now.Day)
+                                    numberOfMonthsRemaining--;
+
+                                if (numberOfMonthsRemaining <= 0)
+                                    numberOfMonthsRemaining = 1;
+                            }
+
+                            // Determine the monthly savings needed
+                            double monthlySavingsNeeded = remainingAmount / numberOfMonthsRemaining;
+
+                            // Calculate progress percentage
+                            double progressPercentage = (goal.GoalAmount > 0) ? (goal.SavedAmount / goal.GoalAmount) * 100 : 0;
+                            // Ensure progress doesn't exceed 100%
+                            if (progressPercentage > 100)
+                            {
+                                progressPercentage = 100;
+                            }
+                        }
+
+                        <td>@monthlySavingsNeeded.ToString("C")</td>
                         <td>$@goal.SavedAmount</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @(progressPercentage)%;" aria-valuenow="@((int)progressPercentage)" aria-valuemin="0" aria-valuemax="100">
+                                    @((int)progressPercentage)%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <form asp-action="DeleteTransaction" asp-controller="Home" method="post">
+                                <input type="hidden" name="transactionId" value="@goal.DocumentId" />
+                                <button type="submit" class="btn btn-sm">Add</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-action="DeleteTransaction" asp-controller="Home" method="post">
+                                <input type="hidden" name="transactionId" value="@goal.DocumentId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             }
             else
             {
                 <tr>
-                    <td colspan="6">No goals found.</td>
+                    <td colspan="7">No goals found.</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
+
 <script>
-
-
     document.addEventListener("DOMContentLoaded", function() {
         // Set the link color to gold
         $('#goals-link').css('color', '#fed66d');

@@ -4,6 +4,8 @@ namespace BudgetingApp.Models
 {
     public class GoalModel
     {
+        public string DocumentId { get; set; }
+
         [FirestoreProperty("goalName")]
         public string GoalName { get; set; }
 

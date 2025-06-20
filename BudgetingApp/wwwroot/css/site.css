@@ -335,3 +335,41 @@ body {
 .asset-amount {
     display: inline;
 }
+
+#goals-table {
+    font-size: 18px;
+    width: auto;
+    margin: auto;
+}
+
+    #goals-table tr {
+        border-bottom: 1px solid #ccc;
+    }
+
+        #goals-table tr:last-child {
+            border-bottom: none;
+        }
+
+    #goals-table td, th {
+        padding-right: 35px;
+        text-align: center;
+    }
+
+
+.progress {
+    height: 20px;
+    width: 150px;
+    background-color: #e9ecef; 
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #28a745;
+    color: white;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}

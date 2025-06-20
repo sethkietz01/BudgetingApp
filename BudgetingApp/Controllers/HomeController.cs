@@ -983,160 +983,6 @@ namespace BudgetingApp.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> YearlyReport()
-        {
-            // Determine who is currently logged in 
-            string currentUser = HttpContext.Session.GetString("Username");
-
-            // Redirect to the login page if the user is not signed in
-            if (string.IsNullOrEmpty(currentUser))
-                return RedirectToAction("Login", "Auth");
-
-            // Get the Asset documenet for the current user
-            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
-                .WhereEqualTo("username", currentUser)
-                .GetSnapshotAsync();
-
-            List<AssetModel> assets = new List<AssetModel>();
-
-            // Go through each Asset document (there should only be one)
-            foreach (DocumentSnapshot currentSnapshot in snapshot.Documents)
-            {
-                if (currentSnapshot.Exists)
-                {
-                    AssetModel asset = new AssetModel();
-
-                    /*** Firestore can either store numbers as type long or double, so we need to make sure that we cast accordingly ***/
-
-                    // Handle each numerical field with type checking
-                    if (currentSnapshot.TryGetValue<double>("balance", out var balanceDouble))
-                        asset.Balance = (double)balanceDouble;
-                    else if (currentSnapshot.TryGetValue<long>("balance", out var balanceLong))
-                        asset.Balance = (double)balanceLong;
-                    else
-                    {
-                        // Handle the case where the field is missing or of an unexpected type
-                        asset.Balance = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'balance' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("income", out var incomeDouble))
-                        asset.Income = incomeDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("income", out var incomeLong))
-                        asset.Income = (double)incomeLong * 12;
-                    else
-                    {
-                        asset.Income = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'income' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("savings", out var savingsDouble))
-                        asset.Savings = savingsDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("savings", out var savingsLong))
-                        asset.Savings = (double)savingsLong * 12;
-                    else
-                    {
-                        asset.Savings = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'savings' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("rent", out var rentDouble))
-                        asset.Rent = rentDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("rent", out var rentLong))
-                        asset.Rent = (double)rentLong * 12;
-                    else
-                    {
-                        asset.Rent = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'rent' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("utilities", out var utilitiesDouble))
-                        asset.Utilities = utilitiesDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("utilities", out var utilitiesLong))
-                        asset.Utilities = (double)utilitiesLong * 12;
-                    else
-                    {
-                        asset.Utilities = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'utilities' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("carPayment", out var carPaymentDouble))
-                        asset.CarPayment = carPaymentDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("carPayment", out var carPaymentLong))
-                        asset.CarPayment = (double)carPaymentLong * 12;
-                    else
-                    {
-                        asset.CarPayment = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'carPayment' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("insurances", out var insurancesDouble))
-                        asset.Insurances = insurancesDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("insurances", out var insurancesLong))
-                        asset.Insurances = (double)insurancesLong * 12;
-                    else
-                    {
-                        asset.Insurances = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'insurances' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("groceries", out var groceriesDouble))
-                        asset.Groceries = groceriesDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("groceries", out var groceriesLong))
-                        asset.Groceries = (double)groceriesLong * 12;
-                    else
-                    {
-                        asset.Groceries = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'groceries' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("gas", out var gasDouble))
-                        asset.Gas = gasDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("gas", out var gasLong))
-                        asset.Gas = (double)gasLong * 12;
-                    else
-                    {
-                        asset.Gas = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'gas' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("subscriptions", out var subscriptionsDouble))
-                        asset.Subscriptions = subscriptionsDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("subscriptions", out var subscriptionsLong))
-                        asset.Subscriptions = (double)subscriptionsLong * 12;
-                    else
-                    {
-                        asset.Subscriptions = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'subscriptions' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<double>("other", out var otherDouble))
-                        asset.Other = otherDouble * 12;
-                    else if (currentSnapshot.TryGetValue<long>("other", out var otherLong))
-                        asset.Other = (double)otherLong * 12;
-                    else
-                    {
-                        asset.Other = 0.0;
-                        _logger.LogWarning($"Unexpected data type for 'other' in document {currentSnapshot.Id}");
-                    }
-
-                    if (currentSnapshot.TryGetValue<string>("username", out var username))
-                        asset.Username = username;
-                    else
-                    {
-                        asset.Username = string.Empty;
-                        _logger.LogWarning($"Unexpected data type for 'username' in document {currentSnapshot.Id}");
-                    }
-
-                    // If everything is good, add the asset to the list
-                    assets.Add(asset);
-                }
-            }
-
-            return View(assets);
-        }
-
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
@@ -1212,6 +1058,7 @@ namespace BudgetingApp.Controllers
                 {
                     GoalModel goal = new GoalModel
                     {
+                        DocumentId = currentSnapshot.Id,
                         GoalName = string.Empty,
                         GoalPriority = 0,
                         GoalAmount = 0,
@@ -1238,21 +1085,11 @@ namespace BudgetingApp.Controllers
                         _logger.LogWarning($"Unexpected data type for 'goalAmount' in goal document {currentSnapshot.Id}");
 
                     if (currentSnapshot.TryGetValue<double>("savedAmount", out var savedAmountDouble))
-                    {
                         goal.SavedAmount = savedAmountDouble;
-                        Console.WriteLine("saved a double " + savedAmountDouble);
-                        Console.WriteLine("so now goal.savedAmount = " + goal.SavedAmount);
-                    }
                     else if (currentSnapshot.TryGetValue<long>("savedAmount", out var savedAmountLong))
-                    {
-                        Console.WriteLine("saved a long " + savedAmountLong);
                         goal.SavedAmount = savedAmountLong;
-                    }
                     else
-                    {
                         _logger.LogWarning($"Unexpected data type for 'savedAmount' in goal document {currentSnapshot.Id}");
-                        Console.WriteLine("Default value applied");
-                    }
 
                     if (currentSnapshot.TryGetValue<DateTime>("goalDate", out var goalDate))
                         goal.GoalDate = goalDate;
