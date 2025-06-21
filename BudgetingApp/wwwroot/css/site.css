@@ -337,7 +337,7 @@ body {
 }
 
 #goals-table {
-    font-size: 18px;
+    font-size: 16px;
     width: auto;
     margin: auto;
 }
@@ -372,4 +372,9 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
+}
+
+#edit-goal-table td {
+    padding-right: 35px;
+    text-align: center;
 }

@@ -42,7 +42,11 @@
                         <span asp-validation-for="GoalDate" class="text-danger"></span>
                     </td>
                     <td>
-                        <input id="goal-priority" type="text" placeholder="Goal Priority (0, 1, or 2)" asp-for="GoalPriority" />
+                        <select id="goal-priority" asp-for="GoalPriority">
+                            <option value="0">Low</option>
+                            <option value="1">Medium</option>
+                            <option value="2">High</option>
+                        </select>
                         <span asp-validation-for="GoalPriority" class="text-danger"></span>
                     </td>
                     <td>
@@ -50,7 +54,7 @@
                         <span asp-validation-for="SavedAmount" class="text-danger"></span>
                     </td>
                     <td>
-                        <button type="submit">Update Goal</button> @* Add a submit button *@
+                        <button class="button" type="submit">Update Goal</button> 
                     </td>
                     </form>
                 </tr>
