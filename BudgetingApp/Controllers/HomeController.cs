@@ -1112,5 +1112,150 @@ namespace BudgetingApp.Controllers
 
             return View(goals);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteGoal(string goalId)
+        {
+            if (string.IsNullOrEmpty(goalId))
+            {
+                _logger.LogError("Goal ID is null or empty.");
+                return RedirectToAction("Goals");
+            }
+
+            try
+            {
+                DocumentReference transactionRef = _firestoreDb.Collection("Goals").Document(goalId);
+                await transactionRef.DeleteAsync();
+                TempData["SuccessMessage"] = "Goal deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error deleting goal {goalId}: {ex.Message}");
+                TempData["ErrorMessage"] = "Error deleting goal. Please try again.";
+            }
+
+            return RedirectToAction("Goals");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditGoal(string goalId)
+        {
+            // Determine who is currently logged in 
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            // Check if the goalId is valid
+            if (string.IsNullOrEmpty(goalId))
+            {
+                _logger.LogError("Goal ID is null or empty.");
+                return RedirectToAction("Goals");
+            }
+
+            // Get the goal document from the Firestore
+            DocumentReference goalReference = _firestoreDb.Collection("Goals").Document(goalId);
+            DocumentSnapshot goalSnapshot = await goalReference.GetSnapshotAsync();
+
+            Dictionary<string, object> goalDocument = goalSnapshot.ToDictionary();
+
+            goalSnapshot.TryGetValue<DateTime>("goalDate", out var date);
+
+            // Create the goal model
+            GoalModel goal = new GoalModel
+            {
+                DocumentId = goalId,
+                Username = currentUser,
+                GoalName = goalDocument["goalName"].ToString(),
+                GoalPriority = Convert.ToInt32(goalDocument["goalPriority"]),
+                GoalAmount = Convert.ToDouble(goalDocument["goalAmount"]),
+                SavedAmount = Convert.ToDouble(goalDocument["savedAmount"]),
+                GoalDate = date
+            };
+
+            return View(goal);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditGoal(GoalModel model)
+        {
+            // Determine who is currently logged in
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                DocumentReference goalReference = _firestoreDb.Collection("Goals").Document(model.DocumentId);
+                DocumentSnapshot goalSnapshot = await goalReference.GetSnapshotAsync();
+
+                Dictionary<string, object> goalDocument = goalSnapshot.ToDictionary();
+
+                goalSnapshot.TryGetValue<DateTime>("goalDate", out var date);
+
+                if (!goalSnapshot.Exists)
+                {
+                    // Handle case where the document no longer exists
+                    ModelState.AddModelError("", "The goal you are trying to edit does not exist.");
+                    return View("Goals", model);
+                }
+
+                GoalModel existingGoal = new GoalModel
+                {
+                    GoalName = goalDocument["goalName"].ToString(),
+                    GoalPriority = Convert.ToInt32(goalDocument["goalPriority"]),
+                    GoalAmount = Convert.ToDouble(goalDocument["goalAmount"]),
+                    SavedAmount = Convert.ToDouble(goalDocument["savedAmount"]),
+                    GoalDate = DateTime.SpecifyKind(date, DateTimeKind.Utc)
+
+                };
+
+
+                Dictionary<string, object> updates = new Dictionary<string, object>();
+
+                // Compare and add to updates only if the value has changed or new input is provided
+                if (!string.IsNullOrEmpty(model.GoalName) && model.GoalName != existingGoal.GoalName)
+                    updates.Add("goalName", model.GoalName);
+
+                if (model.GoalAmount != existingGoal.GoalAmount && model.GoalAmount != 0)
+                    updates.Add("goalAmount", model.GoalAmount);
+
+                if (model.GoalDate != default(DateTime) && model.GoalDate.Date != existingGoal.GoalDate.Date)
+                    updates.Add("goalDate", DateTime.SpecifyKind(model.GoalDate, DateTimeKind.Utc));
+
+                if (model.GoalPriority != existingGoal.GoalPriority && model.GoalPriority >= 0 && model.GoalPriority <= 2)
+                    updates.Add("goalPriority", model.GoalPriority);
+
+                if (model.SavedAmount != existingGoal.SavedAmount && model.SavedAmount != 0)
+                    updates.Add("savedAmount", model.SavedAmount);
+
+                if (updates.Count > 0)
+                    await goalReference.UpdateAsync(updates);
+                else
+                    Console.WriteLine("No changes detected, not updating Firestore.");
+
+                return RedirectToAction("Goals"); // Redirect to the Goals list after successful update
+            }
+
+            // ModelState is not valid
+            Console.WriteLine("The ModelState is NOT valid. Errors:");
+            foreach (var keyValuePair in ModelState)
+            {
+                if (keyValuePair.Value.Errors.Count > 0)
+                {
+                    Console.WriteLine($"  {keyValuePair.Key}:");
+                    foreach (var error in keyValuePair.Value.Errors)
+                    {
+                        Console.WriteLine($"    - {error.ErrorMessage}");
+                    }
+                }
+            }
+
+            return View("Goals"); 
+        }
     }
 }

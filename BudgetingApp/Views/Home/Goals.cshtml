@@ -1,6 +1,6 @@
 ﻿@model List<BudgetingApp.Models.GoalModel>
 @{
-    ViewData["Title"] = "Edit Assets";
+    ViewData["Title"] = "Goals";
 }
 
 <div class="text-center">
@@ -27,7 +27,7 @@
                 {
                     <tr>
                         <td>@goal.GoalName</td>
-                        <td>$@goal.GoalAmount</td>
+                        <td>@goal.GoalAmount.ToString("C")</td>
                         <td>@goal.GoalDate.ToString("d")</td>
                         <td class="goal-priority" data-priority="@goal.GoalPriority"></td>
 
@@ -61,13 +61,11 @@
                             double progressPercentage = (goal.GoalAmount > 0) ? (goal.SavedAmount / goal.GoalAmount) * 100 : 0;
                             // Ensure progress doesn't exceed 100%
                             if (progressPercentage > 100)
-                            {
                                 progressPercentage = 100;
-                            }
                         }
 
                         <td>@monthlySavingsNeeded.ToString("C")</td>
-                        <td>$@goal.SavedAmount</td>
+                        <td>@goal.SavedAmount.ToString("C")</td>
                         <td>
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width: @(progressPercentage)%;" aria-valuenow="@((int)progressPercentage)" aria-valuemin="0" aria-valuemax="100">
@@ -76,14 +74,14 @@
                             </div>
                         </td>
                         <td>
-                            <form asp-action="DeleteTransaction" asp-controller="Home" method="post">
-                                <input type="hidden" name="transactionId" value="@goal.DocumentId" />
-                                <button type="submit" class="btn btn-sm">Add</button>
+                            <form asp-action="EditGoal" asp-controller="Home" method="get">
+                                <input type="hidden" name="goalId" value="@goal.DocumentId" />
+                                <button type="submit" class="btn button btn-sm">Edit</button>
                             </form>
                         </td>
                         <td>
-                            <form asp-action="DeleteTransaction" asp-controller="Home" method="post">
-                                <input type="hidden" name="transactionId" value="@goal.DocumentId" />
+                            <form asp-action="DeleteGoal" asp-controller="Home" method="post">
+                                <input type="hidden" name="goalId" value="@goal.DocumentId" />
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                             </form>
                         </td>
