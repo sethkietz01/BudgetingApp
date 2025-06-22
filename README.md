@@ -9,7 +9,7 @@ Please note that this application is hosted on Azure using the free tier (F1), w
    
   You may create a new account to login to the application. Passwords are hashed, but please do no use any sensitive information regardless.
 
-Alternatively, you may create your own Firebase and run the application locally. There is a publish folder containing the file "BudgetingApp/publish/BudgetingApp.exe" that you may run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
+Alternatively, you may create your own Firebase and run the application locally. Using Visual Studio 2022, you can create a file publish by loading the project and navigating to Build > Publish BudgetingApp and creating a new profile for a file publish. Once the publish is created, you will have a .exe file that you can run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
 
 ## Firebase Configuration
 The backend of this application uses the Firebase Admin SDK, which requires a service account key for administrative access to your Firebase project. 
@@ -83,6 +83,18 @@ You will also see your budgeted vs actual expenses based on your transaction his
 ## Add Transaction
 ![Add Transaction](Demo%20Screenshots/Add%20Transaction.png)
 You may add a new transaction by entering the date, merchant name, transaction category, and amount cost. The amount will automatically be deducted from your balance.
+
+## Goals
+![Goals](Demo%20Screenshots/Goals.png)
+The goals page is used for setting financial goals to track your progress toward each goal. You can set the name, amount, target date, priority, and amount already saved and the application will calculate the amount needed to save each month to hit the goal on time and the percentage progress.
+
+## Add Goal
+![Add Goal](Demo%20Screenshots/Add%20Goal.png)
+Here you can add financial goal by inputting the name, amount, target date, priority, and amount already saved. 
+
+## Edit Goal
+![Edit Goal](Demo%20Screenshots/Edit%20Goal.png)
+Here you can edit a selected goal's name, amount, target date, priority, and amount already saved.
 
 ## Settings
 ![Settings](Demo%20Screenshots/Settings.png)
