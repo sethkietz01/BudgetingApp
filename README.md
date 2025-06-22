@@ -9,7 +9,7 @@ Please note that this application is hosted on Azure using the free tier (F1), w
    
   You may create a new account to login to the application. Passwords are hashed, but please do no use any sensitive information regardless.
 
-Alternatively, you may create your own Firebase and run the application locally. There is a publish folder containing the file "BudgetingApp/publish/BudgetingApp.exe" that you may run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
+Alternatively, you may create your own Firebase and run the application locally. Using Visual Studio 2022, you can create a file publish by loading the project and navigating to Build > Publish BudgetingApp and creating a new profile for a file publish. Once the publish is created, you will have a .exe file that you can run after you have initialized your Firebase and configured your local environment variable. Once you run the .exe file, one of the lines will say "now listening on: http:localhost:xxxx. Copy this link (from http to the end of the line) and paste it into a web browser to interact with the application.
 
 ## Firebase Configuration
 The backend of this application uses the Firebase Admin SDK, which requires a service account key for administrative access to your Firebase project. 
