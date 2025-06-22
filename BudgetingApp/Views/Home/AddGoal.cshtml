@@ -1,0 +1,62 @@
+﻿@model BudgetingApp.Models.GoalModel
+@{
+    ViewData["Title"] = "Add Goal";
+}
+
+<div class="add-goal-table-container">
+    <table id="add-goal-table">
+        <thead>
+            <tr>
+                <th>Goal Name</th>
+                <th>Goal Amount</th>
+                <th>Goal Date</th>
+                <th>Goal Priority</th>
+                <th>Saved Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <form asp-controller="Home" asp-action="AddGoal" method="post">
+                    <input type="hidden" asp-for="DocumentId" />
+                    <input type="hidden" asp-for="Username" />
+
+                <td>
+                    <input id="goal-name" type="text" placeholder="Goal Name" asp-for="GoalName" />
+                    <span asp-validation-for="GoalName" class="text-danger"></span>
+                </td>
+                <td>
+                    <input id="goal-amount" type="text" placeholder="Goal Amount" asp-for="GoalAmount" />
+                    <span asp-validation-for="GoalAmount" class="text-danger"></span>
+                </td>
+                <td>
+                    <input id="goal-date" type="date" placeholder="Goal Date" asp-for="GoalDate" />
+                    <span asp-validation-for="GoalDate" class="text-danger"></span>
+                </td>
+                <td>
+                    <select id="goal-priority" asp-for="GoalPriority">
+                        <option value="0">Low</option>
+                        <option value="1">Medium</option>
+                        <option value="2">High</option>
+                    </select>
+                    <span asp-validation-for="GoalPriority" class="text-danger"></span>
+                </td>
+                <td>
+                    <input id="saved-amount" type="text" placeholder="Saved Amount" asp-for="SavedAmount" />
+                    <span asp-validation-for="SavedAmount" class="text-danger"></span>
+                </td>
+                <td>
+                    <button class="button" type="submit">Add Goal</button>
+                </td>
+                </form>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set the link color to gold
+        $('#goals-link').css('color', '#fed66d');
+    });
+</script>

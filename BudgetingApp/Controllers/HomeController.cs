@@ -1101,7 +1101,6 @@ namespace BudgetingApp.Controllers
                     else
                         _logger.LogWarning($"Unexpected data type for 'username' in goal document {currentSnapshot.Id}");
 
-                    Console.WriteLine("\n" + goal.SavedAmount + "\n");
 
                     goals.Add(goal);
                 }
@@ -1238,7 +1237,7 @@ namespace BudgetingApp.Controllers
                 else
                     Console.WriteLine("No changes detected, not updating Firestore.");
 
-                return RedirectToAction("Goals"); // Redirect to the Goals list after successful update
+                return RedirectToAction("Goals"); 
             }
 
             // ModelState is not valid
@@ -1256,6 +1255,46 @@ namespace BudgetingApp.Controllers
             }
 
             return View("Goals"); 
+        }
+
+        [HttpGet]
+        public IActionResult AddGoal()
+        {
+            // Determine who is currently logged in
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddGoal(GoalModel model)
+        {
+            // Determine who is currently logged in
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            // Convert the new goal to a dictionary
+            Dictionary<string, object> goal = new Dictionary<string, object>
+            {
+                { "username", currentUser },
+                { "goalName", model.GoalName },
+                { "goalAmount", model.GoalAmount },
+                { "goalPriority", model.GoalPriority },
+                { "goalDate", DateTime.SpecifyKind(model.GoalDate, DateTimeKind.Utc) },
+                { "savedAmount", model.SavedAmount }
+            };
+
+            // Add the goal to the Firestore
+            DocumentReference addedGoal = await _firestoreDb.Collection(_goalsCollection).AddAsync(goal);
+
+            return RedirectToAction("Goals");
         }
     }
 }
