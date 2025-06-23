@@ -883,6 +883,11 @@ namespace BudgetingApp.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Deletes a transaction from the database
+        /// </summary>
+        /// <param name="transactionId">The ID for the transaction to delete</param>
+        /// <returns>The Transactions View</returns>
         [HttpPost]
         public async Task<IActionResult> DeleteTransaction(string transactionId)
         {
@@ -911,7 +916,7 @@ namespace BudgetingApp.Controllers
         /// Adds a Transaction to the database and displays the Transaction View
         /// </summary>
         /// <param name="model">The new Transaction data</param>
-        /// <returns>The Transaction View</returns>
+        /// <returns>The Transactions View</returns>
         [HttpPost]
         public async Task<IActionResult> AddTransaction(TransactionModel model)
         {
@@ -983,6 +988,13 @@ namespace BudgetingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Changes the password of the current user
+        /// </summary>
+        /// <param name="currentPassword">The user's current password</param>
+        /// <param name="newPassword">The new password</param>
+        /// <param name="confirmPassword">A confirmation of the new password</param>
+        /// <returns>The Settings view</returns>
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
@@ -1035,6 +1047,10 @@ namespace BudgetingApp.Controllers
             return View("Settings");
         }
 
+        /// <summary>
+        /// Populates and returns the Goals page with all of the current user's goals
+        /// </summary>
+        /// <returns>The Goals view</returns>
         [HttpGet]
         public async Task<IActionResult> Goals()
         {
@@ -1113,6 +1129,11 @@ namespace BudgetingApp.Controllers
         }
 
 
+        /// <summary>
+        /// Deletes a goal from the database
+        /// </summary>
+        /// <param name="goalId">The ID for the goal to delete</param>
+        /// <returns>The Goals view</returns>
         [HttpPost]
         public async Task<IActionResult> DeleteGoal(string goalId)
         {
@@ -1137,6 +1158,11 @@ namespace BudgetingApp.Controllers
             return RedirectToAction("Goals");
         }
 
+        /// <summary>
+        /// Gets the information of the goal to edit
+        /// </summary>
+        /// <param name="goalId">The ID of the goal to edit</param>
+        /// <returns>The Edit Goal view</returns>
         [HttpGet]
         public async Task<IActionResult> EditGoal(string goalId)
         {
@@ -1177,6 +1203,11 @@ namespace BudgetingApp.Controllers
             return View(goal);
         }
 
+        /// <summary>
+        /// Updates a goal in the database
+        /// </summary>
+        /// <param name="model">The goal data</param>
+        /// <returns>The Goals view</returns>
         [HttpPost]
         public async Task<IActionResult> EditGoal(GoalModel model)
         {
@@ -1257,6 +1288,10 @@ namespace BudgetingApp.Controllers
             return View("Goals"); 
         }
 
+        /// <summary>
+        /// Displays the Add Goal view
+        /// </summary>
+        /// <returns>The Add Goal view</returns>
         [HttpGet]
         public IActionResult AddGoal()
         {
@@ -1270,6 +1305,11 @@ namespace BudgetingApp.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Adds a goal to the database
+        /// </summary>
+        /// <param name="model">The new goal data</param>
+        /// <returns>The Goals view</returns>
         [HttpPost]
         public async Task<IActionResult> AddGoal(GoalModel model)
         {
