@@ -109,17 +109,14 @@
 
         const $whatIfAssetsTable = $('#what-if-assets-table');
         const $editableValues = $whatIfAssetsTable.find('td > div[contenteditable="true"]');
-
-        // Update these selectors to target the new monthly/annual cells
         const $totalExpensesMonthlyCell = $('#total-expenses-monthly');
         const $totalExpensesAnnualCell = $('#total-expenses-annual');
         const $netMonthlyCell = $('#net-monthly');
         const $netAnnualCell = $('#net-annual');
 
-        function recalculateTotals() {
+        function recalculateExpenses() {
             let totalMonthlyExpenses = 0;
             let totalMonthlyIncome = 0;
-            let balance = 0; // Balance is typically a single value, not part of monthly/annual calculations in this context
 
             $whatIfAssetsTable.find('tbody tr').each(function () { // Target rows in tbody
                 const $row = $(this);
@@ -143,10 +140,7 @@
                     // Update annual amount if monthly amount changes and it's not Balance
                     if (header !== 'Balance' && $annualValueCell.length && $editableMonthlyDiv.length) {
                         const annualCalculated = numericMonthlyValue * 12;
-                        const $editableAnnualDiv = $annualValueCell.find('div[contenteditable="true"]');
-                        if ($editableAnnualDiv.length) {
-                            $editableAnnualDiv.text(annualCalculated.toFixed(2));
-                        }
+                        $annualValueCell.text(annualCalculated.toFixed(2));
                     }
                 }
             });
@@ -183,9 +177,9 @@
             }
         }
 
-        $editableValues.on('input', recalculateTotals);
+        $editableValues.on('input', recalculateExpenses);
 
         // Initial calculation on page load
-        recalculateTotals();
+        recalculateExpenses();
     });
 </script>
