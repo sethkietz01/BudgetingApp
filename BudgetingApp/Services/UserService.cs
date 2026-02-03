@@ -27,6 +27,4 @@ public class UserService
 
         return null;
     }
-
-    // ... other methods (registration, etc.)
 }

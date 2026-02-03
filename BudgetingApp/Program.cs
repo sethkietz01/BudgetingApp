@@ -80,6 +80,7 @@ builder.Services.AddScoped<UserService>();
 
 // Register your FirestoreAssetService here
 builder.Services.AddScoped<IAssetService, FirestoreAssetService>();
+builder.Services.AddScoped<AssetService>();
 
 builder.Services.AddAuthentication("Cookies")
     .AddCookie();
