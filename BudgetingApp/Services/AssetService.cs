@@ -1,18 +1,48 @@
 ﻿using BudgetingApp.Models;
 using Google.Cloud.Firestore;
+using Google.Cloud.Firestore.V1;
 
 namespace BudgetingApp.Services
 {
-    public class AssetService
+    public class AssetService : IAssetService
     {
         private readonly FirestoreDb _db;
-        private readonly ILogger<FirestoreAssetService> _logger;
-        private readonly string _collection = "Assets";
+        private readonly string _assetsCollection = "Assets";
 
-        public AssetService(FirestoreDb db, ILogger<FirestoreAssetService> logger)
+        public AssetService(FirestoreDb db)
         {
             _db = db;
-            _logger = logger;
+        }
+
+        public async Task<QuerySnapshot> GetSnapshotByUsernameAsync(string currentUser)
+        {
+            QuerySnapshot snapshot = await _db.Collection(_assetsCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            return snapshot;
+        }
+
+        public async Task<AssetModel> GetAssetByUsernameAsync(string currentUser)
+        {
+            QuerySnapshot snapshot = await _db.Collection(_assetsCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            AssetModel asset = MapSnapshotToAsset(snapshot.Documents[0]);
+
+            return asset;
+        }
+
+        public async Task<List<AssetModel>> GetAssetsByUsernameAsync(string currentUser)
+        {
+            QuerySnapshot snapshot = await _db.Collection(_assetsCollection)
+                .WhereEqualTo("username", currentUser)
+                .GetSnapshotAsync();
+
+            List<AssetModel> assets = MapSnapshotsToAssets(snapshot);
+
+            return assets;
         }
 
         public AssetModel MapSnapshotToAsset(DocumentSnapshot snapshot)
@@ -39,9 +69,6 @@ namespace BudgetingApp.Services
                                : string.Empty
                 };
 
-                if (string.IsNullOrEmpty(asset.Username))
-                    _logger.LogWarning($"Missing or invalid username in document {snapshot.Id}");
-
             return asset;
         }
 
@@ -64,8 +91,22 @@ namespace BudgetingApp.Services
             if (snapshot.TryGetValue<long>(field, out var lngValue))
                 return (double)lngValue;
 
-            _logger.LogWarning($"Unexpected data type or missing field for '{field}' in document {snapshot.Id}");
             return 0.0;
+        }
+
+        public async Task<bool> UpdateAssetsAsync(string username, Dictionary<string, object> updates)
+        {
+            if (updates == null || updates.Count == 0) return true;
+
+            QuerySnapshot snapshot = await GetSnapshotByUsernameAsync(username);
+            DocumentSnapshot assetDocument = snapshot.Documents.FirstOrDefault();
+
+            if (assetDocument == null) return false;
+
+            DocumentReference assetRef = _db.Collection(_assetsCollection).Document(assetDocument.Id);
+
+            await assetRef.UpdateAsync(updates);
+            return true;
         }
     }
 }

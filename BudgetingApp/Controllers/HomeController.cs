@@ -43,11 +43,7 @@ namespace BudgetingApp.Controllers
                 return RedirectToAction("Login", "Auth");
 
             // Get the Asset documenet for the current user
-            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
-                .WhereEqualTo("username", currentUser)
-                .GetSnapshotAsync();
-
-            List<AssetModel> assets = _assetService.MapSnapshotsToAssets(snapshot);
+            List<AssetModel> assets = await _assetService.GetAssetsByUsernameAsync(currentUser);
 
             return View(assets);
         }
@@ -66,14 +62,7 @@ namespace BudgetingApp.Controllers
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
-            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
-                .WhereEqualTo("username", currentUser)
-                .GetSnapshotAsync();
-
-            if (snapshot.Documents.Count == 0)
-                return NotFound("No asset profile found for this user.");
-
-            AssetModel asset = _assetService.MapSnapshotToAsset(snapshot.Documents[0]);
+            AssetModel asset = await _assetService.GetAssetByUsernameAsync(currentUser);
 
             if (asset == null)
                 return NotFound();
@@ -85,179 +74,51 @@ namespace BudgetingApp.Controllers
         /// Updates the Asset document for the current user in the database based on the passed AssetModel
         /// </summary>
         /// <param name="model">The new Asset data</param>
-        /// <returns>The page with the new Asset data</returns>
+        /// <returns>The page with the new Asset data</returns> 
         [HttpPost]
         public async Task<IActionResult> EditAssets(AssetModel model)
         {
-            // Determine who is currently logged in 
+            // Determine who is logged in
             string currentUser = HttpContext.Session.GetString("Username");
-
-            // Redirect to the login page if the user is not signed in
-            if (currentUser == null || currentUser == "")
+            if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(model);
+
+            var updates = new Dictionary<string, object>();
+
+            // Helper to parse form and add to dictionary
+            void TryAddUpdate(string formKey, string dbKey)
             {
-                // Find the existing document for the current user
-                QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
-                    .WhereEqualTo("username", currentUser)
-                    .GetSnapshotAsync();
-
-                DocumentSnapshot assetDocument = snapshot.Documents.FirstOrDefault();
-
-                if (assetDocument != null)
+                if (!string.IsNullOrEmpty(Request.Form[formKey]))
                 {
-                    DocumentReference assetRef = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
-                    Dictionary<string, object> updates = new Dictionary<string, object>();
-
-                    // Conditionally update fields if a value was provided in the form
-                    if (!string.IsNullOrEmpty(Request.Form["Balance"]))
-                    {
-                        if (double.TryParse(Request.Form["Balance"], out double balance))
-                            updates["balance"] = balance;
-                        else
-                        {
-                            ModelState.AddModelError("Balance", "The Balance must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Income"]))
-                    {
-                        if (double.TryParse(Request.Form["Income"], out double income))
-                            updates["income"] = income;
-                        else
-                        {
-                            ModelState.AddModelError("Income", "The Income must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Savings"]))
-                    {
-                        if (double.TryParse(Request.Form["Savings"], out double savings))
-                            updates["savings"] = savings;
-                        else
-                        {
-                            ModelState.AddModelError("Savings", "The Savings must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Rent"]))
-                    {
-                        if (double.TryParse(Request.Form["Rent"], out double rent))
-                            updates["rent"] = rent;
-                        else
-                        {
-                            ModelState.AddModelError("Rent", "The Rent must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Utilities"]))
-                    {
-                        if (double.TryParse(Request.Form["Utilities"], out double utilities))
-                            updates["utilities"] = utilities;
-                        else
-                        {
-                            ModelState.AddModelError("Utilities", "The Utilities must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["CarPayment"]))
-                    {
-                        if (double.TryParse(Request.Form["CarPayment"], out double carPayment))
-                            updates["carPayment"] = carPayment;
-                        else
-                        {
-                            ModelState.AddModelError("CarPayment", "The Car Payment must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Insurances"]))
-                    {
-                        if (double.TryParse(Request.Form["Insurances"], out double insurances))
-                            updates["insurances"] = insurances;
-                        else
-                        {
-                            ModelState.AddModelError("Insurances", "The Insurances must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Groceries"]))
-                    {
-                        if (double.TryParse(Request.Form["Groceries"], out double groceries))
-                            updates["groceries"] = groceries;
-                        else
-                        {
-                            ModelState.AddModelError("Groceries", "The Groceries must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Gas"]))
-                    {
-                        if (double.TryParse(Request.Form["Gas"], out double gas))
-                            updates["gas"] = gas;
-                        else
-                        {
-                            ModelState.AddModelError("Gas", "The Gas must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Subscriptions"]))
-                    {
-                        if (double.TryParse(Request.Form["Subscriptions"], out double subscriptions))
-                            updates["subscriptions"] = subscriptions;
-                        else
-                        {
-                            ModelState.AddModelError("Subscriptions", "The Subscriptions must be a valid number.");
-                            return View(model);
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(Request.Form["Other"]))
-                    {
-                        if (double.TryParse(Request.Form["Other"], out double other))
-                            updates["other"] = other;
-                        else
-                        {
-                            ModelState.AddModelError("Other", "The Other category must be a valid number");
-                            return View(model);
-                        }
-                    }
-
-                    if (updates.Count > 0)
-                    {
-                        await assetRef.UpdateAsync(updates);
-                        return RedirectToAction("Index");
-                    }
+                    if (double.TryParse(Request.Form[formKey], out double val))
+                        updates[dbKey] = val;
                     else
-                        return RedirectToAction("Index");
+                        ModelState.AddModelError(formKey, $"The {formKey} must be a valid number.");
                 }
-                else
-                    return NotFound();
             }
 
-            // ModelState is not valid
-            Console.WriteLine("The ModelState is NOT valid. Errors:");
-            foreach (var keyValuePair in ModelState)
-            {
-                if (keyValuePair.Value.Errors.Count > 0)
-                {
-                    Console.WriteLine($"  {keyValuePair.Key}:");
-                    foreach (var error in keyValuePair.Value.Errors)
-                    {
-                        Console.WriteLine($"    - {error.ErrorMessage}");
-                    }
-                }
-            }
-            return View(model);
+            // Map fields
+            TryAddUpdate("Balance", "balance");
+            TryAddUpdate("Income", "income");
+            TryAddUpdate("Savings", "savings");
+            TryAddUpdate("Rent", "rent");
+            TryAddUpdate("Utilities", "utilities");
+            TryAddUpdate("CarPayment", "carPayment");
+            TryAddUpdate("Insurances", "insurances");
+            TryAddUpdate("Groceries", "groceries");
+            TryAddUpdate("Gas", "gas");
+            TryAddUpdate("Subscriptions", "subscriptions");
+            TryAddUpdate("Other", "other");
+
+            if (!ModelState.IsValid) return View(model);
+
+            bool success = await _assetService.UpdateAssetsAsync(currentUser, updates);
+
+            if (!success) return NotFound();
+
+            return RedirectToAction("Index");
         }
 
         /// <summary>
@@ -286,9 +147,7 @@ namespace BudgetingApp.Controllers
                 return RedirectToAction("Login", "Auth");
 
             // Query the database for the current user's Asset documents 
-            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
-                .WhereEqualTo("username", currentUser)
-                .GetSnapshotAsync();
+            QuerySnapshot snapshot = await _assetService.GetSnapshotByUsernameAsync(currentUser);
 
             if (snapshot.Documents.Count == 0)
                 return NotFound($"No asset document found for user: {currentUser}");
