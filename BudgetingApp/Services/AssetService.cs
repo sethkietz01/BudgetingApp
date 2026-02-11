@@ -1,4 +1,5 @@
-﻿using BudgetingApp.Models;
+﻿using System;
+using BudgetingApp.Models;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 
@@ -53,17 +54,17 @@ namespace BudgetingApp.Services
 
                 var asset = new AssetModel
                 {
-                    Balance = GetNumericValue(snapshot, "balance"),
-                    Income = GetNumericValue(snapshot, "income"),
-                    Savings = GetNumericValue(snapshot, "savings"),
-                    Rent = GetNumericValue(snapshot, "rent"),
-                    Utilities = GetNumericValue(snapshot, "utilities"),
-                    CarPayment = GetNumericValue(snapshot, "carPayment"),
-                    Insurances = GetNumericValue(snapshot, "insurances"),
-                    Groceries = GetNumericValue(snapshot, "groceries"),
-                    Gas = GetNumericValue(snapshot, "gas"),
-                    Subscriptions = GetNumericValue(snapshot, "subscriptions"),
-                    Other = GetNumericValue(snapshot, "other"),
+                    Balance = Math.Round(GetNumericValue(snapshot, "balance"), 2),
+                    Income = Math.Round(GetNumericValue(snapshot, "income"), 2),
+                    Savings = Math.Round(GetNumericValue(snapshot, "savings"), 2),
+                    Rent = Math.Round(GetNumericValue(snapshot, "rent"), 2),
+                    Utilities = Math.Round(GetNumericValue(snapshot, "utilities"), 2),
+                    CarPayment = Math.Round(GetNumericValue(snapshot, "carPayment"), 2),
+                    Insurances = Math.Round(GetNumericValue(snapshot, "insurances"), 2),
+                    Groceries = Math.Round(GetNumericValue(snapshot, "groceries"), 2),
+                    Gas = Math.Round(GetNumericValue(snapshot, "gas"), 2),
+                    Subscriptions = Math.Round(GetNumericValue(snapshot, "subscriptions"), 2),
+                    Other = Math.Round(GetNumericValue(snapshot, "other"), 2),
                     Username = snapshot.TryGetValue<string>("username", out var username)
                                ? username
                                : string.Empty
