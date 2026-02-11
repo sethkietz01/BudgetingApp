@@ -145,19 +145,11 @@ namespace BudgetingApp.Controllers
             // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
+            
+            bool success = await _assetService.IncrementBalanceAsync(currentUser, amountToAdd);
 
-            // Query the database for the current user's Asset documents 
-            QuerySnapshot snapshot = await _assetService.GetSnapshotByUsernameAsync(currentUser);
-
-            if (snapshot.Documents.Count == 0)
+            if (!success)
                 return NotFound($"No asset document found for user: {currentUser}");
-
-            // Get the user's Asset document
-            DocumentSnapshot assetDocument = snapshot.Documents.First();
-            DocumentReference assetReference = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
-
-            // Update the balance
-            await assetReference.UpdateAsync("balance", FieldValue.Increment(amountToAdd));
 
             return RedirectToAction("Index");
         }
@@ -177,19 +169,10 @@ namespace BudgetingApp.Controllers
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
-            // Query the database for the current user's Asset documents 
-            QuerySnapshot snapshot = await _firestoreDb.Collection(_assetsCollection)
-                .WhereEqualTo("username", currentUser)
-                .GetSnapshotAsync();
-
-            if (snapshot.Documents.Count == 0)
+            bool success = await _assetService.IncrementBalanceAsync(currentUser, amountToSubtract);
+            
+            if (!success)   
                 return NotFound($"No asset document found for user: {currentUser}");
-            // Get the user's Asset document
-            DocumentSnapshot assetDocument = snapshot.Documents.First();
-            DocumentReference assetReference = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
-
-            // Update the balance
-            await assetReference.UpdateAsync("balance", FieldValue.Increment(amountToSubtract));
 
             return RedirectToAction("Index");
         }

@@ -108,5 +108,19 @@ namespace BudgetingApp.Services
             await assetRef.UpdateAsync(updates);
             return true;
         }
+
+        public async Task<bool> IncrementBalanceAsync(string username, double amount)
+        {
+            QuerySnapshot snapshot = await GetSnapshotByUsernameAsync(username);
+            DocumentSnapshot assetDocument = snapshot.Documents.FirstOrDefault();
+
+            if (assetDocument == null) return false;
+
+            DocumentReference assetRef = _db.Collection(_assetsCollection).Document(assetDocument.Id);
+
+            await assetRef.UpdateAsync("balance", FieldValue.Increment(amount));
+
+            return true;
+        }
     }
 }
