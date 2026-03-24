@@ -140,111 +140,124 @@
     <div class="assets-chart-group">
         <canvas id="assetsChart"></canvas>
     </div>
-
-   
 </div>
 
-<div class="form-buttons">
-    <div class="add-to-balance-group">
-        <label for="amount-to-add">Add to Balance</label>
-        <input id="amount-to-add" type="text" placeholder="Type amount here" />
-        <button id="add-to-balance-button" class="button">Submit</button>
-    </div>
+<div class="lower-content">
+    <div class="form-buttons">
+        <div class="add-to-balance-group">
+            <label for="amount-to-add">Add to Balance</label>
+            <input id="amount-to-add" type="text" placeholder="Type amount here" />
+            <button id="add-to-balance-button" class="button">Submit</button>
+        </div>
 
-    <div class="subtract-from-balance-group"">
-        <label for="amount-to-subtract">Subtract from Balance</label>
-        <input id="amount-to-subtract" type="text" placeholder="Type amount here" />
-        <button id="subtract-from-balance-button" class="button">Submit</button>
+        <div class="subtract-from-balance-group"">
+            <label for="amount-to-subtract">Subtract from Balance</label>
+            <input id="amount-to-subtract" type="text" placeholder="Type amount here" />
+            <button id="subtract-from-balance-button" class="button">Submit</button>
+        </div>
+    </div>
+    <div class="assets-line-graph-group">
+        <canvas id="assetsLineGraph"></canvas>
     </div>
 </div>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // Set the link color to gold
+        $(document).ready(function () {
         $('#home-link').css('color', '#fed66d');
 
-        // Calculate the total expenses and net gain/loss and create a doughnut chart to represent the budgeted expenses
-        const $assetTables = $('.assets-table-div table');
+        let grandTotalExpenses = 0;
+        let grandTotalIncome = 0;
 
-        // Iterate through each table in the asset tables div
-        $assetTables.each(function () {
-            let totalExpenses = 0;
-            let totalIncome = 0;
-            let balance = 0;
+        const aggregateExpenses = {};
 
-            const expenseLabels = [];
-            const expenseData = [];
+        // Populate the table with expenses
+        $('.assets-table-div table').each(function () {
+            let tableExpenses = 0;
+            let tableIncome = 0;
 
-            // Get all table records in the current table
-            const $rows = $(this).find('tr');
-
-            // Iterate through each row in the current table
-            $rows.each(function () {
-                const $headerCell = $(this).find('th'); // Get all table header cells
-                const $valueCell = $(this).find('td');   // Get all table data cells
-
-                // If a table data cell exists in the current row
+            $(this).find('tr').each(function () {
+                const header = $(this).find('th').text().trim();
+                const $valueCell = $(this).find('td');
                 if ($valueCell.length) {
-                    const header = $headerCell.text().trim();
                     const valueText = $valueCell.text().trim();
-                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, ''));
+                    const numericValue = parseFloat(valueText.replace(/[^\d.]/g, '')) || 0;
 
-                    // Determine which expense it is and add or subtract from totalIncome accordingly
-                    if (header === 'Balance') {
-                        balance = numericValue;
-                    } else if (header === 'Income') {
-                        totalIncome += numericValue;
+                    if (header === 'Income') {
+                        tableIncome += numericValue;
                     } else if (['Rent', 'Savings', 'Utilities', 'Car Payment', 'Insurances', 'Groceries', 'Gas', 'Subscriptions', 'Other'].includes(header)) {
-                        totalExpenses += numericValue;
-                        expenseLabels.push(header);
-                        expenseData.push(numericValue);
+                        tableExpenses += numericValue;
+                        aggregateExpenses[header] = (aggregateExpenses[header] || 0) + numericValue;
                     } else if (header === 'Total Expenses') {
-                        $valueCell.text(`- $${totalExpenses.toFixed(2)}`);
+                        $valueCell.text(`- $${tableExpenses.toFixed(2)}`);
                     } else if (header === 'Net') {
-                        let netAmount = totalIncome - totalExpenses;
-                        if (netAmount < 0) {
-                            netAmount = -1 * netAmount;
-                            $valueCell.text(`- $${netAmount.toFixed(2)}`).css('color', 'red');
-                        } else {
-                            $valueCell.text(`$${netAmount.toFixed(2)}`).css('color', 'green');
-                        }
+                        let netAmount = tableIncome - tableExpenses;
+                        $valueCell.text(`${netAmount < 0 ? '- ' : ''}$${Math.abs(netAmount).toFixed(2)}`)
+                                  .css('color', netAmount < 0 ? 'red' : 'green');
                     }
                 }
             });
+            grandTotalExpenses += tableExpenses;
+            grandTotalIncome += tableIncome;
+        });
 
-            // Create the doughnut chart
-            if (expenseLabels.length > 0) {
-                new Chart("assetsChart", {
-                    type: "doughnut",
-                    data: {
-                        labels: expenseLabels,
-                        datasets: [{
-                            backgroundColor: [
-                                "red", "orange", "yellow", "green", "cyan", "blue", "indigo", "violet", "magenta"
-                            ],
-                            borderColor: [
-                                "black", "black", "black", "black", "black", "black", "black", "black", "black"
-                            ],
-                            data: expenseData
-                        }]
-                    },
-                    options: {
-                        title: {
-                            display: true,
-                            text: "Cost Breakdown",
-                            fontColor: 'black'
-                        },
-                        legend: {
-                            labels: {
-                                fontColor: 'black',
-                                borderColor: 'black'
-                            }
+        // Create doughnut chart
+        const expenseLabels = Object.keys(aggregateExpenses);
+        const expenseData = Object.values(aggregateExpenses);
+
+        if (expenseLabels.length > 0) {
+            new Chart("assetsChart", {
+                type: "doughnut",
+                data: {
+                    labels: expenseLabels,
+                    datasets: [{
+                        backgroundColor: ["red", "orange", "yellow", "green", "cyan", "blue", "indigo", "violet", "magenta"],
+                        data: expenseData,
+                        borderColor: 'black'
+                    }]
+                },
+                options: { title: { display: true, text: "Cost Breakdown" } }
+            });
+        }
+
+        // Create line graph
+        const months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+        const monthlyExpensesData = [];
+        const monthlyIncomeData = [];
+        const monthlyNetData = [];
+
+        // Data
+        for (let i = 1; i <= 12; i++) {
+            monthlyExpensesData.push((grandTotalExpenses / 12) * i);
+            monthlyIncomeData.push((grandTotalIncome / 12) * i);
+            monthlyNetData.push(((grandTotalIncome / 12) - (grandTotalExpenses / 12)) * i);
+        }
+
+        let lineCtx = document.getElementById('assetsLineGraph').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Expenses', data: monthlyExpensesData, borderColor: 'red', fill: false },
+                    { label: 'Income', data: monthlyIncomeData, borderColor: 'green', fill: false },
+                    { label: 'Net', data: monthlyNetData, borderColor: '#fed66d', fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(value) { return '$' + value.toLocaleString(); }
                         }
-                    }
-                });
+                    }]
+                }
             }
         });
 

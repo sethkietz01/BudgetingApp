@@ -117,6 +117,7 @@ body {
 
 .form-buttons {
     padding-top: 20px;
+    padding-right: 300px;
 }
 
 #assets-table {
@@ -377,4 +378,13 @@ body {
 #edit-goal-table td {
     padding-right: 35px;
     text-align: center;
+}
+
+.lower-content {
+    display: flex;
+}
+
+.assets-line-graph-group {
+    height: 350px;
+    width: 750px;
 }

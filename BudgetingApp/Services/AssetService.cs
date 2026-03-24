@@ -1,5 +1,4 @@
-﻿using System;
-using BudgetingApp.Models;
+﻿using BudgetingApp.Models;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 
