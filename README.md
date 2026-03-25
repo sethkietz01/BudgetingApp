@@ -1,3 +1,16 @@
+![.NET 8](https://img.shields.io/badge/.NET-8.0-blueviolet) ![Firebase](https://img.shields.io/badge/Database-Firebase-orange) ![License](https://img.shields.io/badge/License-MIT-green)
+## Table of Contents
+* [Getting Started](#getting-started)
+  * [Firebase Configuration](#firebase-configuration)
+* [User Manual](#user-manual)
+  * [Dashboard](#dashboard)
+  * [What If](#what-if)
+  * [Transactions](#transactions)
+  * [Goals](#goals)
+* [Flowchart](#flowchart)
+* [Technology Stack](#technology-stack)
+* [Planned Features](#planned-featuresto-do-list)
+
 # Project Overview
 This project is a budgeting app used to track monthly expenses, income, and current balance to calculate the net gain or loss per month. It is written in C# .NET 8 MVC architecture using HTML/CSS/JavaScript and jQuery for front-end design. Firebase is used for datastores and the application is hosted on Azure Web Apps.
 
@@ -63,7 +76,7 @@ If you do not have an account, you can create one here.
 ## Dashboard
 ![Dashboard](Demo%20Screenshots/Dashboard.png)
 After you login, you will be taken to the Dashboard. Here you will find a read-only table that includes your overall balance, your income and expenses, and net gain or loss (income - expenses) per month and per year.
-A Chart.js Doughnut Chart is provided to give a visual representation of your monthly expenses.
+A Chart.js Doughnut Chart is provided to give a visual representation of your monthly expenses and a Line Chart displays your income, expenses, and net over the span of 12 months.
 You may add or subtract money directly to or from the balance.
 
 ## Edit Assets
@@ -106,3 +119,20 @@ Here is a basic flowchart for the application in the primary scenario.
 
 # Technology Stack
 This application is written in C# using .NET 8 MVC architecture for back-end design and HTML/CSS and JavaScript using jQuery for front-end design. The project is coded in Visual Studio Community 2022 on a Windows 10 machine. NuGet packages BCrypt.Net-Next (for hashing passwords) and Google.Cloud.Firestore (for interacting with the Firebase) are necessary to build the project. The database is a No-SQL Cloud Firestore and the project is hosted on Azure Web Apps.
+
+
+| Component | Technology | Purpose |
+| :---: | :----: | :---: |
+| Backend | .NET 8 MVC | Core Logic & Routing |
+| Database | Firestore | NoSQL Document Storage |
+| Security | BCrypt.Net | Credential Hashing |
+| Charts | Chart.js | Visual Expense Tracking |
+| Hosting | Azure Web Apps | Cloud Deployment |
+
+# Planned Features/To-Do list
+* Delete account option in Settings
+* Reset data option in Settings
+* Currency conversion calculator
+* Export/Import transactions via Excel
+* Unit tests
+* Refactor logic in controllers to corresponding services
