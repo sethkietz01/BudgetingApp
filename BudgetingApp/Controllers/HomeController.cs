@@ -796,5 +796,77 @@ namespace BudgetingApp.Controllers
 
             return RedirectToAction("Goals");
         }
+
+        /// <summary>
+        /// Batch deletes all of the user's transactions and goals and resets all of their expenses to 0
+        /// </summary>
+        /// <returns>The Settings view</returns>
+        [HttpPost]
+        public async Task<IActionResult> DeleteData()
+        {
+            // Determine who is currently logged in
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            // Attempt to delete data
+            try
+            {
+                WriteBatch batch = _firestoreDb.StartBatch();
+
+                // Get and delete all transactions
+                Query transQuery = _firestoreDb.Collection(_transactionsCollection).WhereEqualTo("username", currentUser);
+                QuerySnapshot transSnapshot = await transQuery.GetSnapshotAsync();
+                foreach (DocumentSnapshot doc in transSnapshot.Documents)
+                {
+                    batch.Delete(doc.Reference);
+                }
+
+                // Get and delete all goals
+                Query goalQuery = _firestoreDb.Collection(_goalsCollection).WhereEqualTo("username", currentUser);
+                QuerySnapshot goalSnapshot = await goalQuery.GetSnapshotAsync();
+                foreach (DocumentSnapshot doc in goalSnapshot.Documents)
+                {
+                    batch.Delete(doc.Reference);
+                }
+
+                Query assetQuery = _firestoreDb.Collection(_assetsCollection).WhereEqualTo("username", currentUser).Limit(1);
+                QuerySnapshot assetSnapshot = await assetQuery.GetSnapshotAsync();
+
+                var assetDoc = assetSnapshot.Documents.FirstOrDefault();
+                if (assetDoc != null)
+                {
+                    // Set all expenses data back to 0
+                    var resetValues = new Dictionary<string, object>
+                    {
+                        { "balance", 0.0 },
+                        { "income", 0.0 },
+                        { "savings", 0.0 },
+                        { "rent", 0.0 },
+                        { "utilities", 0.0 },
+                        { "carPayment", 0.0 },
+                        { "insurances", 0.0 },
+                        { "groceries", 0.0 },
+                        { "gas", 0.0 },
+                        { "subscriptions", 0.0 },
+                        { "other", 0.0 }
+                    };
+                    batch.Update(assetDoc.Reference, resetValues);
+                }
+
+                await batch.CommitAsync();
+
+                TempData["SuccessMessage"] = "Account reset successfully. All history and expenses have been cleared.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Full data wipe failed for {currentUser}: {ex.Message}");
+                TempData["ErrorMessage"] = "A database error occurred. Some data may not have been deleted.";
+            }
+
+            return RedirectToAction("Settings");
+        }
     }
 }

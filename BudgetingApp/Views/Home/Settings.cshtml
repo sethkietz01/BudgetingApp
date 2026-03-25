@@ -4,6 +4,22 @@
     ViewData["Title"] = "Settings";
 }
 
+<div class="settings-messages">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+</div>
+
 <div class="settings-group">
     <h1>Account</h1>
     
@@ -39,9 +55,62 @@
 
             <button class="button" type="submit">Change Password</button>
         </form>
+
+    </div>
+    <div class="logout-container">
+        <form method="post" asp-controller="Home" asp-action="Logout">
+            <button class="button" type="submit">Logout</button>
+        </form>
     </div>
 
-    <form method="post" asp-controller="Home" asp-action="Logout">
-        <button class="button" type="submit">Logout</button>
-    </form>
+    <div class="delete-buttons-container">
+        <button id="modal-button" class="btn btn-danger btn-sm">Delete Data</button>
+    </div>
+    
 </div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeX">&times;</span>
+        <p class="modal-text">Are you sure you wish to delete all of your data?</p>
+        <div class="modal-buttons-container">
+            <button class="button" id="close-button">Close</button>
+            <form method="post" asp-controller="Home" asp-action="DeleteData" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+       document.addEventListener("DOMContentLoaded", function() {
+        const modal = document.getElementById("modal");
+        const openBtn = document.getElementById("modal-button");
+        const closeButton = document.getElementById("close-button");
+        const closeX = document.getElementById("closeX");
+
+        const closeModal = () => {
+            modal.style.display = "none";
+        };
+
+        if (openBtn) {
+            openBtn.addEventListener("click", function() {
+                modal.style.display = "block";
+            });
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener("click", closeModal);
+        }
+
+        if (closeX) {
+            closeX.addEventListener("click", closeModal);
+        }
+
+        window.addEventListener("click", function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    });
+</script>

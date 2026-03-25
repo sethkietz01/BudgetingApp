@@ -388,3 +388,66 @@ body {
     height: 350px;
     width: 750px;
 }
+
+.warning-button {
+    background-color: red;
+}
+
+.logout-container {
+    padding-top: 10px;
+}
+
+.delete-buttons-container {
+    padding-top: 25px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw; 
+    height: 100vh; 
+    background-color: rgba(0, 0, 0, 0.6) !important; 
+    overflow: hidden; 
+}
+.modal-content {
+    background-color: white;
+    position: relative;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px; 
+    border-radius: 12px;
+    box-shadow: 0 0 15px #fed66d;
+    display: flex;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover, .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+.modal-text {
+    text-align: center;
+    font-weight: bold;
+}
+
+.modal-buttons-container {
+    display: flex;
+    gap: 150px;
+    justify-content: center
+}
+
