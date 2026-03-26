@@ -81,7 +81,7 @@ None of the input data here will be saved to the database, so there is no need t
 Transactions are a way to visualize and keep track of non-recurring charges. Here you will see a list of all manually-entered transactions consisting of the transaction date, the merchant name, transaction category, and the amount cost. 
 You will also see your budgeted vs actual expenses based on your transaction history to help you see if you are staying within or exceeding your budget for each category.
 
-## Add Transaction
+### Add Transaction
 ![Add Transaction](Demo%20Screenshots/Add%20Transaction.png)
 You may add a new transaction by entering the date, merchant name, transaction category, and amount cost. The amount will automatically be deducted from your balance.
 
@@ -89,17 +89,21 @@ You may add a new transaction by entering the date, merchant name, transaction c
 ![Goals](Demo%20Screenshots/Goals.png)
 The goals page is used for setting financial goals to track your progress toward each goal. You can set the name, amount, target date, priority, and amount already saved and the application will calculate the amount needed to save each month to hit the goal on time and the percentage progress.
 
-## Add Goal
+### Add Goal
 ![Add Goal](Demo%20Screenshots/Add%20Goal.png)
 Here you can add financial goal by inputting the name, amount, target date, priority, and amount already saved. 
 
-## Edit Goal
+### Edit Goal
 ![Edit Goal](Demo%20Screenshots/Edit%20Goal.png)
 Here you can edit a selected goal's name, amount, target date, priority, and amount already saved.
 
 ## Settings
 ![Settings](Demo%20Screenshots/Settings.png)
 Here you will find your account settings. You may change your password or logout of your account. If you choose to logout, your session will be deleted and you will be redirected to the Login page.
+
+### Dark Theme
+![Dark Theme](Demo%20Screenshots/Dark%20Mode.png)
+This is what the application looks like in dark mode. You may toggle between light and dark mode using the pill selector. Your selection will be saved to your browser's local storage for persistence.
 
 # Database Schema
 ```mermaid
