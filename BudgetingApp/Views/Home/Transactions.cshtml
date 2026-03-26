@@ -3,6 +3,22 @@
     ViewData["Title"] = "Transactions and Assets";
 }
 
+<div class="settings-messages">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+</div>
+
 <h1>Transactions</h1>
 
 <div class="transactions-filters">
