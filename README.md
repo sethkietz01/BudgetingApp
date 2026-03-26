@@ -7,6 +7,7 @@
   * [What If](#what-if)
   * [Transactions](#transactions)
   * [Goals](#goals)
+* [Database Schema](#database-schema)
 * [Flowchart](#flowchart)
 * [Technology Stack](#technology-stack)
 * [Planned Features](#planned-featuresto-do-list)
@@ -114,18 +115,26 @@ Here you can edit a selected goal's name, amount, target date, priority, and amo
 Here you will find your account settings. You may change your password or logout of your account. If you choose to logout, your session will be deleted and you will be redirected to the Login page.
 
 # Database Schema
+```mermaid
 erDiagram
-    USERS_ASSETS ||--o{ TRANSACTIONS : "linked by username"
-    USERS_ASSETS ||--o{ GOALS : "linked by username"
+    USERS ||--|| ASSETS : "has"
+    USERS ||--o{ TRANSACTIONS : "records"
+    USERS ||--o{ GOALS : "sets"
 
-    USERS_ASSETS {
+    USERS {
         string username PK
+        string password
+    }
+
+    ASSETS {
+        string username FK
         double balance
         double income
         double rent
-        double utilities
         double groceries
-        double savings
+        double carPayment
+        double gas
+        double subscriptions
     }
 
     TRANSACTIONS {
@@ -146,7 +155,7 @@ erDiagram
         int goalPriority
         timestamp goalDate
     }
-
+```
 # Flowchart
 ![Flowchart ](Demo%20Screenshots/Flowchart%20(Primary%20Scenario).png)  
 Here is a basic flowchart for the application in the primary scenario.
@@ -165,7 +174,6 @@ This application is written in C# using .NET 8 MVC architecture for back-end des
 
 # Planned Features/To-Do list
 * Delete account option in Settings
-* Reset data option in Settings
 * Currency conversion calculator
 * Export/Import transactions via Excel
 * Unit tests
