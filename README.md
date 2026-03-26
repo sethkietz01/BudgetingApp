@@ -113,6 +113,40 @@ Here you can edit a selected goal's name, amount, target date, priority, and amo
 ![Settings](Demo%20Screenshots/Settings.png)
 Here you will find your account settings. You may change your password or logout of your account. If you choose to logout, your session will be deleted and you will be redirected to the Login page.
 
+# Database Schema
+erDiagram
+    USERS_ASSETS ||--o{ TRANSACTIONS : "linked by username"
+    USERS_ASSETS ||--o{ GOALS : "linked by username"
+
+    USERS_ASSETS {
+        string username PK
+        double balance
+        double income
+        double rent
+        double utilities
+        double groceries
+        double savings
+    }
+
+    TRANSACTIONS {
+        string documentId PK
+        string username FK
+        double amount
+        timestamp date
+        string merchant
+        string category
+    }
+
+    GOALS {
+        string documentId PK
+        string username FK
+        string goalName
+        double goalAmount
+        double savedAmount
+        int goalPriority
+        timestamp goalDate
+    }
+
 # Flowchart
 ![Flowchart ](Demo%20Screenshots/Flowchart%20(Primary%20Scenario).png)  
 Here is a basic flowchart for the application in the primary scenario.
