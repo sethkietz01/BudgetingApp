@@ -152,7 +152,32 @@ erDiagram
     }
 ```
 # Flowchart
-![Flowchart ](Demo%20Screenshots/Flowchart%20(Primary%20Scenario).png)  
+```mermaid
+graph TD
+    %% Main Flow (The 'Happy Path')
+    Start([Start]) --> Login[Login]
+    Login --> Dash[Dashboard]
+    Dash --> Page{Page Select}
+    
+    %% Forward Navigation
+    Page --> Edit[Edit Assets]
+    Page --> WI[What If]
+    Page --> Trans[Transactions]
+    Page --> Set[Settings]
+    
+    %% Secondary Actions
+    Login <--> Create[Create Account]
+    Trans <--> Add[Add Transaction]
+    
+    %% Exit Path
+    Set --> Out[Logout]
+    Out --> End([End])
+
+    %% Return Loops (Dashed to avoid visual clutter)
+    Edit -.-> Dash
+    WI -.-> Dash
+    Trans -.-> Dash
+```
 Here is a basic flowchart for the application in the primary scenario.
 
 # Technology Stack
