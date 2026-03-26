@@ -4,6 +4,34 @@
   }
 }
 
+:root {
+    --body-bg: whitesmoke;
+    --text-color: black;
+    --marble-display: url('../../Resources/Images/marble.png');
+    --navbar-color: #560789;
+    --navbar-display: url('../../Resources/Images/nav-background.png')
+}
+
+[data-theme="dark"] {
+    --body-bg: #222;
+    --text-color: #e0e0e0;
+    --marble-display: none;
+    --navbar-color: #333;
+    --navbar-display: none;
+}
+
+    [data-theme="dark"] .modal-content {
+        background-color: #333;
+        color: #e0e0e0;
+        border: 1px solid #444;
+    }
+
+    [data-theme="dark"] .button {
+        background-color: #444;
+        color: whitesmoke;
+        border: 1px solid #555;
+    }
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -16,17 +44,34 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: whitesmoke;
-    color: black;
-    background-image: url('../../Resources/Images/marble.png');
+    background: var(--body-bg) var(--marble-display) no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-color);
+    font-family: "Cardo", serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.navbar {
+    background-color:var(--navbar-color);
+    border-bottom: 2px solid #fed66d !important;
+    background-image: var(--navbar-display);
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
+    background-position: center -550px;
     background-attachment: fixed;
-    font-family: "Cardo", serif;
-    font-weight: 400;
-    font-style: normal;
 }
+
+.navbar-brand {
+    color: #fed66d;
+}
+
+.nav-link {
+    color: whitesmoke;
+}
+
+    .nav-link:hover, .navbar-brand:hover {
+        color: #f9c744;
+    }
 
 .login {
     display: flex;
@@ -84,7 +129,7 @@ body {
 
 .button {
     background-color: lightgray;
-    color: black;
+    color: var(--text-color);
     text-decoration: none;
     border-radius: 5px;
 }
@@ -179,30 +224,6 @@ body {
     margin-top: 5px;
 }
 
-.navbar {
-    background-color: #560789;
-    border-bottom: 2px solid #fed66d !important;
-    background-image: url('../../Resources/Images/nav-background.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center -550px;
-    background-attachment: fixed;
-}
-
-    
-
-.navbar-brand {
-    color: #fed66d;
-}
-
-.nav-link {
-    color: whitesmoke;
-}
-
-    .nav-link:hover, .navbar-brand:hover {
-        color: #f9c744;
-    }
-
 #what-if-assets-table {
     font-size: 22px;
     width: 600px;
@@ -233,7 +254,7 @@ body {
 }
 
 .transactions-table {
-    color: black;
+    color: var(--text-color);
 }
 
 #submit-new-transaction-button {
@@ -260,7 +281,7 @@ body {
 }
 
 #link-button {
-    color: black;
+    color: var(--text-color);
 }
 
 .table-centered {
@@ -451,3 +472,70 @@ body {
     justify-content: center
 }
 
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin: 0 10px;
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px; 
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+[data-theme="dark"] .slider {
+    box-shadow: 0 0 8px rgba(33, 150, 243, 0.5);
+}
+
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    gap: 15px; 
+    max-width: 600px; 
+    margin: 0 auto; 
+}
+
+.theme-switch-container {
+    display: flex;
+    align-items: center;
+    padding-top: 20px;
+    margin-top: 10px;
+    border-top: 1px solid #ccc;
+    width: 100%;
+}
