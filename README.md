@@ -207,7 +207,12 @@ This application is written in C# using .NET 8 MVC architecture for back-end des
 | Hosting | Azure Web Apps | Cloud Deployment |
 
 # Planned Features/To-Do list
-* Delete account option in Settings
+* Bulk add/delete transactions
+* Add "Savings" to transactions
+* Add error message when adding or subtracting non-number from balance
+* Custom categories
+* Highlight interactable boxes in What-If
+* Add account creation message
 * Currency conversion calculator
 * Export/Import transactions via Excel
 * Unit tests
