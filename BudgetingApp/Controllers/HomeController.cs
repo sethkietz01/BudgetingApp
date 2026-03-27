@@ -360,13 +360,41 @@ namespace BudgetingApp.Controllers
             try
             {
                 DocumentReference transactionRef = _firestoreDb.Collection("Transactions").Document(transactionId);
-                await transactionRef.DeleteAsync();
-                TempData["SuccessMessage"] = "Transaction deleted successfully.";
+                DocumentSnapshot transactionSnapshot = await transactionRef.GetSnapshotAsync();
+
+                if (transactionSnapshot.Exists)
+                {
+                    transactionSnapshot.TryGetValue<double>("amount", out var amount);
+                    transactionSnapshot.TryGetValue<string>("username", out var username);
+
+                    QuerySnapshot assetSnapshot = await _firestoreDb.Collection(_assetsCollection)
+                        .WhereEqualTo("username", username)
+                        .Limit(1)
+                        .GetSnapshotAsync();
+
+                    var assetDocument = assetSnapshot.Documents.FirstOrDefault();
+
+                    if (assetDocument != null)
+                    {
+                        assetDocument.TryGetValue<double>("balance", out var currentBalance);
+                        double newBalance = currentBalance + amount;
+
+                        DocumentReference assetRef = _firestoreDb.Collection(_assetsCollection).Document(assetDocument.Id);
+                        await assetRef.UpdateAsync("balance", newBalance);
+                    }
+
+                    await transactionRef.DeleteAsync();
+                    TempData["SuccessMessage"] = "Transaction deleted and balance updated.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Transaction not found.";
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error deleting transaction {transactionId}: {ex.Message}");
-                TempData["ErrorMessage"] = "Error deleting transaction. Please try again.";
+                TempData["ErrorMessage"] = "Error updating balance or deleting transaction.";
             }
 
             return RedirectToAction("Transactions");
