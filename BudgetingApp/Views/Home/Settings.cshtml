@@ -43,14 +43,15 @@
         }
         <form id="change-password-form" method="post" asp-controller="Home" asp-action="ChangePassword">
             <div class="change-password-inputs">
-                <label for="current-password-input">Current Password</label>
-                <input id="current-password-input" type="password" name="currentPassword" />
+                <label asp-for="Password">Current Password</label>
+                <input asp-for="Password" id="current-password-input" />
+                <span asp-validation-for="Password" class="text-danger"></span>
 
                 <label for="new-password-input">New Password</label>
-                <input id="new-password-input" type="password" name="newPassword" />
+                <input id="new-password-input" type="password" name="newPassword" required />
 
                 <label for="confirm-password-input">Confirm Password</label>
-                <input id="confirm-new-password-input" type="password" name="confirmPassword" />
+                <input id="confirm-new-password-input" type="password" name="confirmPassword" required />
             </div>
 
             <button class="button" type="submit">Change Password</button>
