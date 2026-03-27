@@ -1,7 +1,7 @@
 # Quick Links
 [Getting Started](#getting-started) • [User Manual](#user-manual) • [Database Schema](#database-schema) • [Tech Stack](#technology-stack)
 
-![.NET 8](https://img.shields.io/badge/.NET-8.0-blueviolet) ![Firebase](https://img.shields.io/badge/Database-Firebase-orange) ![Azure](https://img.shields.io/badge/Hosting-Azure-blue) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-blueviolet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) [![Firebase](https://img.shields.io/badge/Database-Firebase-orange)](https://firebase.google.com/) [![Azure](https://img.shields.io/badge/Hosting-Azure-blue)](https://azure.microsoft.com/en-us) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 # Project Overview
 This project is a budgeting app used to track monthly expenses, income, and current balance to calculate the net gain or loss per month. It is written in C# .NET 8 MVC architecture using HTML/CSS/JavaScript and jQuery for front-end design. Firebase is used for datastores and the application is hosted on Azure Web Apps.
