@@ -6,6 +6,22 @@
 # Project Overview
 This project is a budgeting app used to track monthly expenses, income, and current balance to calculate the net gain or loss per month. It is written in C# .NET 8 MVC architecture using HTML/CSS/JavaScript and jQuery for front-end design. Firebase is used for datastores and the application is hosted on Azure Web Apps.
 
+# Features
+### Interactive Dashboard
+* Table, doughnut, and line chart views of your income and expenses by month or by year
+
+### "What If" Hypothetical Calculator
+* Make adjustments to your budget to play out hypothetical financial situations without affecting your actual database records
+
+### Transaction Tracking
+* Track your non-recurring transactions and apply filters to see if you are staying within or exceeding your budget
+
+### Goal Tracking
+* Track your financial goals, ordered by priority, see how close you are to reaching each goal, and how much you need to save per month to reach your goal on time
+
+### User Experience  
+* Delete your data or account at any time in the Settings menu or toggle between light and dark themes 
+
 # Getting Started
 The most recent publish may be viewed here: https://budgetingapp41674.azurewebsites.net  
   
