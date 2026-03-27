@@ -808,6 +808,14 @@ namespace BudgetingApp.Controllers
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
+            ModelState.Remove("DocumentId");
+            ModelState.Remove("Username");
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             // Convert the new goal to a dictionary
             Dictionary<string, object> goal = new Dictionary<string, object>
             {
@@ -821,6 +829,8 @@ namespace BudgetingApp.Controllers
 
             // Add the goal to the Firestore
             DocumentReference addedGoal = await _firestoreDb.Collection(_goalsCollection).AddAsync(goal);
+
+            TempData["SuccessMessage"] = "Goal successfully added!";
 
             return RedirectToAction("Goals");
         }
