@@ -179,5 +179,37 @@ namespace BudgetingApp.Services
                 return false;
             }
         }
+
+        public async Task<bool> DeleteAccount(string currentUser, FirestoreDb _firestoreDb, string _usersCollection, string _transactionsCollection, string _goalsCollection, string _assetsCollection)
+        {
+            try
+            {
+                WriteBatch batch = _firestoreDb.StartBatch();
+
+                string[] collectionsToClean = { _transactionsCollection, _goalsCollection, _assetsCollection, _usersCollection };
+
+                foreach (var collectionName in collectionsToClean)
+                {
+                    // Query for all documents where the username field matches the currentUser
+                    CollectionReference collectionRef = _firestoreDb.Collection(collectionName);
+                    Query query = collectionRef.WhereEqualTo("username", currentUser);
+                    QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+
+                    foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+                    {
+                        batch.Delete(documentSnapshot.Reference);
+                    }
+                }
+
+                await batch.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting account for {currentUser}: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

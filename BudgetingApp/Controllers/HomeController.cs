@@ -145,7 +145,7 @@ namespace BudgetingApp.Controllers
             // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
-            
+
             bool success = await _assetService.IncrementBalanceAsync(currentUser, amountToAdd);
 
             if (!success)
@@ -170,8 +170,8 @@ namespace BudgetingApp.Controllers
                 return RedirectToAction("Login", "Auth");
 
             bool success = await _assetService.IncrementBalanceAsync(currentUser, amountToSubtract);
-            
-            if (!success)   
+
+            if (!success)
                 return NotFound($"No asset document found for user: {currentUser}");
 
             return RedirectToAction("Index");
@@ -242,7 +242,7 @@ namespace BudgetingApp.Controllers
             // Redirect to the login page if the user is not signed in
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
-            
+
             // Set up an intial query for the database
             Query query = _firestoreDb.Collection(_transactionsCollection)
                 .WhereEqualTo("username", currentUser);
@@ -252,7 +252,7 @@ namespace BudgetingApp.Controllers
                 query = query.WhereGreaterThanOrEqualTo("date", DateTime.SpecifyKind(filterStartDate.Value, DateTimeKind.Utc));
 
             if (filterEndDate.HasValue)
-                query = query.WhereLessThanOrEqualTo("date", DateTime.SpecifyKind(filterEndDate.Value, DateTimeKind.Utc)); 
+                query = query.WhereLessThanOrEqualTo("date", DateTime.SpecifyKind(filterEndDate.Value, DateTimeKind.Utc));
 
             // Check the merchant
             if (!string.IsNullOrEmpty(filterMerchant))
@@ -361,12 +361,12 @@ namespace BudgetingApp.Controllers
             {
                 DocumentReference transactionRef = _firestoreDb.Collection("Transactions").Document(transactionId);
                 await transactionRef.DeleteAsync();
-                TempData["SuccessMessage"] = "Transaction deleted successfully."; 
+                TempData["SuccessMessage"] = "Transaction deleted successfully.";
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error deleting transaction {transactionId}: {ex.Message}");
-                TempData["ErrorMessage"] = "Error deleting transaction. Please try again."; 
+                TempData["ErrorMessage"] = "Error deleting transaction. Please try again.";
             }
 
             return RedirectToAction("Transactions");
@@ -401,7 +401,7 @@ namespace BudgetingApp.Controllers
                         }
                     }
                 }
-                return View(model); 
+                return View(model);
             }
             else
             {
@@ -728,7 +728,7 @@ namespace BudgetingApp.Controllers
                 else
                     Console.WriteLine("No changes detected, not updating Firestore.");
 
-                return RedirectToAction("Goals"); 
+                return RedirectToAction("Goals");
             }
 
             // ModelState is not valid
@@ -745,7 +745,7 @@ namespace BudgetingApp.Controllers
                 }
             }
 
-            return View("Goals"); 
+            return View("Goals");
         }
 
         /// <summary>
@@ -819,6 +819,29 @@ namespace BudgetingApp.Controllers
                 TempData["ErrorMessage"] = "A database error occurred.";
 
             return RedirectToAction("Settings");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            // Determine who is currently logged in
+            string currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+            bool success = await _assetService.DeleteAccount(currentUser, _firestoreDb, _transactionsCollection, _goalsCollection, _assetsCollection, _usersCollection);
+            if (success)
+            {
+                HttpContext.Session.Remove("Username");
+                TempData["SuccessMessage"] = "Account deleted successfully!";
+                return RedirectToAction("Login", "Auth");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "A database error occurred.";
+                return RedirectToAction("Settings");
+            }
         }
     }
 }

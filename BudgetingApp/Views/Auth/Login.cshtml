@@ -4,6 +4,22 @@
     ViewData["Title"] = "Login";
 }
 
+<div class="settings-messages">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+</div>
+
 <div class="login">
     <h2>Login</h2>
 
