@@ -137,7 +137,7 @@ namespace BudgetingApp.Controllers
         /// <param name="amountToAdd">The amount to add to the balance</param>
         /// <returns>The view with the updated amount</returns>
         [HttpPost]
-        public async Task<IActionResult> AddToBalance(int amountToAdd)
+        public async Task<IActionResult> AddToBalance(double amountToAdd)
         {
             // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
@@ -155,7 +155,7 @@ namespace BudgetingApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubtractFromBalance(int amountToSubtract)
+        public async Task<IActionResult> SubtractFromBalance(double amountToSubtract)
         {
             // Make the amount negative
             amountToSubtract = amountToSubtract * (-1);
