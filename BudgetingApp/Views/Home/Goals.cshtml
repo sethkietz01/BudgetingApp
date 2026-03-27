@@ -72,6 +72,15 @@
 
                             // Determine the monthly savings needed
                             double monthlySavingsNeeded = remainingAmount / numberOfMonthsRemaining;
+                            string monthlySavingsNeededString = "";
+
+                            if (monthlySavingsNeeded < 0)
+                                monthlySavingsNeededString = "Goal Reached";
+                            else if (monthlySavingsNeeded > Double.MaxValue)
+                                monthlySavingsNeededString = "Goal Unreachable";
+                            else
+                                monthlySavingsNeededString = monthlySavingsNeeded.ToString("C");
+
 
                             // Calculate progress percentage
                             double progressPercentage = (goal.GoalAmount > 0) ? (goal.SavedAmount / goal.GoalAmount) * 100 : 0;
@@ -80,7 +89,7 @@
                                 progressPercentage = 100;
                         }
 
-                        <td>@monthlySavingsNeeded.ToString("C")</td>
+                        <td>@monthlySavingsNeededString</td>
                         <td>@goal.SavedAmount.ToString("C")</td>
                         <td>
                             <div class="progress">
