@@ -173,10 +173,10 @@ graph TD
     Set --> Out[Logout]
     Out --> End([End])
 
-    %% Return Loops (Dashed to avoid visual clutter)
-    Edit -.-> Dash
-    WI -.-> Dash
-    Trans -.-> Dash
+    %% Return Loops
+    Edit -.-> Page
+    WI -.-> Page
+    Trans -.-> Page
 ```
 Here is a basic flowchart for the application in the primary scenario.
 
