@@ -154,29 +154,27 @@ erDiagram
 # Flowchart
 ```mermaid
 graph TD
-    %% Main Flow (The 'Happy Path')
     Start([Start]) --> Login[Login]
     Login --> Dash[Dashboard]
     Dash --> Page{Page Select}
     
-    %% Forward Navigation
     Page --> Edit[Edit Assets]
     Page --> WI[What If]
     Page --> Trans[Transactions]
+    Page --> Goals[Goals]
     Page --> Set[Settings]
     
-    %% Secondary Actions
     Login <--> Create[Create Account]
-    Trans <--> Add[Add Transaction]
+    Trans <--> AddTrans[Add Transaction]
+    Goals <--> AddGoal[Add Goal]
     
-    %% Exit Path
     Set --> Out[Logout]
     Out --> End([End])
 
-    %% Return Loops
     Edit -.-> Page
     WI -.-> Page
     Trans -.-> Page
+    Goals -.-> Page
 ```
 Here is a basic flowchart for the application in the primary scenario.
 
