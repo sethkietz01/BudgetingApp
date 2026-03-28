@@ -22,7 +22,7 @@
 <h1>Transactions</h1>
 
 <div class="transactions-filters">
-    <form asp-controller="Home" asp-action="Transactions" method="get">
+    <form id="filter-form" asp-controller="Home" asp-action="Transactions" method="get">
         <label for="date-range-input">Date</label>
         <input id="start-date-range-input" type="date" name="filterStartDate" />
         <input id="end-date-range-input" type="date" name="filterEndDate" />
@@ -221,6 +221,14 @@ else
     $(document).ready(function () {
         // Set the link color to gold
         $('#transactions-link').css('color', '#fed66d');
+
+        const filterForm = document.getElementById('filter-form');
+        const resetButton = document.getElementById('reset-button');
+        resetButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            filterForm.reset();
+            filterForm.submit();
+        });
 
         const $transactionTable = $('#transactions-table');
         const categoryCounts = {};
