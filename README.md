@@ -134,6 +134,10 @@ Here you can edit a selected goal's name, amount, target date, priority, and amo
 ![Settings](Demo%20Screenshots/Settings.png)
 Here you will find your account settings. You may change your password or logout of your account. If you choose to logout, your session will be deleted and you will be redirected to the Login page.
 
+### Setup MFA
+![Setup MFA](Demo%20Screenshots/Setup%20MFA.png)
+Here you may scan the QR code or enter the generated code into an authenticator app to link and enable Multi-Factor Authentication via Timed One Time Password (note that the code in the screenshot is for an account that does not exist).
+
 ### Dark Theme
 ![Dark Theme](Demo%20Screenshots/Dark%20Mode.png)
 This is what the application looks like in dark mode. You may toggle between light and dark mode using the pill selector. Your selection will be saved to your browser's local storage for persistence.
