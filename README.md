@@ -1,5 +1,5 @@
 # Quick Links
-[Getting Started](#getting-started) • [User Manual](#user-manual) • [Database Schema](#database-schema) • [Tech Stack](#technology-stack)
+[Getting Started](#getting-started) • [Data Security](#data-security) • [User Manual](#user-manual) • [Database Schema](#database-schema) • [Tech Stack](#technology-stack) • [Credits](#credits)
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-blueviolet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) [![Firebase](https://img.shields.io/badge/Database-Firebase-orange)](https://firebase.google.com/) [![Azure](https://img.shields.io/badge/Hosting-Azure-blue)](https://azure.microsoft.com/en-us) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -70,6 +70,19 @@ The backend of this application uses the Firebase Admin SDK, which requires a se
    * Ensure "Start in production mode" is selected and press "Create".
 
 Once you have set the environment variable and created a Firestore, you should now be able to run the application (BudegtingApp.exe) and copy/paste the localhost URL into your browser to use the application.
+
+# Data Security
+This application provides the following security measures to protect accounts and data:
+
+* **Multi-Factor Authentication:** This project provides TOTP-based additional authentication via Otp.NET upon user opt-in
+* **Password Hashing:** All user passwords are salted and hashed using BCrypt.Net-Next before being stored in Firestore
+* **Session Management:** User sessions are handled securely through ASP.NET Core Identity/Cookies with explicit logout functionality to clear session data
+* **Session Timeout:** Sessions expire after 15 minutes of inactivity and the user will be brought back to the login page
+* **Data Control:** Users are able to delete their data or accounts at any time in the Settings menu
+* **Environment Variables:** Database credentials are managed via environment variables and are never hard-coded
+
+> [!WARNING]
+> While these measures are in place, this is a portfolio project. Please do not use sensitive data.
 
 # User Manual
 Here we will walk through how to use the application
@@ -217,3 +230,6 @@ This application is written in C# using .NET 8 MVC architecture for back-end des
 * Export/Import transactions via Excel
 * Unit tests
 * Refactor logic in controllers to corresponding services
+
+# Credits
+This project implements the open-source library Otp.NET, created by [@kspearrin](https://github.com/kspearrin)
