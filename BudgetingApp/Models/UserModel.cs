@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Google.Cloud.Firestore;
+using System.ComponentModel.DataAnnotations;
 
 namespace BudgetingApp.Models
 {
@@ -10,5 +11,10 @@ namespace BudgetingApp.Models
         [Required]
         public string? Password { get; set; }
 
+        [FirestoreProperty("mfaEnabled")]
+        public bool? MfaEnabled { get; set; }
+
+        [FirestoreProperty("mfaSecretKey")]
+        public string? MfaSecretKey { get; set; }
     }
 }

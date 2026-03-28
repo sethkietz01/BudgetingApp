@@ -1,0 +1,19 @@
+﻿<div class="auth-container" style="text-align: center;">
+    <h2>Enable MFA</h2>
+    <p>Scan this QR code with Microsoft Authenticator or Google Authenticator:</p>
+
+    <img src="@ViewBag.QrCodeImage" alt="QR Code" style="width: 200px; height: 200px;" />
+
+    <div style="margin-top: 15px;">
+        <p>Or enter this code manually: <strong>@ViewBag.SecretKey</strong></p>
+    </div>
+
+    <form asp-action="ConfirmMfaSetup" method="post" style="margin-top: 20px;">
+        <input type="hidden" name="secretKey" value="@ViewBag.SecretKey" />
+        <div class="form-group">
+            <label>Enter the 6-digit code to confirm:</label>
+            <input name="verificationCode" class="form-control" style="width: 150px; margin: 0 auto;" placeholder="000000" maxlength="6" required />
+        </div>
+        <button type="submit" class="button" style="margin-top: 10px;">Verify & Enable</button>
+    </form>
+</div>

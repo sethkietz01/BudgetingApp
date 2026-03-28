@@ -1,0 +1,22 @@
+﻿@model BudgetingApp.Models.UserModel
+
+@{
+    ViewData["Title"] = "MFA Verification";
+}
+
+<div class="auth-container">
+    <h2>Two-Factor Authentication</h2>
+    <p>Please enter the 6-digit code from your Authenticator app.</p>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+    }
+
+    <form asp-action="VerifyMfaLogin" method="post">
+        <div class="form-group">
+            <input name="code" class="form-control" placeholder="000000" maxlength="6" required autofocus />
+        </div>
+        <button type="submit" class="btn btn-primary">Verify</button>
+    </form>
+</div>

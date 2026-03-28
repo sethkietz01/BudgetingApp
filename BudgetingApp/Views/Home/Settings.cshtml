@@ -103,13 +103,52 @@
         </div>
     </div>
 </div>
+<div class="mfa-settings-group" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px;">
+    <h4 class="settings-header">Two-Factor Authentication (MFA)</h4>
+    @if (Model.MfaEnabled == true)
+    {
+        <div class="alert alert-info">
+            <p>MFA is currently <strong>Enabled</strong>.</p>
+            <button type="button" id="disable-mfa-modal-button" class="btn btn-outline-danger btn-sm">Disable MFA</button>
+        </div>
+    }
+    else
+    {
+        <p>Enhance your account security by requiring a 6-digit code from an authenticator app.</p>
+        <a asp-controller="Auth" asp-action="SetupMfa" class="button">Set Up MFA</a>
+    }
+</div>
 
-
-
+<div id="disable-mfa-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMfaModal()">&times;</span>
+        <p class="modal-text">Are you sure you want to disable MFA? Your account will be less secure.</p>
+        <div class="modal-buttons-container">
+            <button class="button" onclick="closeMfaModal()">Cancel</button>
+            <form method="post" asp-controller="Auth" asp-action="DisableMfa" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Confirm Disable</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+    const disableMfaModal = document.getElementById("disable-mfa-modal");
+    const openMfaBtn = document.getElementById("disable-mfa-modal-button");
+
+    if (openMfaBtn) {
+        openMfaBtn.addEventListener("click", () => {
+            disableMfaModal.style.display = "block";
+        });
+    }
+
+    window.closeMfaModal = function() {
+        disableMfaModal.style.display = "none";
+    };
+
+
         const modal = document.getElementById("modal");
         const deletAccountModal = document.getElementById("delete-account-modal");
         const openBtn = document.getElementById("modal-button");

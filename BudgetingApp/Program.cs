@@ -1,5 +1,3 @@
-// System.Text.Json is not strictly needed for this approach, but keep if used elsewhere
-// using System.Text.Json; 
 using BudgetingApp.Services;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
@@ -7,85 +5,78 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add Services to the Container
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(); // Needed for some internal routing
 
-// Configure Session Services
+// Configure Session (Consolidated to one place)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromMinutes(15); // Balanced timeout for MFA entry
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = ".BudgetingApp.Session";
 });
 
+// Configure Authentication
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+    });
+
+// Firestore Initialization Logic
 try
 {
-    // Try to get JSON directly from an environment variable first
     string jsonCredentialsString = builder.Configuration["GOOGLE_APPLICATION_CREDENTIALS_JSON"];
 
     if (string.IsNullOrEmpty(jsonCredentialsString))
     {
-        // Fallback to file path if the JSON variable isn't set (e.g., for local dev)
         string credentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
         if (!string.IsNullOrEmpty(credentialsPath) && File.Exists(credentialsPath))
         {
             jsonCredentialsString = File.ReadAllText(credentialsPath);
-            Console.WriteLine("Successfully read GOOGLE_APPLICATION_CREDENTIALS file content.");
         }
         else
         {
-            throw new InvalidOperationException("GOOGLE_APPLICATION_CREDENTIALS_JSON or GOOGLE_APPLICATION_CREDENTIALS file not found/set.");
+            throw new InvalidOperationException("Google Credentials not found in Environment or App Settings.");
         }
-    }
-    else
-    {
-        Console.WriteLine("Successfully read GOOGLE_APPLICATION_CREDENTIALS_JSON from App Settings.");
     }
 
     string projectId = "";
-
     using (JsonDocument document = JsonDocument.Parse(jsonCredentialsString))
     {
-        JsonElement root = document.RootElement;
-        if (root.TryGetProperty("project_id", out JsonElement projectIdElement))
+        if (document.RootElement.TryGetProperty("project_id", out JsonElement projectIdElement))
         {
             projectId = projectIdElement.GetString();
-            Console.WriteLine($"Project ID: {projectId}");
         }
-        else
-            Console.WriteLine("Project ID property not found in JSON credentials.");
     }
 
-    // Create credentials from the JSON string
     GoogleCredential credential = GoogleCredential.FromJson(jsonCredentialsString);
-
-    FirestoreDbBuilder dbBuilder = new FirestoreDbBuilder
+    FirestoreDb db = new FirestoreDbBuilder
     {
         ProjectId = projectId,
         Credential = credential
-    };
-    FirestoreDb db = dbBuilder.Build();
-    builder.Services.AddSingleton(db); // Register FirestoreDb as a singleton
-    Console.WriteLine("Firestore initialized successfully using provided JSON credentials.");
+    }.Build();
+
+    builder.Services.AddSingleton(db);
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Error initializing Firestore: {ex.Message}");
-    throw new InvalidOperationException("Failed to initialize Firestore. Check App Service settings and Google Cloud credentials.", ex);
+    Console.WriteLine($"Firestore Init Error: {ex.Message}");
+    throw;
 }
 
-
+// Dependency Injection
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<AssetService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
-
-builder.Services.AddAuthentication("Cookies")
-    .AddCookie();
+builder.Services.AddScoped<AssetService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -97,11 +88,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Enable Session Middleware
 app.UseSession();
-
-app.UseAuthentication(); // Enable authentication middleware
-app.UseAuthorization();  // Enable authorization middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

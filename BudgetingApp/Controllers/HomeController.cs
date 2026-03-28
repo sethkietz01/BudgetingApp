@@ -204,9 +204,32 @@ namespace BudgetingApp.Controllers
         /// Displays the Settings View
         /// </summary>
         /// <returns>The Settings View</returns>
-        public IActionResult Settings()
+        [HttpGet]
+        public async Task<IActionResult> Settings()
         {
-            return View();
+            // Determine who is currently logged in
+            var currentUser = HttpContext.Session.GetString("Username");
+
+            // Redirect to the login page if the user is not signed in
+            if (string.IsNullOrEmpty(currentUser))
+                return RedirectToAction("Login", "Auth");
+
+            QuerySnapshot snapshot = await _firestoreDb.Collection("Users")
+                .WhereEqualTo("username", currentUser)
+                .Limit(1)
+                .GetSnapshotAsync();
+
+            if (snapshot.Documents.Count == 0) return NotFound();
+
+            var userDoc = snapshot.Documents.First();
+
+            var model = new UserModel
+            {
+                Username = userDoc.GetValue<string>("username"),
+                MfaEnabled = userDoc.TryGetValue<bool>("mfaEnabled", out var mfa) ? mfa : false,
+            };
+
+            return View(model);
         }
 
         /// <summary>
