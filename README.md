@@ -237,5 +237,6 @@ This application is written in C# using .NET 8 MVC architecture for back-end des
 
 # Credits
 This project relies on the following open-source libraries:
-* **[Otp.NET](https://github.com/kspearrin/Otp.NET):** Multi-factor authentication (TOTP) implementation by [@kspearrin](https://github.com/kspearrin).
-* **[BCrypt.Net-Next](https://github.com/BcryptNet/bcrypt.net):** Modern password hashing by [@ChrisMcKee](https://github.com/ChrisMcKee), based on the work of Ryan D. Emerle and Damien Miller.
+* **[Otp.NET](https://github.com/kspearrin/Otp.NET):** Multi-factor authentication (TOTP) implementation by [@kspearrin](https://github.com/kspearrin)
+* **[BCrypt.Net-Next](https://github.com/BcryptNet/bcrypt.net):** Modern password hashing by [@ChrisMcKee](https://github.com/ChrisMcKee), based on the work of Ryan D. Emerle and Damien Miller
+* **[QRCoder](https://github.com/Shane32/QRCoder):** QR code generator by [@Shane32](https://github.com/Shane32/QRCoder)
