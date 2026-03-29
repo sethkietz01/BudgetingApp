@@ -100,8 +100,8 @@ After you login, you will be taken to the Dashboard. Here you will find a read-o
 A Chart.js Doughnut Chart is provided to give a visual representation of your monthly expenses and a Line Chart displays your income, expenses, and net over the span of 12 months.
 You may add or subtract money directly to or from the balance.
 
-## Edit Assets
-![Edit Assets](Demo%20Screenshots/Edit%20Assets.png)
+## Edit Expenses
+![Edit Expenses](Demo%20Screenshots/Edit%20Expenses.png)
 Here you may set your balance, income, and expenses. Once you have set the values you want, press submit and you will automatically be redirected to the Dashboard.
 
 ## What If
