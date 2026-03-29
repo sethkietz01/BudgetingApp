@@ -71,8 +71,8 @@ catch (Exception ex)
 
 // Dependency Injection
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<IAssetService, AssetService>();
-builder.Services.AddScoped<AssetService>();
+builder.Services.AddScoped<IAssetService, ExpenseService>();
+builder.Services.AddScoped<ExpenseService>();
 
 var app = builder.Build();
 

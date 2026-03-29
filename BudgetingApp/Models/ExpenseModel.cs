@@ -2,7 +2,7 @@
 
 namespace BudgetingApp.Models
 {
-    public class AssetModel
+    public class ExpenseModel
     {
         [FirestoreProperty("balance")]
         public double Balance { get; set; }

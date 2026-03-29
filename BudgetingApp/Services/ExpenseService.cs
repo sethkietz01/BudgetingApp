@@ -4,12 +4,12 @@ using Google.Cloud.Firestore.V1;
 
 namespace BudgetingApp.Services
 {
-    public class AssetService : IAssetService
+    public class ExpenseService : IAssetService
     {
         private readonly FirestoreDb _db;
         private readonly string _assetsCollection = "Assets";
 
-        public AssetService(FirestoreDb db)
+        public ExpenseService(FirestoreDb db)
         {
             _db = db;
         }
@@ -23,35 +23,35 @@ namespace BudgetingApp.Services
             return snapshot;
         }
 
-        public async Task<AssetModel> GetAssetByUsernameAsync(string currentUser)
+        public async Task<ExpenseModel> GetAssetByUsernameAsync(string currentUser)
         {
             QuerySnapshot snapshot = await _db.Collection(_assetsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
 
-            AssetModel asset = MapSnapshotToAsset(snapshot.Documents[0]);
+            ExpenseModel asset = MapSnapshotToAsset(snapshot.Documents[0]);
 
             return asset;
         }
 
-        public async Task<List<AssetModel>> GetAssetsByUsernameAsync(string currentUser)
+        public async Task<List<ExpenseModel>> GetAssetsByUsernameAsync(string currentUser)
         {
             QuerySnapshot snapshot = await _db.Collection(_assetsCollection)
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
 
-            List<AssetModel> assets = MapSnapshotsToAssets(snapshot);
+            List<ExpenseModel> assets = MapSnapshotsToAssets(snapshot);
 
             return assets;
         }
 
-        public AssetModel MapSnapshotToAsset(DocumentSnapshot snapshot)
+        public ExpenseModel MapSnapshotToAsset(DocumentSnapshot snapshot)
         {
                 if (!snapshot.Exists) return null;
 
                 /*** Firestore can either store numbers as type long or double, so we need to make sure that we cast accordingly ***/
 
-                var asset = new AssetModel
+                var asset = new ExpenseModel
                 {
                     Balance = Math.Round(GetNumericValue(snapshot, "balance"), 2),
                     Income = Math.Round(GetNumericValue(snapshot, "income"), 2),
@@ -72,9 +72,9 @@ namespace BudgetingApp.Services
             return asset;
         }
 
-        public List<AssetModel> MapSnapshotsToAssets(QuerySnapshot snapshot)
+        public List<ExpenseModel> MapSnapshotsToAssets(QuerySnapshot snapshot)
         {
-            var assets = new List<AssetModel>();
+            var assets = new List<ExpenseModel>();
             foreach (var doc in snapshot.Documents)
             {
                 var asset = MapSnapshotToAsset(doc);

@@ -18,10 +18,10 @@ namespace BudgetingApp.Controllers
         private readonly string _transactionsCollection = "Transactions";
         private readonly string _goalsCollection = "Goals";
         private readonly BudgetingApp.Services.IAssetService _iassetService;
-        private readonly AssetService _assetService;
+        private readonly ExpenseService _assetService;
 
 
-        public HomeController(ILogger<HomeController> logger, FirestoreDb firestoreDb, IAssetService iassetService, AssetService assetService)
+        public HomeController(ILogger<HomeController> logger, FirestoreDb firestoreDb, IAssetService iassetService, ExpenseService assetService)
         {
             _logger = logger;
             _firestoreDb = firestoreDb;
@@ -43,7 +43,7 @@ namespace BudgetingApp.Controllers
                 return RedirectToAction("Login", "Auth");
 
             // Get the Asset documenet for the current user
-            List<AssetModel> assets = await _assetService.GetAssetsByUsernameAsync(currentUser);
+            List<ExpenseModel> assets = await _assetService.GetAssetsByUsernameAsync(currentUser);
 
             return View(assets);
         }
@@ -53,7 +53,7 @@ namespace BudgetingApp.Controllers
         /// </summary>
         /// <returns>Assets data for the current user</returns>
         [HttpGet]
-        public async Task<IActionResult> EditAssets()
+        public async Task<IActionResult> EditExpenses()
         {
             // Determine who is currently logged in 
             string currentUser = HttpContext.Session.GetString("Username");
@@ -62,7 +62,7 @@ namespace BudgetingApp.Controllers
             if (string.IsNullOrEmpty(currentUser))
                 return RedirectToAction("Login", "Auth");
 
-            AssetModel asset = await _assetService.GetAssetByUsernameAsync(currentUser);
+            ExpenseModel asset = await _assetService.GetAssetByUsernameAsync(currentUser);
 
             if (asset == null)
                 return NotFound();
@@ -76,7 +76,7 @@ namespace BudgetingApp.Controllers
         /// <param name="model">The new Asset data</param>
         /// <returns>The page with the new Asset data</returns> 
         [HttpPost]
-        public async Task<IActionResult> EditAssets(AssetModel model)
+        public async Task<IActionResult> EditExpenses(ExpenseModel model)
         {
             // Determine who is logged in
             string currentUser = HttpContext.Session.GetString("Username");
@@ -195,7 +195,7 @@ namespace BudgetingApp.Controllers
                 .WhereEqualTo("username", currentUser)
                 .GetSnapshotAsync();
 
-            List<AssetModel> assets = _assetService.MapSnapshotsToAssets(snapshot);
+            List<ExpenseModel> assets = _assetService.MapSnapshotsToAssets(snapshot);
 
             return View(assets);
         }
@@ -353,7 +353,7 @@ namespace BudgetingApp.Controllers
             transactions = transactions.OrderByDescending(t => t.Date).ToList();
 
             // Retrieve the asset information for the current user
-            AssetModel asset = await _iassetService.GetAssetByUsernameAsync(currentUser);
+            ExpenseModel asset = await _iassetService.GetAssetByUsernameAsync(currentUser);
 
             // Create the ViewModel and populate it
             var viewModel = new TransactionsAndAssetsViewModel
