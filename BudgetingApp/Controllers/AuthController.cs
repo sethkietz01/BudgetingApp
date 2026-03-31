@@ -32,6 +32,7 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(UserModel model)
     {
+        // Check for username and password
         if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
         {
             ViewBag.ErrorMessage = "Please enter both username and password.";
@@ -39,36 +40,40 @@ public class AuthController : Controller
             return View();
         }
 
+        // Get the user data from the database
         QuerySnapshot snapshot = await _firestoreDb.Collection(_usersCollection)
             .WhereEqualTo("username", model.Username)
             .Limit(1)
             .GetSnapshotAsync();
 
-        if (snapshot.Documents.Count > 0)
+        if (snapshot.Documents.Count > 0) // User found
         {
             DocumentSnapshot userDocument = snapshot.Documents.First();
-            if (userDocument.TryGetValue<string>("password", out var storedPassword))
+            if (userDocument.TryGetValue<string>("password", out var storedPassword)) // Get the stored hashed password
             {
-                if (BCrypt.Net.BCrypt.Verify(model.Password, storedPassword))
+                if (BCrypt.Net.BCrypt.Verify(model.Password, storedPassword)) // Password is correct
                 {
+                    // Check if MFA is enabled for the user
                     userDocument.TryGetValue("mfaEnabled", out bool isMfaEnabled);
 
                     if (isMfaEnabled)
                     {
+                        // Store the username in session to use during MFA verification
                         HttpContext.Session.SetString("PendingMfaUsername", model.Username);
                         return RedirectToAction("VerifyMfaLogin");
                     }
 
+                    // Log the user in
                     HttpContext.Session.SetString("Username", model.Username);
                     return RedirectToAction("Index", "Home");
                 }
-                else
+                else // Password is incorrect
                     ViewBag.ErrorMessage = "Invalid password.";
             }
-            else
+            else // Password field is missing in the database
                 ViewBag.ErrorMessage = "User found, but password information is missing.";
         }
-        else
+        else // User not found
             ViewBag.ErrorMessage = "Invalid username.";
 
         ViewBag.IsLoginPage = true;
@@ -87,10 +92,14 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> VerifyMfaLogin(string code)
     {
+        // Get the username from session
         var username = HttpContext.Session.GetString("PendingMfaUsername");
+
+        // Check valild username
         if (string.IsNullOrEmpty(username))
             return RedirectToAction("Login");
 
+        // Get the user's MFA secret key from the database
         QuerySnapshot snapshot = await _firestoreDb.Collection(_usersCollection)
             .WhereEqualTo("username", username)
             .Limit(1)
@@ -99,8 +108,9 @@ public class AuthController : Controller
         var userDoc = snapshot.Documents.First();
         if (userDoc.TryGetValue<string>("mfaSecretKey", out var secretKey))
         {
+            // Initialize TOTP with the secret key
             var totp = new Totp(Base32Encoding.ToBytes(secretKey));
-            if (totp.VerifyTotp(code, out _))
+            if (totp.VerifyTotp(code, out _)) // Code is valid
             {
                 HttpContext.Session.SetString("Username", username);
                 HttpContext.Session.Remove("PendingMfaUsername");
@@ -117,18 +127,19 @@ public class AuthController : Controller
     {
         if (ModelState.IsValid)
         {
+            // See if the username already exists
             QuerySnapshot existingUserSnapshot = await _firestoreDb.Collection(_usersCollection)
                 .WhereEqualTo("username", model.Username)
                 .Limit(1)
                 .GetSnapshotAsync();
 
-            if (existingUserSnapshot.Documents.Count > 0)
+            if (existingUserSnapshot.Documents.Count > 0) // The username was found
             {
                 ViewBag.ErrorMessage = "An account with this username already exists.";
                 ViewBag.IsCreateAccountPage = true;
                 return View("Login", model);
             }
-            else
+            else // The username was not found
             {
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
